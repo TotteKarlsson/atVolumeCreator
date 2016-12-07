@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{D5D51B14-8ED2-4DFA-9A66-B5F682AEEF42}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="P:\libs\dslib\Common\mtkCommon.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\dslib\VCL\Common\VCLCommon.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\dslib\VCL\Components\DuneComponents.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Project1.cbproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="mtkCommon">
+        <MSBuild Projects="P:\libs\dslib\Common\mtkCommon.cbproj"/>
+    </Target>
+    <Target Name="mtkCommon:Clean">
+        <MSBuild Projects="P:\libs\dslib\Common\mtkCommon.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="mtkCommon:Make">
+        <MSBuild Projects="P:\libs\dslib\Common\mtkCommon.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="VCLCommon">
+        <MSBuild Projects="P:\libs\dslib\VCL\Common\VCLCommon.cbproj"/>
+    </Target>
+    <Target Name="VCLCommon:Clean">
+        <MSBuild Projects="P:\libs\dslib\VCL\Common\VCLCommon.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VCLCommon:Make">
+        <MSBuild Projects="P:\libs\dslib\VCL\Common\VCLCommon.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="DuneComponents">
+        <MSBuild Projects="P:\libs\dslib\VCL\Components\DuneComponents.cbproj"/>
+    </Target>
+    <Target Name="DuneComponents:Clean">
+        <MSBuild Projects="P:\libs\dslib\VCL\Components\DuneComponents.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DuneComponents:Make">
+        <MSBuild Projects="P:\libs\dslib\VCL\Components\DuneComponents.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="Project1">
+        <MSBuild Projects="Project1.cbproj"/>
+    </Target>
+    <Target Name="Project1:Clean">
+        <MSBuild Projects="Project1.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Project1:Make">
+        <MSBuild Projects="Project1.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="mtkCommon;VCLCommon;DuneComponents;Project1"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="mtkCommon:Clean;VCLCommon:Clean;DuneComponents:Clean;Project1:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="mtkCommon:Make;VCLCommon:Make;DuneComponents:Make;Project1:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
