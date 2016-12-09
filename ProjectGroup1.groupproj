@@ -12,7 +12,7 @@
         <Projects Include="P:\libs\dslib\VCL\Components\DuneComponents.cbproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Project1.cbproj">
+        <Projects Include="VolumeCreator.cbproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -50,23 +50,23 @@
     <Target Name="DuneComponents:Make">
         <MSBuild Projects="P:\libs\dslib\VCL\Components\DuneComponents.cbproj" Targets="Make"/>
     </Target>
-    <Target Name="Project1">
-        <MSBuild Projects="Project1.cbproj"/>
+    <Target Name="VolumeCreator">
+        <MSBuild Projects="VolumeCreator.cbproj"/>
     </Target>
-    <Target Name="Project1:Clean">
-        <MSBuild Projects="Project1.cbproj" Targets="Clean"/>
+    <Target Name="VolumeCreator:Clean">
+        <MSBuild Projects="VolumeCreator.cbproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project1:Make">
-        <MSBuild Projects="Project1.cbproj" Targets="Make"/>
+    <Target Name="VolumeCreator:Make">
+        <MSBuild Projects="VolumeCreator.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="mtkCommon;VCLCommon;DuneComponents;Project1"/>
+        <CallTarget Targets="mtkCommon;VCLCommon;DuneComponents;VolumeCreator"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mtkCommon:Clean;VCLCommon:Clean;DuneComponents:Clean;Project1:Clean"/>
+        <CallTarget Targets="mtkCommon:Clean;VCLCommon:Clean;DuneComponents:Clean;VolumeCreator:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mtkCommon:Make;VCLCommon:Make;DuneComponents:Make;Project1:Make"/>
+        <CallTarget Targets="mtkCommon:Make;VCLCommon:Make;DuneComponents:Make;VolumeCreator:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

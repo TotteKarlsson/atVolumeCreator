@@ -4,7 +4,7 @@
         <ProjectVersion>14.4</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <AppType>Application</AppType>
-        <MainSource>Project1.cpp</MainSource>
+        <MainSource>VolumeCreator.cpp</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -52,6 +52,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <ILINK_LibraryPath>C:\Program Files (x86)\ImageMagick-7.0.3-Q8\lib\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <PackageImports>CSKGenerator;VCLCommon;fs17;frx17;atVCLCore;bindcompfmx;DBXSqliteDriver;vcldbx;RaizeComponentsTrialVcl;HsBarcode2DRun;fmx;rtl;dbrtl;DbxClientDriver;IndySystem;TeeDB;bindcomp;inetdb;vclib;inetdbbde;DBXInterBaseDriver;Tee;DataSnapCommon;xmlrtl;ibxpress;DbxCommonDriver;vclimg;IndyProtocols;dbxcds;DBXMySQLDriver;MetropolisUILiveTile;soaprtl;vclactnband;bindengine;vcldb;bindcompdbx;vcldsnap;bindcompvcl;FMXTee;TeeUI;DbxDevartSQLiteDriver170;vclie;HsBarcode1DRun;RaizeComponentsTrialVclDb;vcltouch;bcbsmp;websnap;CustomIPTransport;vclribbon;dsnap;IndyIPServer;IndyCore;vcl;fmxase;IndyIPCommon;CloudService;dsnapcon;FmxTeeUI;frxDB17;inet;fsDB17;fmxobj;vclx;frxe17;inetdbxpress;webdsnap;fmxdae;bdertl;DuneComponents;dbexpress;adortl;bcbie;IndyIPClient;$(PackageImports)</PackageImports>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -86,7 +87,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <ILINK_LibraryPath>$(DEBUG_BUILD)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <IncludePath>$(DEBUG_BUILD)\include;$(IncludePath)</IncludePath>
+        <IncludePath>$(DEBUG_BUILD)\include;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include\MagickCore;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include;$(IncludePath)</IncludePath>
         <Debugger_DebugSourcePath>P:\libs\dslib\VCL\Common\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
         <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi</LinkPackageImports>
     </PropertyGroup>
@@ -95,18 +96,33 @@
         <TASM_Debugging>None</TASM_Debugging>
     </PropertyGroup>
     <ItemGroup>
-        <CppCompile Include="Project1.cpp">
-            <BuildOrder>0</BuildOrder>
+        <LibFiles Include="C:\Program Files (x86)\ImageMagick-7.0.3-Q8\lib\temp.lib" Condition="'$(Platform)'=='Win32'">
+            <BuildOrder>6</BuildOrder>
+            <IgnorePath>true</IgnorePath>
+        </LibFiles>
+        <CppCompile Include="atRenderService.cpp">
+            <DependentOn>atRenderService.h</DependentOn>
+            <BuildOrder>3</BuildOrder>
         </CppCompile>
-        <PCHCompile Include="Project1PCH1.h">
-            <BuildOrder>1</BuildOrder>
-        </PCHCompile>
+        <CppCompile Include="atROIHistory.cpp">
+            <DependentOn>atROIHistory.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Miscellaneous.cpp">
+            <BuildOrder>4</BuildOrder>
+        </CppCompile>
         <CppCompile Include="TMainForm.cpp">
             <Form>MainForm</Form>
             <FormType>dfm</FormType>
             <DependentOn>TMainForm.h</DependentOn>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
+        <CppCompile Include="VolumeCreator.cpp">
+            <BuildOrder>0</BuildOrder>
+        </CppCompile>
+        <PCHCompile Include="VolumeCreatorPCH1.h">
+            <BuildOrder>1</BuildOrder>
+        </PCHCompile>
         <FormResources Include="TMainForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -126,7 +142,7 @@
         <BorlandProject>
             <CPlusPlusBuilder.Personality>
                 <Source>
-                    <Source Name="MainSource">Project1.cpp</Source>
+                    <Source Name="MainSource">VolumeCreator.cpp</Source>
                 </Source>
                 <VersionInfo>
                     <VersionInfo Name="IncludeVerInfo">False</VersionInfo>

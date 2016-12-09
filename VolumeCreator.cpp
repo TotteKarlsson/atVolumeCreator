@@ -6,7 +6,6 @@
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
 
-
 using namespace mtk;
 using std::string;
 //---------------------------------------------------------------------------
