@@ -28,37 +28,37 @@ class  RenderBox
 class RenderService
 {
 	public:
-							RenderService(Idhttp::TIdHTTP* c,
-                        							const string& baseURL,
-                        						  	const string& owner,
-                        						  	const string& project,
-                                                  	const string& stack,
-                                                  	const string& imageType,
-                                                  	int z,
-                                                  	RenderBox& box,
-                                                    double mScale);
-							~RenderService();
+							            RenderService(Idhttp::TIdHTTP* c,
+                        	            						const string& baseURL,
+                        	            					  	const string& owner,
+                        	            					  	const string& project,
+                                                              	const string& stack,
+                                                              	const string& imageType,
+                                                              	int z,
+                                                              	RenderBox& box,
+                                                                double mScale);
+							            ~RenderService();
 
-		void				clearImageMemory();
-		string				getURL();
-		const char* 		getURLC(){return getURL().c_str();}
-        TMemoryStream*		getImage();
-        bool				checkCacheForCurrentURL();
+		void				            clearImageMemory();
+		string				            getURL();
+		const char* 		            getURLC(){return getURL().c_str();}
+        TMemoryStream*		            getImage(int z = 0);
+        bool				            checkCacheForCurrentURL();
+        string				            getImageLocalPathAndFileName();
+        string							getProjectName();
 
     private:
-		Idhttp::TIdHTTP* 	mC;
-		TMemoryStream* 		mImageMemory;
-    	int				    mZ;
-        double				mScale;
-        string			    mBaseURL;
-        string			    mProject;
-        string			    mOwner;
-        string 			    mStackName;
-        string 			    mImageType;
-        RenderBox			mRenderBox;
-        string				getFileForCurrentURL();
-
-
+		Idhttp::TIdHTTP* 	            mC;
+		TMemoryStream* 		            mImageMemory;
+    	int				                mZ;
+        double				            mScale;
+        string			                mBaseURL;
+        string			                mProject;
+        string			                mOwner;
+        string 			                mStackName;
+        string 			                mImageType;
+        RenderBox			            mRenderBox;
+        string							mLocalCacheFolder;
 };
 
 #endif

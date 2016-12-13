@@ -23,12 +23,14 @@
 #include "TPropertyCheckBox.h"
 #include "atRenderService.h"
 #include "atROIHistory.h"
+#include "mtkProcess.h"
+
+using mtk::Process;
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
-	TCheckListBox *mZs;
 	TGroupBox *GroupBox1;
 	TSTDStringLabeledEdit *mVolumesFolder;
 	TSTDStringLabeledEdit *mStackNameE;
@@ -69,10 +71,18 @@ __published:	// IDE-managed Components
 	TPanel *Panel4;
 	TButton *mNextZ;
 	TButton *mPrevZ;
-	TButton *mFetchSelectedZsBtn;
 	TButton *Button3;
 	TPanel *Panel5;
 	TPaintBox *PaintBox1;
+	TButton *mFetchSelectedZsBtn;
+	TListBox *mDeSelectedZs;
+	TPanel *Panel6;
+	TButton *mMoveOutSelectedBtn;
+	TButton *mRestoreUnselectedBtn;
+	TListBox *mZs;
+	TPanel *Panel7;
+	TPanel *Panel8;
+	TPanel *Panel9;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -93,20 +103,26 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
-	void __fastcall mResetButtonClick(TObject *Sender);
+	void __fastcall resetButtonClick(TObject *Sender);
 	void __fastcall historyBtnClick(TObject *Sender);
 	void __fastcall TraverseZClick(TObject *Sender);
 	void __fastcall mFetchSelectedZsBtnClick(TObject *Sender);
+	void __fastcall mMoveOutSelectedBtnClick(TObject *Sender);
+	void __fastcall mRestoreUnselectedBtnClick(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
+
 
 
 	private:	// User declarations
-		void	    	UpdateZList();
-       	void __fastcall DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
+		void	    									UpdateZList();
+       	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
+       	mtk::Process									mTiffCP;
         TThreadMethod                                   logMsgMethod;
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
 		mtk::Property<mtk::LogLevel>	                mLogLevel;
-
+		bool 		__fastcall							addTiffToStack(const string& stackFName, const string& fName);
+		void 		__fastcall 							processEvent(Process* proc);
 		double 											getImageStretchFactor();
 
         //Drawing stuff

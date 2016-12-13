@@ -6,12 +6,11 @@
 #include <vector>
 #include "mtkStringUtils.h"
 #include "mtkVCLUtils.h"
-
+#include "mtkLogger.h"
 //---------------------------------------------------------------------------
 
 using namespace std;
 using namespace mtk;
-
 
 RenderService::RenderService(Idhttp::TIdHTTP* c,  const string& baseURL, const string& owner,
                             const string& project, const string& stack,
@@ -25,7 +24,8 @@ mStackName(stack),
 mImageType(imageType),
 mZ(z),
 mRenderBox(box),
-mScale(scale)
+mScale(scale),
+mLocalCacheFolder("p:\\cache")
 {
 	mImageMemory = new TMemoryStream();
 }
@@ -36,35 +36,47 @@ RenderService::~RenderService()
 	delete mImageMemory;
 }
 
-TMemoryStream* RenderService::getImage()
+string RenderService::getProjectName()
 {
+	return mProject;
+}
+
+TMemoryStream* RenderService::getImage(int z)
+{
+	mZ = z;
+	if(!mImageMemory)
+    {
+		mImageMemory = new TMemoryStream();
+    }
 	//First check if we already is having this data
     if(checkCacheForCurrentURL())
     {
-    	mImageMemory->LoadFromFile(getFileForCurrentURL().c_str());
+        Log(lInfo) << "Fetching from cache";
+    	mImageMemory->LoadFromFile(getImageLocalPathAndFileName().c_str());
     }
     else
     {
+        Log(lInfo) << "Fetching from server";
     	mC->Get(getURLC(), mImageMemory);
 
         //Save to cache (in a thread)
-        if(createFolder(getFilePath(getFileForCurrentURL())))
+        if(createFolder(getFilePath(getImageLocalPathAndFileName())))
         {
-            mImageMemory->SaveToFile(getFileForCurrentURL().c_str());
+            mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
         }
     }
 
     return mImageMemory;
 }
 
-string RenderService::getFileForCurrentURL()
+string RenderService::getImageLocalPathAndFileName()
 {
     vector<string> cachePaths = splitStringAtWord(getURL(), "/owner/");
     string currentPath;
     if(cachePaths.size() == 2)
     {
 		string fldr = substitute(cachePaths[1],"/","\\\\");
-		return joinPath("p:\\cache", fldr, "image.tiff");
+		return joinPath(mLocalCacheFolder, fldr, "image.tiff");
     }
 
    	return currentPath;
@@ -72,29 +84,26 @@ string RenderService::getFileForCurrentURL()
 
 bool RenderService::checkCacheForCurrentURL()
 {
-	return fileExists(getFileForCurrentURL());
+	return fileExists(getImageLocalPathAndFileName());
 }
 
 void RenderService::clearImageMemory()
 {
 	delete mImageMemory;
     mImageMemory = NULL;
-
 }
 
 string RenderService::getURL()
 {
-	stringstream sUrl;//("http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner/Sharmishtaas/project/M259292_Scnn1aTg2_1/stack/{0}/
+//("http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner/Sharmishtaas/project/M259292_Scnn1aTg2_1/stack/{0}/
     //z/{1}/box/5000,9000,1300,1300,{2}/tiff-image");
-
+	stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/" << mOwner;
-	sUrl << "/project/";
-    sUrl << mProject;
+	sUrl << "/project/" << mProject;
     sUrl << "/stack/"<<mStackName;
     sUrl << "/z/"<<mZ;
-    sUrl << "/box/"<<mRenderBox.X<<","<<mRenderBox.Y;
-    sUrl << "," << mRenderBox.Width << ","<<mRenderBox.Height << ","<<mScale;
+    sUrl << "/box/"<<mRenderBox.X<<","<<mRenderBox.Y << "," << mRenderBox.Width << ","<<mRenderBox.Height << ","<<mScale;
     sUrl << "/tiff-image";
 	return sUrl.str();
 }

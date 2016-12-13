@@ -19,23 +19,29 @@ using namespace mtk;
 using namespace std;
 extern string gLogFileName;
 
+bool convertTiff(const string& in, const string& out);
+bool addTiffToStack(const string& stackFName, const string& fName);
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
     mLogLevel(lAny),
     logMsgMethod(&logMsg),
-    mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsgMethod)
-{}
+    mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsgMethod),
+    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe")
+{
+	mTiffCP.FOnStateEvent = processEvent;
+}
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ClickZ(TObject *Sender)
 {
-    if(mZs->ItemIndex == -1)
+	int ii = mZs->ItemIndex;
+    if(ii == -1)
     {
     	return;
     }
 
-    int z = toInt(stdstr(mZs->Items->Strings[mZs->ItemIndex]));
+    int z = toInt(stdstr(mZs->Items->Strings[ii]));
 
     //Fetch data using URL
     RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
@@ -47,7 +53,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     	Log(lDebug) << "Loading z = "<<z;
     	Log(lDebug) << "URL = "<< rs.getURL();
 
-        TMemoryStream* imageMem = rs.getImage();
+        TMemoryStream* imageMem = rs.getImage(z);
         if(imageMem)
         {
         	Image1->Picture->Graphic->LoadFromStream(imageMem);
@@ -74,10 +80,10 @@ void __fastcall TMainForm::mZMaxKeyDown(TObject *Sender, WORD &Key, TShiftState 
 void  TMainForm::UpdateZList()
 {
 	mZs->Clear();
-	for(int i = mZMin->getValue(); i < mZMax->getValue(); i++)
+	for(int i = mZMin->getValue(); i <= mZMax->getValue(); i++)
     {
 		mZs->AddItem(IntToStr(i), NULL);
-        mZs->Checked[i] = true;
+//        mZs->Selected[i] = true;
     }
 
     mZs->ItemIndex = 0;
@@ -87,6 +93,7 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
 {
 	if(Key == VK_RETURN)
     {
+        mCurrentRB = RenderBox(mXCoord->getValue(), mYCoord->getValue(), mWidth->getValue(), mHeight->getValue());
 		ClickZ(Sender);
     }
 }
@@ -98,7 +105,7 @@ void __fastcall TMainForm::mSelectZBtnClick(TObject *Sender)
 
     for(int i = 0; i< mZs->Count; i++)
     {
-        mZs->Checked[i] = select;
+        mZs->Selected[i] = select;
     }
 }
 
@@ -111,9 +118,7 @@ void __fastcall TMainForm::IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode,
 //	this->Update();
 }
 
-
-void __fastcall TMainForm::IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode,
-          __int64 AWorkCountMax)
+void __fastcall TMainForm::IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCountMax)
 {
 //	ProgressBar1->Max = AWorkCountMax;
 }
@@ -208,26 +213,27 @@ void __fastcall TMainForm::Image1MouseMove(TObject *Sender, TShiftState Shift, i
 void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-	if(!Drawing)
+	if(!Drawing ||  (Button == TMouseButton::mbRight))
     {
     	return;
     }
-	if(Button == TMouseButton::mbRight)
-    {
-		return;
 
-    }
-
-	//DrawShape(Origin, Point(Panel5->Width + X, Y), pmCopy);
 	Drawing = false;
 
+
     //For selection
-	mBottomRightSelCorner = Mouse->CursorPos;
-	mBottomRightSelCorner = this->Image1->ScreenToClient(mBottomRightSelCorner);
+	mBottomRightSelCorner = this->Image1->ScreenToClient(Mouse->CursorPos);
 
 	//Convert to world image coords (minus offset)
     double stretchFactor = getImageStretchFactor();
     mBottomRightSelCorner = controlToImage(mBottomRightSelCorner, mScaleE->getValue(), stretchFactor);
+
+	//Check if selection indicate a 'reset'
+	if(mBottomRightSelCorner.X - mTopLeftSelCorner.X <= 0 || mBottomRightSelCorner.Y - mTopLeftSelCorner.Y <=0)
+    {
+    	resetButtonClick(NULL);
+		return;
+    }
 
 	mXCoord->setValue(mXCoord->getValue() + mTopLeftSelCorner.X);
 	mYCoord->setValue(mYCoord->getValue() + mTopLeftSelCorner.Y);
@@ -262,7 +268,7 @@ void __fastcall TMainForm::DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMod
 	getCanvas()->Rectangle(TopLeft.x, TopLeft.y, BottomRight.x, BottomRight.y);
 }
 
-void __fastcall TMainForm::mResetButtonClick(TObject *Sender)
+void __fastcall TMainForm::resetButtonClick(TObject *Sender)
 {
 	mCurrentRB = mOriginalRB;
     render(&mCurrentRB);
@@ -308,6 +314,10 @@ void __fastcall TMainForm::historyBtnClick(TObject *Sender)
 void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 {
 	TButton* b = dynamic_cast<TButton*>(Sender);
+    if(mZs->ItemIndex > -1 && mZs->ItemIndex < mZs->Count)
+    {
+    	mZs->Selected[mZs->ItemIndex] = false;
+    }
     if(b == mPrevZ)
     {
     	if(	mZs->ItemIndex > 0)
@@ -322,6 +332,7 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 			mZs->ItemIndex++;
         }
     }
+    mZs->Selected[mZs->ItemIndex] = true;
     render();
 }
 
@@ -341,71 +352,188 @@ string padZeroes(int z, int digits)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
+    int z = toInt(stdstr(mZs->Items->Strings[0]));
+	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue());
+
+    //Creaet stackFName with path
+    stringstream outName;
+    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
+	string stackFName(outName.str());
+    outName.str("");
 	//Start a few threads
     for(int i = 0; i < mZs->Count; i++)
     {
-    	if(!mZs->Checked[i])
+    	if(!mZs->Selected[i])
         {
         	continue;
         }
-        int z = toInt(stdstr(mZs->Items->Strings[i]));
-
-        //Fetch data using URL
-        RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-                            mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue());
-
+    	z = toInt(stdstr(mZs->Items->Strings[i]));
         //First check if we already is having this data
-        try
+        //This will fetch from DB, or, if present, from the cache
+        TMemoryStream* imageMem = rs.getImage(z);
+        if(imageMem)
         {
-            Log(lDebug) << "Loading z = "<<z;
-            Log(lDebug) << "URL = "<< rs.getURL();
+            Image1->Picture->Graphic->LoadFromStream(imageMem);
 
-            //This will fetch from DB, or, if present, from the cache
-            TMemoryStream* imageMem = rs.getImage();
-            if(imageMem)
+            //Save to local box folder
+            Image1->Invalidate();
+			outName.str("");
+            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<padZeroes(z, 4)<<".tif";
+            string in = rs.getImageLocalPathAndFileName();
+            //Make sure path exists, if not create it
+            if(createFolder(getFilePath(outName.str())))
             {
-                Image1->Picture->Graphic->LoadFromStream(imageMem);
-                //Save to local box folder
-                Image1->Invalidate();
-
-//                stringstream outName;
-//				outName << "p:\\cubes\\" << padZeroes(z, 4)<<"-raw.tif";
-
-                //Get cached image and convert to 8-bit
-//                Image1->Picture->SaveToFile(outName.str().c_str());
-
+                if(convertTiff(in, outName.str()))
+                {
+                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
+                    addTiffToStack(stackFName, outName.str());
+                }
             }
         }
-        __finally
-        {
-            rs.clearImageMemory();
-        }
-
+	    rs.clearImageMemory();
+        Application->ProcessMessages();
     }
-//	//Fetch selections to local cache
-//    Image1->Picture->SaveToFile("p:\\temp.tif");
-//
-//    MagickBooleanType status;
-//    MagickWand *magick_wand;
-//
-//    /*
-//    Read an image.
-//    */
-//    MagickWandGenesis();
-//    magick_wand = NewMagickWand();
-//    status = MagickReadImage(magick_wand,"p:\\temp.tif");
-//    if (status == MagickFalse)
-//    {
-//    //    ThrowWandException(magick_wand);
-//    }
-//
-//    status = MagickWriteImages(magick_wand,"p:\\temp2.tif",MagickTrue);
-//    if (status == MagickFalse)
-//    {
-//    //Bad
-//    }
-//    magick_wand = DestroyMagickWand(magick_wand);
-//    MagickWandTerminus();
 }
+
+bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string& fName)
+{
+    //Call external progam to stack the tiff
+    //output = call(["C:\\cygwin\\bin\\tiffcp", "-a", stackThisFile, stackFileName])
+    stringstream s;
+    s<<"-a "<<fName<<" "<<stackFName;
+
+   	mTiffCP.setMessageHandling(CATCH_MESSAGE);
+	mTiffCP.run(s.str());
+	//check that files exists
+	if(!fileExists(stackFName) || !fileExists(fName))
+    {
+    	Log(lError) << "File does not exist...";
+        return false;
+    }
+
+	return true;
+}
+
+//---------------------------------------------------------------------------
+bool convertTiff(const string& in, const string& out)
+{
+    MagickBooleanType status;
+    MagickWand *magick_wand;
+
+    MagickWandGenesis();
+    magick_wand = NewMagickWand();
+    status = MagickReadImage(magick_wand, in.c_str());
+    if (status == MagickFalse)
+    {
+        return false;
+    }
+
+    status = MagickWriteImages(magick_wand, out.c_str(), MagickTrue);
+    if (status == MagickFalse)
+    {
+    	//Bad
+        return false;
+    }
+    magick_wand = DestroyMagickWand(magick_wand);
+    MagickWandTerminus();
+    return true;
+}
+
+void __fastcall	TMainForm::processEvent(Process* proc)
+{
+	vector<string> out = proc->getOutput();
+    for(int i = 0; i < out.size(); i++)
+    {
+    	Log(lInfo) << out[i];
+    }
+}
+
+
+int __fastcall compareStringListItems(TStringList* l, int index1, int index2)
+{
+	int l1 = (l->Strings[index1]).ToInt();
+	int l2 = (l->Strings[index2]).ToInt();
+    if(l1 < l2)
+    {
+    	return -1;
+    }
+    else
+    {
+	 	if(l1 > l2)
+        {
+        	return 1;
+        }
+        else
+        {
+        	return 0;
+        }
+    }
+}
+
+bool sortTListBoxNumerically(TListBox* lb)
+{
+	TStringList* tempList = new TStringList;
+    tempList->Assign(lb->Items);
+    tempList->CustomSort(compareStringListItems);
+    lb->Items->Assign(tempList);
+    delete tempList;
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
+{
+	if(mZs->SelCount == 0)
+    {
+    	Log(lWarning) << "There are no items selected...";
+        return;
+    }
+
+	int selectedAfter;
+    for(int i = 0; i < mZs->Count; i++)
+    {
+    	if(mZs->Selected[i])
+        {
+ 			String item = mZs->Items->Strings[i];
+        	mDeSelectedZs->AddItem(item, NULL);
+            selectedAfter = i;
+        }
+    }
+
+    int selCount = mZs->SelCount;
+    mZs->DeleteSelected();
+
+    int newlySelected = selectedAfter - (selCount -1);
+    if(newlySelected > -1 && newlySelected < mZs->Count)
+    {
+    	mZs->Selected[newlySelected] = true;
+        mZs->ItemIndex = newlySelected;
+        render();
+    }
+
+    sortTListBoxNumerically(mDeSelectedZs);
+}
+
+
+void __fastcall TMainForm::mRestoreUnselectedBtnClick(TObject *Sender)
+{
+    for(int i = 0; i < mDeSelectedZs->Count; i++)
+    {
+    	if(mDeSelectedZs->Selected[i])
+        {
+ 			String item = mDeSelectedZs->Items->Strings[i];
+        	mZs->AddItem(item, NULL);
+        }
+    }
+    mDeSelectedZs->DeleteSelected();
+    sortTListBoxNumerically(mZs);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Button1Click(TObject *Sender)
+{
+    sortTListBoxNumerically(mZs);
+}
+
 
 
