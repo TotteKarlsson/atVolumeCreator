@@ -5,12 +5,16 @@
 
 namespace Idhttp
 {
-class TIdHTTP;
+	class TIdHTTP;
 }
 
-namespace System { namespace Classes {
-class TMemoryStream;
-}}
+namespace System
+{
+	namespace Classes
+	{
+		class TMemoryStream;
+	}
+}
 
 using System::Classes::TMemoryStream;
 
@@ -36,16 +40,20 @@ class RenderService
                                                               	const string& imageType,
                                                               	int z,
                                                               	RenderBox& box,
-                                                                double mScale);
+                                                                double mScale,
+                                                                const string& cacheFolder);
 							            ~RenderService();
 
 		void				            clearImageMemory();
 		string				            getURL();
 		const char* 		            getURLC(){return getURL().c_str();}
         TMemoryStream*		            getImage(int z = 0);
+        string							getURLForZ(int z);
         bool				            checkCacheForCurrentURL();
         string				            getImageLocalPathAndFileName();
         string							getProjectName();
+        string							setLocalCacheFolder(const string& f);
+        string							getLocalCacheFolder(){return mLocalCacheFolder;}
 
     private:
 		Idhttp::TIdHTTP* 	            mC;

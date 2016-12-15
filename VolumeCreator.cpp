@@ -1,20 +1,20 @@
-//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 #include <tchar.h>
 #include <string>
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
+//---------------------------------------------------------------------------
 
 using namespace mtk;
 using std::string;
-//---------------------------------------------------------------------------
 USEFORM("TMainForm.cpp", MainForm);
-//---------------------------------------------------------------------------
+
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileLocation            = "";
 extern string       gLogFileName                = "volume_creator.log";
 void setupLogging();
+
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
 	try
@@ -64,3 +64,6 @@ void setupLogging()
 //---------------------------------------------------------------------------
 #pragma comment(lib, "mtkCommon")
 #pragma comment(lib, "poco_foundation-static.lib")
+#pragma comment(lib, "libcurl.lib")
+#pragma comment(lib, "Ws2_32.lib")
+

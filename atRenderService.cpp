@@ -14,7 +14,7 @@ using namespace mtk;
 
 RenderService::RenderService(Idhttp::TIdHTTP* c,  const string& baseURL, const string& owner,
                             const string& project, const string& stack,
-                            const string& imageType, int z, RenderBox& box, double scale)
+                            const string& imageType, int z, RenderBox& box, double scale, const string& cacheFolder)
 :
 mC(c),
 mBaseURL(baseURL),
@@ -25,13 +25,12 @@ mImageType(imageType),
 mZ(z),
 mRenderBox(box),
 mScale(scale),
-mLocalCacheFolder("p:\\cache")
+mLocalCacheFolder(cacheFolder)
 {
 	mImageMemory = new TMemoryStream();
 }
 
 RenderService::~RenderService()
-
 {
 	delete mImageMemory;
 }
@@ -41,9 +40,15 @@ string RenderService::getProjectName()
 	return mProject;
 }
 
+string RenderService::setLocalCacheFolder(const string& f)
+{
+	mLocalCacheFolder = f;
+}
+
 TMemoryStream* RenderService::getImage(int z)
 {
 	mZ = z;
+
 	if(!mImageMemory)
     {
 		mImageMemory = new TMemoryStream();
@@ -93,9 +98,22 @@ void RenderService::clearImageMemory()
     mImageMemory = NULL;
 }
 
+string RenderService::getURLForZ(int z)
+{
+	stringstream sUrl;
+    sUrl << mBaseURL;
+    sUrl << "/" << mOwner;
+	sUrl << "/project/" << mProject;
+    sUrl << "/stack/"<<mStackName;
+    sUrl << "/z/"<<z;
+    sUrl << "/box/"<<mRenderBox.X<<","<<mRenderBox.Y << "," << mRenderBox.Width << ","<<mRenderBox.Height << ","<<mScale;
+    sUrl << "/tiff-image";
+	return sUrl.str();
+}
+
 string RenderService::getURL()
 {
-//("http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner/Sharmishtaas/project/M259292_Scnn1aTg2_1/stack/{0}/
+	//("http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner/Sharmishtaas/project/M259292_Scnn1aTg2_1/stack/{0}/
     //z/{1}/box/5000,9000,1300,1300,{2}/tiff-image");
 	stringstream sUrl;
     sUrl << mBaseURL;

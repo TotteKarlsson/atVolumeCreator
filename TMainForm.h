@@ -24,45 +24,47 @@
 #include "atRenderService.h"
 #include "atROIHistory.h"
 #include "mtkProcess.h"
+#include "mtkIniFileProperties.h"
+#include "TRegistryProperties.h"
+#include "mtkIniFileC.h"
+#include "TApplicationProperties.h"
+#include "atFetchImagesThread.h"
 
 using mtk::Process;
 //---------------------------------------------------------------------------
+using mtk::IniFileProperties;
+using mtk::TRegistryProperties;
+
+extern string gApplicationRegistryRoot;
 class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
-	TGroupBox *GroupBox1;
+	TGroupBox *StackGenGB;
 	TSTDStringLabeledEdit *mVolumesFolder;
 	TSTDStringLabeledEdit *mStackNameE;
 	TButton *Button2;
 	TMemo *infoMemo;
 	TIdHTTP *IdHTTP1;
-	TIntegerLabeledEdit *mZMin;
-	TIntegerLabeledEdit *mZMax;
+	TIntegerLabeledEdit *mZMinE;
+	TIntegerLabeledEdit *mZMaxE;
 	TTimer *mShutDownTimer;
 	TPageControl *PageControl1;
 	TTabSheet *TabSheet1;
 	TTabSheet *TabSheet2;
-	TGroupBox *GroupBox2;
+	TGroupBox *ZsBG;
 	TFloatLabeledEdit *mScaleE;
-	TButton *mSelectZBtn;
 	TSTDStringLabeledEdit *mBaseUrlE;
 	TSTDStringLabeledEdit *mOwnerE;
 	TSTDStringLabeledEdit *mProjectE;
 	TRadioGroup *mImageFormat;
 	TSplitter *Splitter1;
-	TIntegerLabeledEdit *mHeight;
-	TIntegerLabeledEdit *mWidth;
-	TIntegerLabeledEdit *mYCoord;
-	TIntegerLabeledEdit *mXCoord;
+	TIntegerLabeledEdit *mHeightE;
+	TIntegerLabeledEdit *mWidthE;
+	TIntegerLabeledEdit *mYCoordE;
+	TIntegerLabeledEdit *mXCoordE;
 	TProgressBar *ProgressBar1;
-	TPanel *Panel1;
-	TPanel *Panel2;
-	TIntLabel *mXC;
-	TIntLabel *mYC;
-	TIntLabel *mX;
-	TIntLabel *mY;
-	TPropertyCheckBox *mStretchCB;
+	TPanel *mBottomPanel;
 	TGroupBox *GroupBox3;
 	TButton *mResetButton;
 	TButton *mHistoryBackBtn;
@@ -71,10 +73,8 @@ __published:	// IDE-managed Components
 	TPanel *Panel4;
 	TButton *mNextZ;
 	TButton *mPrevZ;
-	TButton *Button3;
 	TPanel *Panel5;
 	TPaintBox *PaintBox1;
-	TButton *mFetchSelectedZsBtn;
 	TListBox *mDeSelectedZs;
 	TPanel *Panel6;
 	TButton *mMoveOutSelectedBtn;
@@ -83,8 +83,22 @@ __published:	// IDE-managed Components
 	TPanel *Panel7;
 	TPanel *Panel8;
 	TPanel *Panel9;
+	mtkIniFileC *mIniFileC;
+	TButton *mGenerateZSerieBtn;
+	TSTDStringLabeledEdit *mCustomZsE;
+	TButton *mAddCustomZs;
+	TGroupBox *CacheGB;
+	TButton *mFetchSelectedZsBtn;
+	TPanel *Panel1;
+	TIntLabel *mXC;
+	TIntLabel *mYC;
+	TIntLabel *mX;
+	TIntLabel *mY;
+	TPropertyCheckBox *mStretchCB;
+	TSTDStringLabeledEdit *mImageCacheFolderE;
+	TButton *mBrowseForCacheFolder;
 	void __fastcall ClickZ(TObject *Sender);
-	void __fastcall mZMaxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -110,8 +124,8 @@ __published:	// IDE-managed Components
 	void __fastcall mMoveOutSelectedBtnClick(TObject *Sender);
 	void __fastcall mRestoreUnselectedBtnClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
-
-
+	void __fastcall mGenerateZSerieBtnClick(TObject *Sender);
+	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();
@@ -120,8 +134,16 @@ __published:	// IDE-managed Components
         TThreadMethod                                   logMsgMethod;
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
+
+        TApplicationProperties                          mAppProperties;
+        IniFileProperties	      	                    mGeneralProperties;
+        mtk::Property<int>	                            mBottomPanelHeight;
+
 		mtk::Property<mtk::LogLevel>	                mLogLevel;
+
 		bool 		__fastcall							addTiffToStack(const string& stackFName, const string& fName);
+        bool                                            setupAndReadIniParameters();
+        void                                            setupIniFile();
 		void 		__fastcall 							processEvent(Process* proc);
 		double 											getImageStretchFactor();
 
@@ -143,6 +165,7 @@ __published:	// IDE-managed Components
 		RenderBox										mCurrentRB;
       	TCanvas*										getCanvas();
 
+		FetchImagesThread								mCreateCacheThread;
 
 public:		// User declarations
 	__fastcall TMainForm(TComponent* Owner);

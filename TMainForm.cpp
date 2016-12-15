@@ -13,6 +13,7 @@
 #pragma link "TSTDStringLabeledEdit"
 #pragma link "TIntLabel"
 #pragma link "TPropertyCheckBox"
+#pragma link "mtkIniFileC"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 using namespace mtk;
@@ -27,9 +28,15 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mLogLevel(lAny),
     logMsgMethod(&logMsg),
     mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsgMethod),
-    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe")
+    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
+    mBottomPanelHeight(205),
+	mCreateCacheThread()
 {
 	mTiffCP.FOnStateEvent = processEvent;
+    setupIniFile();
+    setupAndReadIniParameters();
+
+    mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
 }
 
 //---------------------------------------------------------------------------
@@ -45,7 +52,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 
     //Fetch data using URL
     RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-                        mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue());
+                        mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     //First check if we already is having this data
     try
@@ -68,7 +75,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     }
 }
 
-void __fastcall TMainForm::mZMaxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+void __fastcall TMainForm::mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Key == VK_RETURN)
     {
@@ -79,34 +86,26 @@ void __fastcall TMainForm::mZMaxKeyDown(TObject *Sender, WORD &Key, TShiftState 
 //---------------------------------------------------------------------------
 void  TMainForm::UpdateZList()
 {
-	mZs->Clear();
-	for(int i = mZMin->getValue(); i <= mZMax->getValue(); i++)
-    {
-		mZs->AddItem(IntToStr(i), NULL);
-//        mZs->Selected[i] = true;
-    }
-
-    mZs->ItemIndex = 0;
 }
 
 void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Key == VK_RETURN)
     {
-        mCurrentRB = RenderBox(mXCoord->getValue(), mYCoord->getValue(), mWidth->getValue(), mHeight->getValue());
+        mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
 		ClickZ(Sender);
     }
 }
 
 void __fastcall TMainForm::mSelectZBtnClick(TObject *Sender)
 {
-	TButton* b= dynamic_cast<TButton*>(Sender);
-    bool select = (b == mSelectZBtn) ? true : false;
-
-    for(int i = 0; i< mZs->Count; i++)
-    {
-        mZs->Selected[i] = select;
-    }
+//	TButton* b= dynamic_cast<TButton*>(Sender);
+//    bool select = (b == mSelectZBtn) ? true : false;
+//
+//    for(int i = 0; i< mZs->Count; i++)
+//    {
+//        mZs->Selected[i] = select;
+//    }
 }
 
 //---------------------------------------------------------------------------
@@ -141,7 +140,7 @@ TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
 
 double TMainForm::getImageStretchFactor()
 {
-	if((mScaleE->getValue() * mHeight->getValue() * mWidth->getValue()) == 0)
+	if((mScaleE->getValue() * mHeightE->getValue() * mWidthE->getValue()) == 0)
     {
     	Log(lError) << "Tried to divide by zero!";
     	return 1;
@@ -149,11 +148,11 @@ double TMainForm::getImageStretchFactor()
 
     if(Image1->Height < Image1->Width)
     {
-    	return Image1->Height / (mScaleE->getValue() * mHeight->getValue());
+    	return Image1->Height / (mScaleE->getValue() * mHeightE->getValue());
     }
     else
     {
-		return Image1->Width / (mScaleE->getValue() * mWidth->getValue());
+		return Image1->Width / (mScaleE->getValue() * mWidthE->getValue());
     }
 }
 
@@ -235,14 +234,14 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 		return;
     }
 
-	mXCoord->setValue(mXCoord->getValue() + mTopLeftSelCorner.X);
-	mYCoord->setValue(mYCoord->getValue() + mTopLeftSelCorner.Y);
+	mXCoordE->setValue(mXCoordE->getValue() + mTopLeftSelCorner.X);
+	mYCoordE->setValue(mYCoordE->getValue() + mTopLeftSelCorner.Y);
 
-    mWidth->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
-    mHeight->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
+    mWidthE->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
+    mHeightE->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
 
     //Add to render history
-    mCurrentRB = RenderBox(mXCoord->getValue(), mYCoord->getValue(), mWidth->getValue(), mHeight->getValue());
+    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
     mROIHistory.add(mCurrentRB);
 	ClickZ(Sender);
 }
@@ -280,10 +279,10 @@ void TMainForm::render(RenderBox* box)
 	if(box)
     {
         mCurrentRB = *(box);
-        mXCoord->setValue(mCurrentRB.X);
-        mYCoord->setValue(mCurrentRB.Y);
-        mWidth->setValue(mCurrentRB.Width);
-        mHeight->setValue(mCurrentRB.Height);
+        mXCoordE->setValue(mCurrentRB.X);
+        mYCoordE->setValue(mCurrentRB.Y);
+        mWidthE->setValue(mCurrentRB.Width);
+        mHeightE->setValue(mCurrentRB.Height);
     }
 
 	ClickZ(NULL);
@@ -336,64 +335,68 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
     render();
 }
 
-string padZeroes(int z, int digits)
-{
-	string val(mtk::toString(z));
-    if(val.size() >= digits)
-    {
-    	return val;
-    }
-    else
-    {
-		string prefix(digits - val.size(), '0');
-        return prefix + val;
-    }
-}
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
     int z = toInt(stdstr(mZs->Items->Strings[0]));
 	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue());
+	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
-    //Creaet stackFName with path
-    stringstream outName;
-    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
-	string stackFName(outName.str());
-    outName.str("");
-	//Start a few threads
+//    //Creaet stackFName with path
+//    stringstream outName;
+//    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
+//	string stackFName(outName.str());
+//    outName.str("");
+
+    //Create image URLs
+    StringList urls;
     for(int i = 0; i < mZs->Count; i++)
     {
-    	if(!mZs->Selected[i])
-        {
-        	continue;
-        }
-    	z = toInt(stdstr(mZs->Items->Strings[i]));
-        //First check if we already is having this data
-        //This will fetch from DB, or, if present, from the cache
-        TMemoryStream* imageMem = rs.getImage(z);
-        if(imageMem)
-        {
-            Image1->Picture->Graphic->LoadFromStream(imageMem);
-
-            //Save to local box folder
-            Image1->Invalidate();
-			outName.str("");
-            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<padZeroes(z, 4)<<".tif";
-            string in = rs.getImageLocalPathAndFileName();
-            //Make sure path exists, if not create it
-            if(createFolder(getFilePath(outName.str())))
-            {
-                if(convertTiff(in, outName.str()))
-                {
-                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
-                    addTiffToStack(stackFName, outName.str());
-                }
-            }
-        }
-	    rs.clearImageMemory();
-        Application->ProcessMessages();
+        int	z = toInt(stdstr(mZs->Items->Strings[i]));
+    	urls.append(rs.getURLForZ(z));
     }
+
+	mCreateCacheThread.setup(urls, mImageCacheFolderE->getValue());
+    if(!mCreateCacheThread.isRunning())
+    {
+		mCreateCacheThread.start();
+    }
+    else
+    {
+    	Log(lInfo) << "Creating cache thread is already running..";
+    }
+
+
+//	//Start a few threads
+//    for(int i = 0; i < mZs->Count; i++)
+//    {
+//    	z = toInt(stdstr(mZs->Items->Strings[i]));
+//        //First check if we already is having this data
+//        //This will fetch from DB, or, if present, from the cache
+//        TMemoryStream* imageMem = rs.getImage(z);
+//
+//        if(imageMem)
+//        {
+//            Image1->Picture->Graphic->LoadFromStream(imageMem);
+//
+//            //Save to local box folder
+//            Image1->Invalidate();
+//			outName.str("");
+//            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(z, 4)<<".tif";
+//            string in = rs.getImageLocalPathAndFileName();
+//            //Make sure path exists, if not create it
+//            if(createFolder(getFilePath(outName.str())))
+//            {
+//                if(convertTiff(in, outName.str()))
+//                {
+//                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
+//                    addTiffToStack(stackFName, outName.str());
+//                }
+//            }
+//        }
+//	    rs.clearImageMemory();
+//        Application->ProcessMessages();
+//    }
 }
 
 bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string& fName)
@@ -478,7 +481,7 @@ bool sortTListBoxNumerically(TListBox* lb)
     tempList->CustomSort(compareStringListItems);
     lb->Items->Assign(tempList);
     delete tempList;
-
+	return true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
@@ -535,5 +538,50 @@ void __fastcall TMainForm::Button1Click(TObject *Sender)
     sortTListBoxNumerically(mZs);
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
+{
+	TButton* b = dynamic_cast<TButton*>(Sender);
+    if(b == mGenerateZSerieBtn)
+    {
+        mZs->Clear();
+        for(int i = mZMinE->getValue(); i <= mZMaxE->getValue(); i++)
+        {
+            mZs->AddItem(IntToStr(i), NULL);
+        }
+
+        mZs->ItemIndex = 0;
+    }
+    else if(b == mAddCustomZs)
+    {
+        mZs->Clear();
+		//Parse edit box
+        StringList l(mCustomZsE->getValue(), ',');
+        for(int i = 0; i < l.size(); i++)
+        {
+        	//Make sure we are adding an integer
+        	int v = mtk::toInt(l[i]);
+            mZs->AddItem(IntToStr(v), NULL);
+        }
+        mZs->ItemIndex = 0;
+    }
+}
+
+
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
+{
+	//Browse for folder
+	string res = browseForFolder(mImageCacheFolderE->getValue());
+    if(folderExists(res))
+    {
+		mImageCacheFolderE->setValue(res);
+    }
+    else
+    {
+    	Log(lWarning) << "Cache folder was not set..";
+    }
+}
 
 
