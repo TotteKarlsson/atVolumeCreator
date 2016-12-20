@@ -43,7 +43,7 @@ __published:	// IDE-managed Components
 	TGroupBox *StackGenGB;
 	TSTDStringLabeledEdit *mVolumesFolder;
 	TSTDStringLabeledEdit *mStackNameE;
-	TButton *Button2;
+	TButton *mGenerateTiffStackBtn;
 	TMemo *infoMemo;
 	TIdHTTP *IdHTTP1;
 	TIntegerLabeledEdit *mZMinE;
@@ -97,6 +97,7 @@ __published:	// IDE-managed Components
 	TPropertyCheckBox *mStretchCB;
 	TSTDStringLabeledEdit *mImageCacheFolderE;
 	TButton *mBrowseForCacheFolder;
+	TIntegerLabeledEdit *mZStep;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -126,6 +127,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall mGenerateZSerieBtnClick(TObject *Sender);
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
+	void __fastcall mGenerateTiffStackBtnClick(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();

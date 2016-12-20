@@ -342,11 +342,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
 	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
-//    //Creaet stackFName with path
-//    stringstream outName;
-//    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
-//	string stackFName(outName.str());
-//    outName.str("");
 
     //Create image URLs
     StringList urls;
@@ -365,38 +360,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
     {
     	Log(lInfo) << "Creating cache thread is already running..";
     }
-
-
-//	//Start a few threads
-//    for(int i = 0; i < mZs->Count; i++)
-//    {
-//    	z = toInt(stdstr(mZs->Items->Strings[i]));
-//        //First check if we already is having this data
-//        //This will fetch from DB, or, if present, from the cache
-//        TMemoryStream* imageMem = rs.getImage(z);
-//
-//        if(imageMem)
-//        {
-//            Image1->Picture->Graphic->LoadFromStream(imageMem);
-//
-//            //Save to local box folder
-//            Image1->Invalidate();
-//			outName.str("");
-//            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(z, 4)<<".tif";
-//            string in = rs.getImageLocalPathAndFileName();
-//            //Make sure path exists, if not create it
-//            if(createFolder(getFilePath(outName.str())))
-//            {
-//                if(convertTiff(in, outName.str()))
-//                {
-//                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
-//                    addTiffToStack(stackFName, outName.str());
-//                }
-//            }
-//        }
-//	    rs.clearImageMemory();
-//        Application->ProcessMessages();
-//    }
 }
 
 bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string& fName)
@@ -414,7 +377,7 @@ bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string
     	Log(lError) << "File does not exist...";
         return false;
     }
-
+	sleep(100);
 	return true;
 }
 
@@ -545,7 +508,7 @@ void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
     if(b == mGenerateZSerieBtn)
     {
         mZs->Clear();
-        for(int i = mZMinE->getValue(); i <= mZMaxE->getValue(); i++)
+        for(int i = mZMinE->getValue(); i <= mZMaxE->getValue(); i+=mZStep->getValue())
         {
             mZs->AddItem(IntToStr(i), NULL);
         }
@@ -584,4 +547,48 @@ void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
     }
 }
 
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
+{
+    int z = toInt(stdstr(mZs->Items->Strings[0]));
+	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+
+    for(int i = 0; i < mZs->Count; i++)
+    {
+    	int z = toInt(stdstr(mZs->Items->Strings[i]));
+
+        //First check if we already is having this data
+        //This will fetch from DB, or, if present, from the cache
+        TMemoryStream* imageMem = rs.getImage(z);
+
+        if(imageMem)
+        {
+            //Image1->Picture->Graphic->LoadFromStream(imageMem);
+
+            //Save to local box folder
+            //Image1->Invalidate();
+			stringstream outName;
+
+		    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
+			string stackFName(outName.str());
+		    outName.str("");
+
+            string in = rs.getImageLocalPathAndFileName();
+            //Make sure path exists, if not create it
+            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(z, 4)<<".tif";
+            if(createFolder(getFilePath(outName.str())))
+            {
+                if(convertTiff(in, outName.str()))
+                {
+                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
+                    addTiffToStack(stackFName, outName.str());
+                }
+            }
+        }
+	    rs.clearImageMemory();
+        Application->ProcessMessages();
+    }
+}
 

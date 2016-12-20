@@ -16167,7 +16167,7 @@ object MainForm: TMainForm
               Text = '0'
             end
             object mGenerateZSerieBtn: TButton
-              Left = 110
+              Left = 188
               Top = 12
               Width = 66
               Height = 25
@@ -16193,6 +16193,19 @@ object MainForm: TMainForm
               Caption = 'Add'
               TabOrder = 4
               OnClick = mGenerateZSerieBtnClick
+            end
+            object mZStep: TIntegerLabeledEdit
+              Left = 110
+              Top = 16
+              Width = 42
+              Height = 21
+              EditLabel.Width = 22
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Step'
+              TabOrder = 5
+              Text = '1'
+              OnKeyDown = mZMaxEKeyDown
+              Value = 1
             end
           end
           object mMoveOutSelectedBtn: TButton
@@ -16280,13 +16293,14 @@ object MainForm: TMainForm
             Text = 'p:\\volumes'
             Value = 'p:\\volumes'
           end
-          object Button2: TButton
+          object mGenerateTiffStackBtn: TButton
             Left = 145
             Top = 24
             Width = 128
             Height = 41
-            Caption = 'Generate Volume Stack'
+            Caption = 'Generate TIFF Stack'
             TabOrder = 1
+            OnClick = mGenerateTiffStackBtnClick
           end
         end
         object GroupBox3: TGroupBox
