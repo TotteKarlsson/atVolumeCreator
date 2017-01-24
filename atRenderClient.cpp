@@ -1,5 +1,5 @@
 #pragma hdrstop
-#include "atRenderService.h"
+#include "atRenderClient.h"
 #include <System.Classes.hpp>
 #include <IdHTTP.hpp>
 #include <sstream>
@@ -12,7 +12,7 @@
 using namespace std;
 using namespace mtk;
 
-RenderService::RenderService(Idhttp::TIdHTTP* c,  const string& baseURL, const string& owner,
+RenderClient::RenderClient(Idhttp::TIdHTTP* c,  const string& baseURL, const string& owner,
                             const string& project, const string& stack,
                             const string& imageType, int z, RenderBox& box, double scale, const string& cacheFolder)
 :
@@ -30,22 +30,22 @@ mLocalCacheFolder(cacheFolder)
 	mImageMemory = new TMemoryStream();
 }
 
-RenderService::~RenderService()
+RenderClient::~RenderClient()
 {
 	delete mImageMemory;
 }
 
-string RenderService::getProjectName()
+string RenderClient::getProjectName()
 {
 	return mProject;
 }
 
-string RenderService::setLocalCacheFolder(const string& f)
+string RenderClient::setLocalCacheFolder(const string& f)
 {
 	mLocalCacheFolder = f;
 }
 
-TMemoryStream* RenderService::getImage(int z)
+TMemoryStream* RenderClient::getImage(int z)
 {
 	mZ = z;
 
@@ -74,7 +74,7 @@ TMemoryStream* RenderService::getImage(int z)
     return mImageMemory;
 }
 
-string RenderService::getImageLocalPathAndFileName()
+string RenderClient::getImageLocalPathAndFileName()
 {
     vector<string> cachePaths = splitStringAtWord(getURL(), "/owner/");
     string currentPath;
@@ -87,18 +87,18 @@ string RenderService::getImageLocalPathAndFileName()
    	return currentPath;
 }
 
-bool RenderService::checkCacheForCurrentURL()
+bool RenderClient::checkCacheForCurrentURL()
 {
 	return fileExists(getImageLocalPathAndFileName());
 }
 
-void RenderService::clearImageMemory()
+void RenderClient::clearImageMemory()
 {
 	delete mImageMemory;
     mImageMemory = NULL;
 }
 
-string RenderService::getURLForZ(int z)
+string RenderClient::getURLForZ(int z)
 {
 	stringstream sUrl;
     sUrl << mBaseURL;
@@ -111,7 +111,7 @@ string RenderService::getURLForZ(int z)
 	return sUrl.str();
 }
 
-string RenderService::getURL()
+string RenderClient::getURL()
 {
 	//("http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner/Sharmishtaas/project/M259292_Scnn1aTg2_1/stack/{0}/
     //z/{1}/box/5000,9000,1300,1300,{2}/tiff-image");
@@ -125,3 +125,6 @@ string RenderService::getURL()
     sUrl << "/tiff-image";
 	return sUrl.str();
 }
+
+StringList RenderClient::getMissingZs();
+

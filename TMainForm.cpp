@@ -6,6 +6,9 @@
 #include <vector>
 #include "atRenderService.h"
 #include "MagickWand/MagickWand.h"
+#include "mtkExeFile.h"
+
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -369,7 +372,7 @@ bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string
     stringstream s;
     s<<"-a "<<fName<<" "<<stackFName;
 
-   	mTiffCP.setMessageHandling(CATCH_MESSAGE);
+   	mTiffCP.setMessageHandling(CATCHMESSAGE);
 	mTiffCP.run(s.str());
 	//check that files exists
 	if(!fileExists(stackFName) || !fileExists(fName))

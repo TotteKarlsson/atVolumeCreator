@@ -1,5 +1,5 @@
-#ifndef atRenderServiceH
-#define atRenderServiceH
+#ifndef atRenderClientH
+#define atRenderClientH
 #include <string>
 //---------------------------------------------------------------------------
 
@@ -29,10 +29,10 @@ class  RenderBox
     	int Height;
 };
 
-class RenderService
+class RenderClient
 {
 	public:
-							            RenderService(Idhttp::TIdHTTP* c,
+							            RenderClient(Idhttp::TIdHTTP* c,
                         	            						const string& baseURL,
                         	            					  	const string& owner,
                         	            					  	const string& project,
@@ -42,7 +42,7 @@ class RenderService
                                                               	RenderBox& box,
                                                                 double mScale,
                                                                 const string& cacheFolder);
-							            ~RenderService();
+							            ~RenderClient();
 
 		void				            clearImageMemory();
 		string				            getURL();
@@ -54,6 +54,7 @@ class RenderService
         string							getProjectName();
         string							setLocalCacheFolder(const string& f);
         string							getLocalCacheFolder(){return mLocalCacheFolder;}
+        StringList						getMissingZs();
 
     private:
 		Idhttp::TIdHTTP* 	            mC;

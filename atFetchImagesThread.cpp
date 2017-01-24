@@ -80,7 +80,6 @@ bool FetchImagesThread::setCacheRoot(const string& cr)
     {
     	return createFolder(mCacheRootFolder);
     }
-
 }
 
 void FetchImagesThread::assignUrls(const StringList& urls)
