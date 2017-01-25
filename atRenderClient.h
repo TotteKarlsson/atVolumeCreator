@@ -1,6 +1,12 @@
 #ifndef atRenderClientH
 #define atRenderClientH
 #include <string>
+#include "mtkStringList.h"
+#include "mtkConstants.h"
+#include <vector>
+
+using std::vector;
+
 //---------------------------------------------------------------------------
 
 namespace Idhttp
@@ -17,12 +23,16 @@ namespace System
 }
 
 using System::Classes::TMemoryStream;
-
+using mtk::StringList;
+using mtk::gEmptyString;
 using std::string;
+
+
 class  RenderBox
 {
 	public:
-	    RenderBox(int x = 0, int y = 0, int width = 0, int height = 0) : X(x), Y(y), Width(width), Height(height){}
+	    RenderBox(int x = 0, int y = 0, int width = 0, int height = 0)
+        : X(x), Y(y), Width(width), Height(height){}
 	    int X;
     	int Y;
 	    int Width;
@@ -37,11 +47,11 @@ class RenderClient
                         	            					  	const string& owner,
                         	            					  	const string& project,
                                                               	const string& stack,
-                                                              	const string& imageType,
-                                                              	int z,
-                                                              	RenderBox& box,
-                                                                double mScale,
-                                                                const string& cacheFolder);
+                                                              	const string& imageType = "tiff-image",
+                                                              	int z = 0,
+                                                              	const RenderBox& box = RenderBox(),
+                                                                double mScale = 0.01,
+                                                                const string& cacheFolder = gEmptyString);
 							            ~RenderClient();
 
 		void				            clearImageMemory();
@@ -54,7 +64,9 @@ class RenderClient
         string							getProjectName();
         string							setLocalCacheFolder(const string& f);
         string							getLocalCacheFolder(){return mLocalCacheFolder;}
-        StringList						getMissingZs();
+        StringList						getZs();
+        vector<int>						getValidZs();
+        vector<double>					getOptimalXYBoxForZs(const vector<int>& zs = vector<int>(0));
 
     private:
 		Idhttp::TIdHTTP* 	            mC;
@@ -68,6 +80,7 @@ class RenderClient
         string 			                mImageType;
         RenderBox			            mRenderBox;
         string							mLocalCacheFolder;
+        vector<double>					parseBoundsResponse(const string& s);
 };
 
 #endif

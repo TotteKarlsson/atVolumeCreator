@@ -21,7 +21,7 @@
 #include <Vcl.ComCtrls.hpp>
 #include "TIntLabel.h"
 #include "TPropertyCheckBox.h"
-#include "atRenderService.h"
+#include "atRenderClient.h"
 #include "atROIHistory.h"
 #include "mtkProcess.h"
 #include "mtkIniFileProperties.h"
@@ -29,6 +29,7 @@
 #include "mtkIniFileC.h"
 #include "TApplicationProperties.h"
 #include "atFetchImagesThread.h"
+#include <Vcl.Menus.hpp>
 
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -98,6 +99,18 @@ __published:	// IDE-managed Components
 	TSTDStringLabeledEdit *mImageCacheFolderE;
 	TButton *mBrowseForCacheFolder;
 	TIntegerLabeledEdit *mZStep;
+	TButton *mGetValidZsBtn;
+	TPanel *Panel2;
+	TButton *mCLearMemo;
+	TSplitter *Splitter2;
+	TListBox *mMissingZsLB;
+	TGroupBox *GroupBox1;
+	TListBox *mValidZsLB;
+	TButton *mUpdateZsBtn;
+	TPopupMenu *PopupMenu1;
+	TMenuItem *CopyValidZs1;
+	TGroupBox *GroupBox2;
+	TButton *GetOptimalBoundsBtn;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -124,23 +137,26 @@ __published:	// IDE-managed Components
 	void __fastcall mFetchSelectedZsBtnClick(TObject *Sender);
 	void __fastcall mMoveOutSelectedBtnClick(TObject *Sender);
 	void __fastcall mRestoreUnselectedBtnClick(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall mGetValidZsBtnClick(TObject *Sender);
 	void __fastcall mGenerateZSerieBtnClick(TObject *Sender);
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
 	void __fastcall mGenerateTiffStackBtnClick(TObject *Sender);
+	void __fastcall mCLearMemoClick(TObject *Sender);
+	void __fastcall mUpdateZsBtnClick(TObject *Sender);
+	void __fastcall CopyValidZs1Click(TObject *Sender);
+	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
        	mtk::Process									mTiffCP;
-        TThreadMethod                                   logMsgMethod;
+
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
 
         TApplicationProperties                          mAppProperties;
         IniFileProperties	      	                    mGeneralProperties;
         mtk::Property<int>	                            mBottomPanelHeight;
-
 		mtk::Property<mtk::LogLevel>	                mLogLevel;
 
 		bool 		__fastcall							addTiffToStack(const string& stackFName, const string& fName);

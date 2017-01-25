@@ -3,7 +3,7 @@
 #include "TMainForm.h"
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
-#include "atRenderService.h"
+#include "atRenderClient.h"
 #include "atROIHistory.h"
 
 using namespace mtk;

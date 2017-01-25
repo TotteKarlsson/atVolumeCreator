@@ -1,6 +1,6 @@
 #ifndef atROIHistoryH
 #define atROIHistoryH
-#include "atRenderService.h"
+#include "atRenderClient.h"
 #include <deque>
 //---------------------------------------------------------------------------
 

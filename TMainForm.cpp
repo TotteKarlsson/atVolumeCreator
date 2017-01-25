@@ -4,10 +4,9 @@
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
 #include <vector>
-#include "atRenderService.h"
+#include "atRenderClient.h"
 #include "MagickWand/MagickWand.h"
 #include "mtkExeFile.h"
-
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -25,12 +24,12 @@ extern string gLogFileName;
 
 bool convertTiff(const string& in, const string& out);
 bool addTiffToStack(const string& stackFName, const string& fName);
+void sendToClipBoard(const string& str);
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
     mLogLevel(lAny),
-    logMsgMethod(&logMsg),
-    mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsgMethod),
+    mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsg),
     mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
     mBottomPanelHeight(205),
 	mCreateCacheThread()
@@ -54,7 +53,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     int z = toInt(stdstr(mZs->Items->Strings[ii]));
 
     //Fetch data using URL
-    RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+    RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
                         mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     //First check if we already is having this data
@@ -342,7 +341,7 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
     int z = toInt(stdstr(mZs->Items->Strings[0]));
-	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
 	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
 
@@ -418,37 +417,6 @@ void __fastcall	TMainForm::processEvent(Process* proc)
     }
 }
 
-
-int __fastcall compareStringListItems(TStringList* l, int index1, int index2)
-{
-	int l1 = (l->Strings[index1]).ToInt();
-	int l2 = (l->Strings[index2]).ToInt();
-    if(l1 < l2)
-    {
-    	return -1;
-    }
-    else
-    {
-	 	if(l1 > l2)
-        {
-        	return 1;
-        }
-        else
-        {
-        	return 0;
-        }
-    }
-}
-
-bool sortTListBoxNumerically(TListBox* lb)
-{
-	TStringList* tempList = new TStringList;
-    tempList->Assign(lb->Items);
-    tempList->CustomSort(compareStringListItems);
-    lb->Items->Assign(tempList);
-    delete tempList;
-	return true;
-}
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
 {
@@ -498,11 +466,6 @@ void __fastcall TMainForm::mRestoreUnselectedBtnClick(TObject *Sender)
     sortTListBoxNumerically(mZs);
 }
 
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::Button1Click(TObject *Sender)
-{
-    sortTListBoxNumerically(mZs);
-}
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
@@ -534,7 +497,6 @@ void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
 }
 
 
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 {
@@ -550,12 +512,22 @@ void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
+{
+	//Fetch valid zs for current project
+   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+    StringList zs = rs.getValidZs();
+
+    //Populate list box
+	populateListBox(zs, mZs);
+}
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
 {
     int z = toInt(stdstr(mZs->Items->Strings[0]));
-	RenderService rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
 	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     for(int i = 0; i < mZs->Count; i++)
@@ -594,4 +566,102 @@ void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
         Application->ProcessMessages();
     }
 }
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mCLearMemoClick(TObject *Sender)
+{
+	infoMemo->Clear();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mUpdateZsBtnClick(TObject *Sender)
+{
+	//Fetch valid zs for current project
+   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+    StringList zs = rs.getZs();
+
+    if(zs.size() > 1)
+    {
+    	//Populate list boxes
+	    Log(lInfo) << "Valid Z's: "<<zs[0];
+    	Log(lInfo) << "Missing Z's: "<<zs[1];
+    }
+
+    //Populate list boxes
+    mValidZsLB->Clear();
+    if(zs.size())
+    {
+        StringList validZ(zs[0], ',');
+        for(int i = 0; i < validZ.size(); i++)
+        {
+	        mValidZsLB->Items->Add(vclstr(validZ[i]));
+        }
+    }
+
+    mMissingZsLB->Clear();
+    if(zs.size() > 1)
+    {
+        StringList missingZ(zs[1], ',');
+        for(int i = 0; i < missingZ.size(); i++)
+        {
+	        mMissingZsLB->Items->Add(vclstr(missingZ[i]));
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
+{
+	//Figure out wich listbox called
+
+	TListBox* lb = dynamic_cast<TListBox*>(PopupMenu1->PopupComponent);
+
+    if(!lb)
+    {
+    	return;
+    }
+    stringstream zs;
+    for(int i = 0; i < lb->Count; i++)
+    {
+    	zs << stdstr(lb->Items->Strings[i]);
+        if(i < (lb->Count -1))
+        {
+        	zs <<",";
+        }
+    }
+	sendToClipBoard(zs.str());
+}
+
+void sendToClipBoard(const string& str)
+{
+    const char* output = str.c_str();
+    const size_t len = strlen(output) + 1;
+    HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
+    memcpy(GlobalLock(hMem), output, len);
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::GetOptimalBoundsBtnClick(TObject *Sender)
+{
+	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+
+    vector<int> zs = rs.getValidZs();
+
+
+    vector<double> box = rs.getOptimalXYBoxForZs(zs);
+
+    if(box.size() == 4)
+    {
+    	Log(lInfo) << "X = " << box[0];
+    	Log(lInfo) << "Y = " << box[1];
+    	Log(lInfo) << "Width = " << box[2];
+    	Log(lInfo) << "Height = " << box[3];
+    }
+}
+
 

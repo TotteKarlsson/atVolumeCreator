@@ -9,7 +9,7 @@
 using namespace mtk;
 using std::string;
 USEFORM("TMainForm.cpp", MainForm);
-
+//---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileLocation            = "";
 extern string       gLogFileName                = "volume_creator.log";

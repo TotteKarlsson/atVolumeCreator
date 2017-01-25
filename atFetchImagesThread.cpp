@@ -3,6 +3,7 @@
 #include "mtkLogger.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
+#include "Poco/File.h"
 #include "mtkFileUtils.h"
 //---------------------------------------------------------------------------
 using namespace mtk;
@@ -51,7 +52,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
   if(mem->memory == NULL)
   {
     /* out of memory! */
-    Log(lError) << "Nnot enough memory (realloc returned NULL)\n";
+    Log(lError) << "Not enough memory (realloc returned NULL)\n";
     return 0;
   }
 
@@ -107,7 +108,8 @@ void FetchImagesThread::worker()
 
             //Check cache first. if already in cache, don't fetch
             string outFilePathANDFileName = getImageCacheFileNameAndPathFromURL(url, mCacheRootFolder);
-            if(fileExists(outFilePathANDFileName))
+           	Poco::File f(outFilePathANDFileName);
+            if(fileExists(outFilePathANDFileName) && f.getSize() > 200)
             {
             	Log(lInfo) << "File is in cache";
             }

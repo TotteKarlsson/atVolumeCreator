@@ -105,8 +105,8 @@
             <DependentOn>atFetchImagesThread.h</DependentOn>
             <BuildOrder>7</BuildOrder>
         </CppCompile>
-        <CppCompile Include="atRenderService.cpp">
-            <DependentOn>atRenderService.h</DependentOn>
+        <CppCompile Include="atRenderClient.cpp">
+            <DependentOn>atRenderClient.h</DependentOn>
             <BuildOrder>3</BuildOrder>
         </CppCompile>
         <CppCompile Include="atROIHistory.cpp">
