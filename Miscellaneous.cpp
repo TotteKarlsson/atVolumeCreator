@@ -19,10 +19,10 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
 	gLogger.setLogLevel(mLogLevel);
 	mLogFileReader.start(true);
-    mOriginalRB.X 		= mXCoordE->getValue();
-    mOriginalRB.Y 		= mYCoordE->getValue();
-    mOriginalRB.Width 	= mWidthE->getValue();
-    mOriginalRB.Height	= mHeightE->getValue();
+    mOriginalRB.setX1(mXCoordE->getValue());
+    mOriginalRB.setY1(mYCoordE->getValue());
+    mOriginalRB.setWidth(mWidthE->getValue());
+    mOriginalRB.setHeight(mHeightE->getValue());
     mCurrentRB = mOriginalRB;
     mROIHistory.add(mOriginalRB);
 	UpdateZList();

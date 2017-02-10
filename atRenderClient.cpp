@@ -1,5 +1,4 @@
 #pragma hdrstop
-
 #include <System.Classes.hpp>
 #include <IdHTTP.hpp>
 #include <sstream>
@@ -8,6 +7,8 @@
 #include "mtkStringUtils.h"
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
+#include "mtkPoint.h"
+#include "mtkMathUtils.h"
 //---------------------------------------------------------------------------
 
 using namespace std;
@@ -46,6 +47,7 @@ string RenderClient::getProjectName()
 string RenderClient::setLocalCacheFolder(const string& f)
 {
 	mLocalCacheFolder = f;
+    return mLocalCacheFolder;
 }
 
 TMemoryStream* RenderClient::getImage(int z)
@@ -65,7 +67,14 @@ TMemoryStream* RenderClient::getImage(int z)
     else
     {
         Log(lInfo) << "Fetching from server";
-    	mC->Get(getURLC(), mImageMemory);
+
+        try{
+	    	mC->Get(getURLC(), mImageMemory);
+        }
+        catch(...)
+        {
+        	Log(lError) << "There was an uncaught ERROR!";
+        }
 
         //Save to cache (in a thread)
         if(createFolder(getFilePath(getImageLocalPathAndFileName())))
@@ -77,59 +86,61 @@ TMemoryStream* RenderClient::getImage(int z)
     return mImageMemory;
 }
 
-vector<double> RenderClient::getOptimalXYBoxForZs(const vector<int>& zs)
+RenderBox RenderClient::getOptimalXYBoxForZs(const vector<int>& zs)
 {
-	stringstream sUrl;
-    sUrl << mBaseURL;
-    sUrl << "/" << mOwner;
-	sUrl << "/project/" << mProject;
-    sUrl << "/stack/"<<mStackName<<"/z/0/bounds";
-
-    Log(lInfo) << "Fetching from server using URL: "<<sUrl.str();
-
+	mLatestBounds.clear();
     double xMin(0), xMax(0), yMin(0), yMax(0);
-
     for(int z = 0; z < zs.size(); z++)
     {
+        stringstream sUrl;
+        sUrl << mBaseURL;
+        sUrl << "/" << mOwner;
+        sUrl << "/project/" << mProject;
+        sUrl << "/stack/"<<mStackName<<"/z/"<<zs[z]<<"/bounds";
+//	    Log(lDebug5) << "Fetching from server using URL: "<<sUrl.str();
         TStringStream* zstrings = new TStringStream;;
         mC->Get(sUrl.str().c_str(), zstrings);
 
         if( mC->ResponseCode == HTTP_RESPONSE_OK)
         {
             string s = stdstr(zstrings->DataString);
-            vector<double> sBounds = parseBoundsResponse(s);
+            RenderBox sec_bounds = parseBoundsResponse(s);
+            sec_bounds.setZ(zs[z]);
+			mLatestBounds.push_back(sec_bounds);
 
             if(z == 0)
             {
-                xMin = sBounds[0];
-                yMin = sBounds[1];
-                xMax = sBounds[2];
-                yMax = sBounds[3];
+                xMin = sec_bounds.getX1();
+                yMin = sec_bounds.getY1();
+                xMax = sec_bounds.getX2();
+                yMax = sec_bounds.getY2();
             }
             else
             {
-                if(sBounds[0] < xMin)
+                if(sec_bounds.getX1() < xMin)
                 {
-                    xMin = sBounds[0];
+                    xMin = sec_bounds.getX1();
+                    Log(lDebug) << "XMin ("<<xMin<<") from section: " <<zs[z];
                 }
 
-                if(sBounds[1] < yMin)
+                if(sec_bounds.getY1() < yMin)
                 {
-                    yMin = sBounds[1];
+                    yMin = sec_bounds.getY1();
+                    Log(lDebug) << "YMin ("<<yMin<<") from section: " <<zs[z];
                 }
 
-                if(sBounds[0] > xMax)
+                if(sec_bounds.getX2() > xMax)
                 {
-                    xMax = sBounds[2];
+                    xMax = sec_bounds.getX2();
+                    Log(lDebug) << "XMax ("<<xMax<<") from section: " <<zs[z];
                 }
 
-                if(sBounds[1] > yMax)
+                if(sec_bounds.getY2() > yMax)
                 {
-                    yMax = sBounds[3];
+                    yMax = sec_bounds.getY2();
+                    Log(lDebug) << "yMax ("<<yMax<<") from section: " <<zs[z];
                 }
             }
-
-            Log(lInfo) << "Response: "<<s;
         }
         else
         {
@@ -137,13 +148,12 @@ vector<double> RenderClient::getOptimalXYBoxForZs(const vector<int>& zs)
         }
     }
 
-    vector<double> bounds(4);
-    bounds[0] = xMin;
-    bounds[1] = yMin;
-    bounds[2] = xMax;
-    bounds[3] = yMax;
+    return RenderBox(xMin, yMin, xMax-xMin, yMax -yMin);
+}
 
-    return bounds;
+vector<RenderBox> RenderClient::getBounds()
+{
+	return mLatestBounds;
 }
 
 string RenderClient::getImageLocalPathAndFileName()
@@ -178,7 +188,7 @@ string RenderClient::getURLForZ(int z)
 	sUrl << "/project/" << mProject;
     sUrl << "/stack/"<<mStackName;
     sUrl << "/z/"<<z;
-    sUrl << "/box/"<<mRenderBox.X<<","<<mRenderBox.Y << "," << mRenderBox.Width << ","<<mRenderBox.Height << ","<<mScale;
+    sUrl << "/box/"<<mRenderBox.getX1()<<","<<mRenderBox.getY1() << "," << mRenderBox.getWidth() << ","<<mRenderBox.getHeight() << ","<<mScale;
     sUrl << "/tiff-image";
 	return sUrl.str();
 }
@@ -193,7 +203,7 @@ string RenderClient::getURL()
 	sUrl << "/project/" << mProject;
     sUrl << "/stack/"<<mStackName;
     sUrl << "/z/"<<mZ;
-    sUrl << "/box/"<<mRenderBox.X<<","<<mRenderBox.Y << "," << mRenderBox.Width << ","<<mRenderBox.Height << ","<<mScale;
+    sUrl << "/box/"<<round(mRenderBox.getX1())<<","<<round(mRenderBox.getY1()) << "," << round(mRenderBox.getWidth()) << ","<<round(mRenderBox.getHeight()) << ","<<mScale;
     sUrl << "/tiff-image";
 	return sUrl.str();
 }
@@ -238,7 +248,7 @@ vector<int> RenderClient::getValidZs()
     if( mC->ResponseCode == HTTP_RESPONSE_OK)
     {
         string s = stdstr(zstrings->DataString);
-        Log(lInfo) << "Response: "<<s;
+//        Log(lInfo) << "Response: "<<s;
 		s = stripCharacters("[]", s);
         zs.appendList(StringList(s,','));
     }
@@ -256,9 +266,9 @@ vector<int> RenderClient::getValidZs()
 	return zInts;
 }
 
-vector<double> RenderClient::parseBoundsResponse(const string& _s)
+RenderBox RenderClient::parseBoundsResponse(const string& _s)
 {
-	vector<double> bounds(4); //XminXMaxYMinYMax
+	RenderBox bounds; //XminXMaxYMinYMax
     string s = stripCharacters("{}", _s);
     StringList l(s, ',');
     if(l.size() == 6)
@@ -268,10 +278,10 @@ vector<double> RenderClient::parseBoundsResponse(const string& _s)
     	StringList xMax(l[3], ':');
     	StringList yMax(l[4], ':');
 
-        bounds[0] = toDouble(xMin[1]);
-        bounds[1] = toDouble(yMin[1]);
-        bounds[2] = toDouble(xMax[1]);
-        bounds[3] = toDouble(yMax[1]);
+        bounds.setX1(toDouble(xMin[1]));
+        bounds.setY1(toDouble(yMin[1]));
+        bounds.setX2(toDouble(xMax[1]));
+        bounds.setY2(toDouble(yMax[1]));
     }
     else
     {
@@ -279,3 +289,4 @@ vector<double> RenderClient::parseBoundsResponse(const string& _s)
     }
     return bounds;
 }
+

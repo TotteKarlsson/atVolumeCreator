@@ -105,6 +105,16 @@
             <DependentOn>atFetchImagesThread.h</DependentOn>
             <BuildOrder>7</BuildOrder>
         </CppCompile>
+        <CppCompile Include="atImageForm.cpp">
+            <Form>Form1</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>atImageForm.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="atRenderBox.cpp">
+            <DependentOn>atRenderBox.h</DependentOn>
+            <BuildOrder>9</BuildOrder>
+        </CppCompile>
         <CppCompile Include="atRenderClient.cpp">
             <DependentOn>atRenderClient.h</DependentOn>
             <BuildOrder>3</BuildOrder>
@@ -129,6 +139,7 @@
             <BuildOrder>1</BuildOrder>
         </PCHCompile>
         <FormResources Include="TMainForm.dfm"/>
+        <FormResources Include="atImageForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

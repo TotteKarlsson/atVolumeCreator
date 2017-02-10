@@ -4,6 +4,7 @@
 #include "mtkStringList.h"
 #include "mtkConstants.h"
 #include <vector>
+#include "atRenderBox.h"
 
 using std::vector;
 
@@ -27,17 +28,6 @@ using mtk::StringList;
 using mtk::gEmptyString;
 using std::string;
 
-
-class  RenderBox
-{
-	public:
-	    RenderBox(int x = 0, int y = 0, int width = 0, int height = 0)
-        : X(x), Y(y), Width(width), Height(height){}
-	    int X;
-    	int Y;
-	    int Width;
-    	int Height;
-};
 
 class RenderClient
 {
@@ -66,11 +56,13 @@ class RenderClient
         string							getLocalCacheFolder(){return mLocalCacheFolder;}
         StringList						getZs();
         vector<int>						getValidZs();
-        vector<double>					getOptimalXYBoxForZs(const vector<int>& zs = vector<int>(0));
+        RenderBox						getOptimalXYBoxForZs(const vector<int>& zs = vector<int>(0));
+	    vector<RenderBox>				getBounds();
 
     private:
 		Idhttp::TIdHTTP* 	            mC;
 		TMemoryStream* 		            mImageMemory;
+        vector<RenderBox>				mLatestBounds;
     	int				                mZ;
         double				            mScale;
         string			                mBaseURL;
@@ -80,7 +72,7 @@ class RenderClient
         string 			                mImageType;
         RenderBox			            mRenderBox;
         string							mLocalCacheFolder;
-        vector<double>					parseBoundsResponse(const string& s);
+        RenderBox						parseBoundsResponse(const string& s);
 };
 
 #endif

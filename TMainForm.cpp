@@ -7,6 +7,7 @@
 #include "atRenderClient.h"
 #include "MagickWand/MagickWand.h"
 #include "mtkExeFile.h"
+#include "mtkMathUtils.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -57,19 +58,26 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
                         mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     //First check if we already is having this data
-    try
+	try
     {
-    	Log(lDebug) << "Loading z = "<<z;
-    	Log(lDebug) << "URL = "<< rs.getURL();
-
-        TMemoryStream* imageMem = rs.getImage(z);
-        if(imageMem)
+        try
         {
-        	Image1->Picture->Graphic->LoadFromStream(imageMem);
-	        Image1->Invalidate();
-        }
+            Log(lDebug) << "Loading z = "<<z;
+            Log(lDebug) << "URL = "<< rs.getURL();
 
-        Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+            TMemoryStream* imageMem = rs.getImage(z);
+            if(imageMem)
+            {
+                Image1->Picture->Graphic->LoadFromStream(imageMem);
+                Image1->Invalidate();
+            }
+
+            Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+        }
+        __except(EXCEPTION_EXECUTE_HANDLER)
+        {
+            Log(lError) << "There was a memory problem..";
+        }
     }
     __finally
     {
@@ -168,6 +176,7 @@ TCanvas* TMainForm::getCanvas()
 {
 	return PaintBox1->Canvas;
 }
+
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
@@ -281,10 +290,10 @@ void TMainForm::render(RenderBox* box)
 	if(box)
     {
         mCurrentRB = *(box);
-        mXCoordE->setValue(mCurrentRB.X);
-        mYCoordE->setValue(mCurrentRB.Y);
-        mWidthE->setValue(mCurrentRB.Width);
-        mHeightE->setValue(mCurrentRB.Height);
+        mXCoordE->setValue(mCurrentRB.getX1());
+        mYCoordE->setValue(mCurrentRB.getY1());
+        mWidthE->setValue(mCurrentRB.getWidth());
+        mHeightE->setValue(mCurrentRB.getHeight());
     }
 
 	ClickZ(NULL);
@@ -343,7 +352,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
     int z = toInt(stdstr(mZs->Items->Strings[0]));
 	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
 	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
-
 
     //Create image URLs
     StringList urls;
@@ -651,17 +659,76 @@ void __fastcall TMainForm::GetOptimalBoundsBtnClick(TObject *Sender)
 	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
 
     vector<int> zs = rs.getValidZs();
+    RenderBox box = rs.getOptimalXYBoxForZs(zs);
+    Log(lInfo) << "XMin = " << box.getX1();
+    Log(lInfo) << "XMax = " << box.getX2();
+    Log(lInfo) << "YMin = " << box.getY1();
+    Log(lInfo) << "YMax = " << box.getY2();
 
-
-    vector<double> box = rs.getOptimalXYBoxForZs(zs);
-
-    if(box.size() == 4)
+   	vector<RenderBox> bounds = rs.getBounds();
+    for(int i = 0; i < bounds.size(); i++)
     {
-    	Log(lInfo) << "X = " << box[0];
-    	Log(lInfo) << "Y = " << box[1];
-    	Log(lInfo) << "Width = " << box[2];
-    	Log(lInfo) << "Height = " << box[3];
+	    Log(lInfo) <<bounds[i].getZ()<<","<<bounds[i].getX1()<<","<<bounds[i].getX2()<<","<<bounds[i].getY1()<<","<<bounds[i].getY2();
     }
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mValidZsLBClick(TObject *Sender)
+{
+	//Fetch section info
+	//Get selected z
+    int index = mValidZsLB->ItemIndex;
+    if(index != -1)
+    {
+        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+
+        vector<int> zs;
+        int test = mValidZsLB->Items->Strings[index].ToInt();
+        zs.push_back(test);
+
+        RenderBox box = rs.getOptimalXYBoxForZs(zs);
+
+        Log(lInfo) << "XMin = " << box.getX1();
+        Log(lInfo) << "XMax = " << box.getX2();
+        Log(lInfo) << "YMin = " << box.getY1();
+        Log(lInfo) << "YMax = " << box.getY2();
+    }
+}
+
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
+{
+
+	TButton* b = dynamic_cast<TButton*>(Sender);
+
+	double zoomFactor = mZoomFactor->getValue();
+    if(b == mZoomOutBtn)
+    {
+		zoomFactor *= (-1.0);
+    }
+
+	//Modify bounding box with x%
+    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+    mCurrentRB.zoom(zoomFactor);
+
+	mXCoordE->setValue(mCurrentRB.getX1());
+    mYCoordE->setValue(mCurrentRB.getY1());
+    mWidthE->setValue( mCurrentRB.getWidth());
+    mHeightE->setValue(mCurrentRB.getHeight());
+
+    //Scale the scaling
+    double scale  = (double) Image1->Height / (double) mCurrentRB.getHeight();
+    Log(lInfo) << "Scaling is: " << scale;
+	if(scale < 0.005)
+    {
+    	scale = 0.009;
+    }
+    else if(scale > 1.0)
+    {
+    	scale = 1.0;
+    }
+	mScaleE->setValue(scale);
+	ClickZ(Sender);
+}
 

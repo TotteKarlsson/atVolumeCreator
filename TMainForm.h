@@ -60,10 +60,6 @@ __published:	// IDE-managed Components
 	TSTDStringLabeledEdit *mProjectE;
 	TRadioGroup *mImageFormat;
 	TSplitter *Splitter1;
-	TIntegerLabeledEdit *mHeightE;
-	TIntegerLabeledEdit *mWidthE;
-	TIntegerLabeledEdit *mYCoordE;
-	TIntegerLabeledEdit *mXCoordE;
 	TProgressBar *ProgressBar1;
 	TPanel *mBottomPanel;
 	TGroupBox *GroupBox3;
@@ -88,18 +84,10 @@ __published:	// IDE-managed Components
 	TButton *mGenerateZSerieBtn;
 	TSTDStringLabeledEdit *mCustomZsE;
 	TButton *mAddCustomZs;
-	TGroupBox *CacheGB;
 	TButton *mFetchSelectedZsBtn;
-	TPanel *Panel1;
-	TIntLabel *mXC;
-	TIntLabel *mYC;
-	TIntLabel *mX;
-	TIntLabel *mY;
-	TPropertyCheckBox *mStretchCB;
 	TSTDStringLabeledEdit *mImageCacheFolderE;
 	TButton *mBrowseForCacheFolder;
 	TIntegerLabeledEdit *mZStep;
-	TButton *mGetValidZsBtn;
 	TPanel *Panel2;
 	TButton *mCLearMemo;
 	TSplitter *Splitter2;
@@ -111,6 +99,25 @@ __published:	// IDE-managed Components
 	TMenuItem *CopyValidZs1;
 	TGroupBox *GroupBox2;
 	TButton *GetOptimalBoundsBtn;
+	TButton *mGetListOfBoundsBtn;
+	TPanel *Panel1;
+	TIntLabel *mXC;
+	TIntLabel *mYC;
+	TIntLabel *mX;
+	TIntLabel *mY;
+	TPropertyCheckBox *mStretchCB;
+	TGroupBox *GroupBox4;
+	TFloatLabeledEdit *mZoomFactor;
+	TButton *mZoomOutBtn;
+	TButton *mZoomInBtn;
+	TButton *mGenerateZoomInBtn;
+	TIntegerLabeledEdit *mZoomStepsE;
+	TIntegerLabeledEdit *mWidthE;
+	TIntegerLabeledEdit *mHeightE;
+	TIntegerLabeledEdit *mXCoordE;
+	TIntegerLabeledEdit *mYCoordE;
+	TButton *mGetValidZsBtn;
+	TPanel *mToppanel;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -145,6 +152,8 @@ __published:	// IDE-managed Components
 	void __fastcall mUpdateZsBtnClick(TObject *Sender);
 	void __fastcall CopyValidZs1Click(TObject *Sender);
 	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
+	void __fastcall mValidZsLBClick(TObject *Sender);
+	void __fastcall mZoomBtnClick(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();
