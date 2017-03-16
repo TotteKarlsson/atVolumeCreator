@@ -9,11 +9,11 @@
 using namespace mtk;
 using std::string;
 USEFORM("TMainForm.cpp", MainForm);
-USEFORM("atImageForm.cpp", Form1);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileLocation            = "";
 extern string       gLogFileName                = "volume_creator.log";
+extern string 		gApplicationRegistryRoot  	= "\\Software\\Allen Institute\\VolumeCreator\\0.5.0";
 void setupLogging();
 
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
@@ -24,7 +24,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->MainFormOnTaskBar = true;
         setupLogging();
 		Application->CreateForm(__classid(TMainForm), &MainForm);
-		Application->CreateForm(__classid(TForm1), &Form1);
 		Application->Run();
 	}
 	catch (Exception &exception)
@@ -69,4 +68,6 @@ void setupLogging()
 #pragma comment(lib, "poco_foundation-static.lib")
 #pragma comment(lib, "libcurl.lib")
 #pragma comment(lib, "Ws2_32.lib")
+
+#pragma comment(lib, "DuneForms.bpi")
 

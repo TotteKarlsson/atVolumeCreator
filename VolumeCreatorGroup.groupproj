@@ -15,6 +15,9 @@
         <Projects Include="P:\libs\dslib\VCL\Components\DuneComponents.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="P:\libs\dslib\VCL\Forms\DuneForms.cbproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="VolumeCreator.cbproj">
             <Dependencies/>
         </Projects>
@@ -62,6 +65,15 @@
     <Target Name="DuneComponents:Make">
         <MSBuild Projects="P:\libs\dslib\VCL\Components\DuneComponents.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="DuneForms">
+        <MSBuild Projects="P:\libs\dslib\VCL\Forms\DuneForms.cbproj"/>
+    </Target>
+    <Target Name="DuneForms:Clean">
+        <MSBuild Projects="P:\libs\dslib\VCL\Forms\DuneForms.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DuneForms:Make">
+        <MSBuild Projects="P:\libs\dslib\VCL\Forms\DuneForms.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="VolumeCreator">
         <MSBuild Projects="VolumeCreator.cbproj"/>
     </Target>
@@ -72,13 +84,13 @@
         <MSBuild Projects="VolumeCreator.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="mtkCommon;mtkMath;VCLCommon;DuneComponents;VolumeCreator"/>
+        <CallTarget Targets="mtkCommon;mtkMath;VCLCommon;DuneComponents;DuneForms;VolumeCreator"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;VCLCommon:Clean;DuneComponents:Clean;VolumeCreator:Clean"/>
+        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;VolumeCreator:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;VCLCommon:Make;DuneComponents:Make;VolumeCreator:Make"/>
+        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;VolumeCreator:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

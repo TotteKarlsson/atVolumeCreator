@@ -19,15 +19,51 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
 	gLogger.setLogLevel(mLogLevel);
 	mLogFileReader.start(true);
-    mOriginalRB.setX1(mXCoordE->getValue());
-    mOriginalRB.setY1(mYCoordE->getValue());
-    mOriginalRB.setWidth(mWidthE->getValue());
-    mOriginalRB.setHeight(mHeightE->getValue());
-    mCurrentRB = mOriginalRB;
+    mCurrentRB.setX1(mXCoordE->getValue());
+    mCurrentRB.setY1(mYCoordE->getValue());
+    mCurrentRB.setWidth(mWidthE->getValue());
+    mCurrentRB.setHeight(mHeightE->getValue());
+
     mROIHistory.add(mOriginalRB);
-	UpdateZList();
+	mGetValidZsBtnClick(NULL);
 	ClickZ(NULL);
-    this->DoubleBuffered=true;
+    this->DoubleBuffered = true;
+
+    //Setup renderclient
+    mRC.setBaseURL(mBaseUrlE->getValue());
+    mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
+
+    //Populate owners
+    StringList o = mRC.getOwners();
+    if(o.size())
+    {
+		populateDropDown(o, mOwnersCB);
+    }
+
+	//Select owner
+    int index = mOwnersCB->Items->IndexOf(mOwnerE->Text);
+
+    if(index > -1)
+    {
+		mOwnersCB->ItemIndex = index;
+        mOwnersCB->OnChange(NULL);
+
+        //Select last project
+        index = mProjectsCB->Items->IndexOf(mProjectE->Text);
+        if(index > -1)
+        {
+            mProjectsCB->ItemIndex = index;
+            mProjectsCB->OnChange(NULL);
+
+            //Then select last stack
+            index = mStacksCB->Items->IndexOf(mStackNameE->Text);
+            if(index > -1)
+            {
+                mStacksCB->ItemIndex = index;
+                mStacksCB->OnChange(NULL);
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -58,7 +94,6 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 
 	//Write to file
 	mIniFileC->save();
-
 }
 
 //---------------------------------------------------------------------------
@@ -120,7 +155,7 @@ bool TMainForm::setupAndReadIniParameters()
     mGeneralProperties.add((BaseProperty*)  &mZMinE->getProperty()->setup(		        "Z_MIN", 		0));
     mGeneralProperties.add((BaseProperty*)  &mZMaxE->getProperty()->setup(		        "Z_MAX", 		100));
 
-    mGeneralProperties.add((BaseProperty*)  &mCustomZsE->getProperty()->setup(	        "CUSTOM_Zs",  	""));
+//    mGeneralProperties.add((BaseProperty*)  &mCustomZsE->getProperty()->setup(	        "CUSTOM_Zs",  	""));
 	mGeneralProperties.add((BaseProperty*)  &mImageCacheFolderE->getProperty()->setup(	"IMAGE_CACHE_FOLDER",  	"C:\\ImageCache"));
 
 	//Read from file. Create if file do not exist
@@ -140,8 +175,10 @@ bool TMainForm::setupAndReadIniParameters()
 
     mZMinE->update();
     mZMaxE->update();
-    mCustomZsE->update();
+//    mCustomZsE->update();
 	mImageCacheFolderE->update();
+
+	mBottomPanel->Height = mBottomPanelHeight;
 
 	return true;
 }

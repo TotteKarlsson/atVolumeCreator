@@ -30,7 +30,9 @@
 #include "TApplicationProperties.h"
 #include "atFetchImagesThread.h"
 #include <Vcl.Menus.hpp>
+#include "mtkIntEdit.h"
 
+class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
 using mtk::IniFileProperties;
@@ -60,7 +62,6 @@ __published:	// IDE-managed Components
 	TSTDStringLabeledEdit *mProjectE;
 	TRadioGroup *mImageFormat;
 	TSplitter *Splitter1;
-	TProgressBar *ProgressBar1;
 	TPanel *mBottomPanel;
 	TGroupBox *GroupBox3;
 	TButton *mResetButton;
@@ -82,7 +83,6 @@ __published:	// IDE-managed Components
 	TPanel *Panel9;
 	mtkIniFileC *mIniFileC;
 	TButton *mGenerateZSerieBtn;
-	TSTDStringLabeledEdit *mCustomZsE;
 	TButton *mAddCustomZs;
 	TButton *mFetchSelectedZsBtn;
 	TSTDStringLabeledEdit *mImageCacheFolderE;
@@ -106,18 +106,21 @@ __published:	// IDE-managed Components
 	TIntLabel *mX;
 	TIntLabel *mY;
 	TPropertyCheckBox *mStretchCB;
-	TGroupBox *GroupBox4;
-	TFloatLabeledEdit *mZoomFactor;
 	TButton *mZoomOutBtn;
 	TButton *mZoomInBtn;
-	TButton *mGenerateZoomInBtn;
-	TIntegerLabeledEdit *mZoomStepsE;
 	TIntegerLabeledEdit *mWidthE;
 	TIntegerLabeledEdit *mHeightE;
 	TIntegerLabeledEdit *mXCoordE;
 	TIntegerLabeledEdit *mYCoordE;
 	TButton *mGetValidZsBtn;
 	TPanel *mToppanel;
+	TComboBox *mOwnersCB;
+	TComboBox *mProjectsCB;
+	TComboBox *mStacksCB;
+	TButton *mDetachBtn;
+	TButton *mCloseBottomPanelBtn;
+	mtkIntEdit *mZoomFactor;
+	TButton *mShowBottomPanelBtn;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -125,7 +128,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall mSelectZBtnClick(TObject *Sender);
+
 	void __fastcall IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCount);
 	void __fastcall IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCountMax);
 	void __fastcall IdHTTP1Status(TObject *ASender, const TIdStatus AStatus, const UnicodeString AStatusText);
@@ -154,11 +157,20 @@ __published:	// IDE-managed Components
 	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
 	void __fastcall mValidZsLBClick(TObject *Sender);
 	void __fastcall mZoomBtnClick(TObject *Sender);
+	void __fastcall mOwnersCBChange(TObject *Sender);
+	void __fastcall mProjectsCBChange(TObject *Sender);
+	void __fastcall mDetachBtnClick(TObject *Sender);
+	void __fastcall mCloseBottomPanelBtnClick(TObject *Sender);
+	void __fastcall mShowBottomPanelBtnClick(TObject *Sender);
+	void __fastcall mStacksCBChange(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
        	mtk::Process									mTiffCP;
+        RenderClient									mRC;
+        int												getCurrentZ();
+		TImageForm*										mImageForm;
 
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;

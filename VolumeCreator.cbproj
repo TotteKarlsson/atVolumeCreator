@@ -106,7 +106,7 @@
             <BuildOrder>7</BuildOrder>
         </CppCompile>
         <CppCompile Include="atImageForm.cpp">
-            <Form>Form1</Form>
+            <Form>ImageForm</Form>
             <FormType>dfm</FormType>
             <DependentOn>atImageForm.h</DependentOn>
             <BuildOrder>8</BuildOrder>
@@ -118,6 +118,10 @@
         <CppCompile Include="atRenderClient.cpp">
             <DependentOn>atRenderClient.h</DependentOn>
             <BuildOrder>3</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="atRenderProject.cpp">
+            <DependentOn>atRenderProject.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
         </CppCompile>
         <CppCompile Include="atROIHistory.cpp">
             <DependentOn>atROIHistory.h</DependentOn>
@@ -201,7 +205,8 @@
                     <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
                 </ProjectProperties>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="P:\build\xe3_ide\BPL\ArrayBotPackage.bpl">ArrayBotPackage</Excluded_Packages>
+                    <Excluded_Packages Name="P:\build\xe3_ide\BPL\atVCLCore.bpl">File P:\build\xe3_ide\BPL\atVCLCore.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="P:\build\xe3_ide\BPL\ArrayBotPackage.bpl">File P:\build\xe3_ide\BPL\ArrayBotPackage.bpl not found</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k170.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp170.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>

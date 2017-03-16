@@ -5,11 +5,10 @@
 #include "mtkConstants.h"
 #include <vector>
 #include "atRenderBox.h"
-
-using std::vector;
-
+#include "atRenderProject.h"
 //---------------------------------------------------------------------------
 
+using std::vector;
 namespace Idhttp
 {
 	class TIdHTTP;
@@ -28,15 +27,14 @@ using mtk::StringList;
 using mtk::gEmptyString;
 using std::string;
 
-
 class RenderClient
 {
 	public:
 							            RenderClient(Idhttp::TIdHTTP* c,
-                        	            						const string& baseURL,
-                        	            					  	const string& owner,
-                        	            					  	const string& project,
-                                                              	const string& stack,
+                        	            						const string& baseURL = gEmptyString,
+                        	            					  	const string& owner = gEmptyString,
+                        	            					  	const string& project = gEmptyString,
+                                                              	const string& stack = gEmptyString,
                                                               	const string& imageType = "tiff-image",
                                                               	int z = 0,
                                                               	const RenderBox& box = RenderBox(),
@@ -44,6 +42,10 @@ class RenderClient
                                                                 const string& cacheFolder = gEmptyString);
 							            ~RenderClient();
 
+		void							setBaseURL(const string& baseURL){mBaseURL = baseURL;}
+		StringList						getOwners();
+        StringList						getProjectsForOwner(const string& o);
+        StringList						getStacksForProject(const string& owner, const string& p);
 		void				            clearImageMemory();
 		string				            getURL();
 		const char* 		            getURLC(){return getURL().c_str();}
@@ -56,8 +58,10 @@ class RenderClient
         string							getLocalCacheFolder(){return mLocalCacheFolder;}
         StringList						getZs();
         vector<int>						getValidZs();
+		RenderBox 						getBoxForZ(int z);
         RenderBox						getOptimalXYBoxForZs(const vector<int>& zs = vector<int>(0));
 	    vector<RenderBox>				getBounds();
+        RenderProject&					getProject(){return mProject;}
 
     private:
 		Idhttp::TIdHTTP* 	            mC;
@@ -66,9 +70,7 @@ class RenderClient
     	int				                mZ;
         double				            mScale;
         string			                mBaseURL;
-        string			                mProject;
-        string			                mOwner;
-        string 			                mStackName;
+        RenderProject					mProject;
         string 			                mImageType;
         RenderBox			            mRenderBox;
         string							mLocalCacheFolder;

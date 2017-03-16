@@ -8,7 +8,7 @@
 #include "MagickWand/MagickWand.h"
 #include "mtkExeFile.h"
 #include "mtkMathUtils.h"
-
+#include "atImageForm.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -17,6 +17,7 @@
 #pragma link "TIntLabel"
 #pragma link "TPropertyCheckBox"
 #pragma link "mtkIniFileC"
+#pragma link "mtkIntEdit"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 using namespace mtk;
@@ -33,7 +34,9 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsg),
     mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
     mBottomPanelHeight(205),
-	mCreateCacheThread()
+	mCreateCacheThread(),
+    mRC(IdHTTP1),
+    mImageForm(NULL)
 {
 	mTiffCP.FOnStateEvent = processEvent;
     setupIniFile();
@@ -107,17 +110,6 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
     }
 }
 
-void __fastcall TMainForm::mSelectZBtnClick(TObject *Sender)
-{
-//	TButton* b= dynamic_cast<TButton*>(Sender);
-//    bool select = (b == mSelectZBtn) ? true : false;
-//
-//    for(int i = 0; i< mZs->Count; i++)
-//    {
-//        mZs->Selected[i] = select;
-//    }
-}
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode,
           __int64 AWorkCount)
@@ -136,7 +128,7 @@ void __fastcall TMainForm::IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMod
 void __fastcall TMainForm::IdHTTP1Status(TObject *ASender, const TIdStatus AStatus,
           const UnicodeString AStatusText)
 {
-	Log(lInfo) << stdstr(AStatusText);
+	Log(lInfo) << "HTTPStatus: " << stdstr(AStatusText);
 }
 
 TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
@@ -144,7 +136,6 @@ TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
 	TPoint pt;
     pt.X = (p.X / scale) / stretchFactor;
     pt.Y = (p.Y / scale) / stretchFactor;
-
 	return pt;
 }
 
@@ -204,18 +195,17 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-	TPoint p = Mouse->CursorPos;
-	p = this->Image1->ScreenToClient(p);
-	mXC->SetValue(p.X);
-	mYC->SetValue(p.Y);
+	TPoint p = this->Image1->ScreenToClient(Mouse->CursorPos);
+	mXC->setValue(p.X);
+	mYC->setValue(p.Y);
 
 	//Convert to world image coords (minus offset)
     double stretchFactor = getImageStretchFactor();
     if(stretchFactor)
     {
 	    p = controlToImage(p, mScaleE->getValue(), stretchFactor);
-	  	mX->SetValue(p.X);
-		mY->SetValue(p.Y);
+	  	mX->setValue(p.X);
+		mY->setValue(p.Y);
     }
 }
 
@@ -278,11 +268,28 @@ void __fastcall TMainForm::DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMod
 	getCanvas()->Rectangle(TopLeft.x, TopLeft.y, BottomRight.x, BottomRight.y);
 }
 
+int	TMainForm::getCurrentZ()
+{
+	int ii = mZs->ItemIndex;
+    if(ii == -1)
+    {
+    	return -1;
+    }
+
+    return toInt(stdstr(mZs->Items->Strings[ii]));
+}
+
 void __fastcall TMainForm::resetButtonClick(TObject *Sender)
 {
-	mCurrentRB = mOriginalRB;
-    render(&mCurrentRB);
-    mROIHistory.add(mCurrentRB);
+    //Get saved renderbox for current slice
+	try
+    {
+        mCurrentRB = mRC.getBoxForZ(getCurrentZ());
+        render(&mCurrentRB);
+        mROIHistory.add(mCurrentRB);
+    }
+    catch(...)
+    {}
 }
 
 void TMainForm::render(RenderBox* box)
@@ -489,19 +496,19 @@ void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
 
         mZs->ItemIndex = 0;
     }
-    else if(b == mAddCustomZs)
-    {
-        mZs->Clear();
-		//Parse edit box
-        StringList l(mCustomZsE->getValue(), ',');
-        for(int i = 0; i < l.size(); i++)
-        {
-        	//Make sure we are adding an integer
-        	int v = mtk::toInt(l[i]);
-            mZs->AddItem(IntToStr(v), NULL);
-        }
-        mZs->ItemIndex = 0;
-    }
+//    else if(b == mAddCustomZs)
+//    {
+//        mZs->Clear();
+//		//Parse edit box
+//        StringList l(mCustomZsE->getValue(), ',');
+//        for(int i = 0; i < l.size(); i++)
+//        {
+//        	//Make sure we are adding an integer
+//        	int v = mtk::toInt(l[i]);
+//            mZs->AddItem(IntToStr(v), NULL);
+//        }
+//        mZs->ItemIndex = 0;
+//    }
 }
 
 
@@ -529,6 +536,13 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 
     //Populate list box
 	populateListBox(zs, mZs);
+
+    //Set ZMin and ZMax
+    if(zs.count() > 1)
+    {
+    	mZMinE->setValue(mtk::toInt(zs[0]));
+    	mZMaxE->setValue(mtk::toInt(zs[zs.count() -1 ]));
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -695,7 +709,6 @@ void __fastcall TMainForm::mValidZsLBClick(TObject *Sender)
     }
 }
 
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 {
@@ -732,3 +745,85 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 	ClickZ(Sender);
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
+{
+	//Update Projects CB
+    //Get selected owner
+    if(mOwnersCB->ItemIndex == -1)
+    {
+		return;
+    }
+
+    string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
+    mOwnerE->setValue(owner);
+
+    //Populate projects
+    StringList p = mRC.getProjectsForOwner(mOwnerE->getValue());
+    if(p.size())
+    {
+		populateDropDown(p, mProjectsCB);
+    }
+}
+
+void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
+{
+	//Update Stacks CB
+    //Get selected owner
+    if(mProjectsCB->ItemIndex == -1)
+    {
+		return;
+    }
+
+    string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
+    string project = stdstr(mProjectsCB->Items->Strings[mProjectsCB->ItemIndex]);
+    mProjectE->setValue(project);
+
+    //Populate stacks
+    StringList s = mRC.getStacksForProject(owner, mProjectE->getValue());
+    if(s.size())
+    {
+		populateDropDown(s, mStacksCB);
+    }
+}
+
+void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
+{
+
+    if(mStacksCB->ItemIndex == -1)
+    {
+		return;
+    }
+
+    string stack = stdstr(mStacksCB->Items->Strings[mStacksCB->ItemIndex]);
+	mStackNameE->setValue(stack);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
+{
+	//Open image form
+//    if(!mImageForm)
+    {
+    	mImageForm = new TImageForm(gApplicationRegistryRoot, "ImageForm", this);
+
+    }
+	mImageForm->Show();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
+{
+	mBottomPanel->Visible = false;
+    mShowBottomPanelBtn->Visible = true;
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
+{
+	mBottomPanel->Visible = true;
+    mShowBottomPanelBtn->Visible = false;
+    Splitter2->Top = mBottomPanel->Top - 1;
+}
+
+//---------------------------------------------------------------------------

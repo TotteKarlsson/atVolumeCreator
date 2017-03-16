@@ -1,5 +1,3 @@
-//---------------------------------------------------------------------------
-
 #ifndef atImageFormH
 #define atImageFormH
 //---------------------------------------------------------------------------
@@ -7,15 +5,22 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Graphics.hpp>
+#include "TRegistryForm.h"
 //---------------------------------------------------------------------------
-class TForm1 : public TForm
+
+class TImageForm : public TRegistryForm
 {
 __published:	// IDE-managed Components
+	TPaintBox *PaintBox1;
+	TImage *Image1;
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
 public:		// User declarations
-	__fastcall TForm1(TComponent* Owner);
+	__fastcall TImageForm(const string& regRoot, const string& fName, TComponent* Owner);
 };
-//---------------------------------------------------------------------------
-extern PACKAGE TForm1 *Form1;
-//---------------------------------------------------------------------------
+
+
+extern PACKAGE TImageForm *ImageForm;
 #endif
