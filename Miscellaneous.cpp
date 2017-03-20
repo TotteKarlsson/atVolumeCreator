@@ -141,7 +141,7 @@ bool TMainForm::setupAndReadIniParameters()
 	mGeneralProperties.add((BaseProperty*)  &mBottomPanelHeight.setup( 	            	"HEIGHT_OF_BOTTOM_PANEL",    	    205));
 	mGeneralProperties.add((BaseProperty*)  &mLogLevel.setup( 	                    	"LOG_LEVEL",    	                lAny));
 
-    mGeneralProperties.add((BaseProperty*)  &mBaseUrlE->getProperty()->setup(	        "BASE_URL", 	"http://ibs-forrestc-ux1.corp.alleninstitute.org:8080/render-ws/v1/owner"));
+    mGeneralProperties.add((BaseProperty*)  &mBaseUrlE->getProperty()->setup(	        "BASE_URL", 	"http://ibs-forrestc-ux1.corp.alleninstitute.org:8081/render-ws/v1"));
     mGeneralProperties.add((BaseProperty*)  &mOwnerE->getProperty()->setup(		        "OWNER", 		"Sharmishtaas"));
     mGeneralProperties.add((BaseProperty*)  &mProjectE->getProperty()->setup(	        "PROJECT", 		"M270907_Scnn1aTg2Tdt_13"));
     mGeneralProperties.add((BaseProperty*)  &mStackNameE->getProperty()->setup(	        "STACK_NAME", 	"ALIGNEDSTACK_DEC12"));

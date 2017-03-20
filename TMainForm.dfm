@@ -34,7 +34,7 @@ object MainForm: TMainForm
     Top = 49
     Width = 993
     Height = 511
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16525,6 +16525,8 @@ object MainForm: TMainForm
     object TabSheet2: TTabSheet
       Caption = 'Project'
       ImageIndex = 1
+      ExplicitLeft = 7
+      ExplicitTop = 22
       object mStackNameE: TSTDStringLabeledEdit
         Left = 213
         Top = 221
