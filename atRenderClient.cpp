@@ -207,10 +207,9 @@ RenderBox RenderClient::getBoxForZ(int z)
     stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owner/" 		<< mProject.getProjectOwner();
-    sUrl << "/project/" << mProject.getProjectName();
-    sUrl << "/stack/"	<<mProject.getCurrentStackname();
-    sUrl <<"/z/"<<z
-    	 <<"/bounds";
+    sUrl << "/project/" 	<< mProject.getProjectName();
+    sUrl << "/stack/"		<<mProject.getCurrentStackname();
+    sUrl <<"/z/"<<z   	 	<<"/bounds";
 
     Log(lDebug5) << "Fetching from server using URL: "<<sUrl.str();
     TStringStream* zstrings = new TStringStream;;

@@ -21,7 +21,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 560
+    Top = 661
     Width = 993
     Height = 3
     Cursor = crVSplit
@@ -31,22 +31,19 @@ object MainForm: TMainForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Top = 49
+    Top = 97
     Width = 993
-    Height = 511
+    Height = 564
     ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'General'
-      DesignSize = (
-        985
-        483)
       object PaintBox1: TPaintBox
-        Left = 282
+        Left = 266
         Top = 0
-        Width = 703
-        Height = 483
+        Width = 719
+        Height = 536
         Align = alClient
         Color = clBtnFace
         ParentColor = False
@@ -56,11 +53,12 @@ object MainForm: TMainForm
         ExplicitHeight = 635
       end
       object Image1: TImage
-        Left = 282
+        Left = 266
         Top = 0
-        Width = 703
-        Height = 483
+        Width = 719
+        Height = 536
         Align = alClient
+        AutoSize = True
         Picture.Data = {
           0954574943496D61676549492A0002CD07006465686867676B69646966636767
           6564616364636163626467656667686B69696A6869696A6C6B6C706F71717377
@@ -16069,245 +16067,105 @@ object MainForm: TMainForm
         OnMouseDown = FormMouseDown
         OnMouseMove = FormMouseMove
         OnMouseUp = FormMouseUp
-        ExplicitLeft = 652
-        ExplicitTop = 157
-        ExplicitWidth = 300
-        ExplicitHeight = 300
+        ExplicitLeft = 354
+        ExplicitTop = -3
+        ExplicitWidth = 759
+        ExplicitHeight = 584
       end
       object Splitter1: TSplitter
-        Left = 281
+        Left = 265
         Top = 0
         Width = 1
-        Height = 483
+        Height = 536
         ExplicitLeft = 400
         ExplicitTop = 38
         ExplicitHeight = 660
       end
-      object Panel5: TPanel
+      object mLeftPanel: TPanel
         Left = 0
         Top = 0
-        Width = 281
-        Height = 483
+        Width = 265
+        Height = 536
         Align = alLeft
         TabOrder = 0
         object ZsBG: TGroupBox
           Left = 1
-          Top = 113
-          Width = 279
-          Height = 272
-          Align = alTop
-          Caption = 'Z'#39's'
+          Top = 273
+          Width = 263
+          Height = 262
+          Align = alClient
+          Caption = 'Sections'
           TabOrder = 1
           object Panel3: TPanel
             Left = 2
-            Top = 129
-            Width = 105
-            Height = 141
-            Align = alLeft
-            TabOrder = 1
-            object Panel4: TPanel
-              Left = 1
-              Top = 1
-              Width = 103
-              Height = 41
-              Align = alTop
-              TabOrder = 0
-              object mNextZ: TButton
-                Left = 50
-                Top = 1
-                Width = 52
-                Height = 39
-                Align = alRight
-                Caption = '>'
-                TabOrder = 1
-                OnClick = TraverseZClick
-              end
-              object mPrevZ: TButton
-                Left = 1
-                Top = 1
-                Width = 52
-                Height = 39
-                Align = alLeft
-                Caption = '<'
-                TabOrder = 0
-                OnClick = TraverseZClick
-              end
-            end
+            Top = 56
+            Width = 259
+            Height = 204
+            Align = alClient
+            TabOrder = 0
             object mZs: TListBox
               Left = 1
-              Top = 42
-              Width = 103
-              Height = 77
+              Top = 1
+              Width = 257
+              Height = 202
               Align = alClient
               ItemHeight = 13
               MultiSelect = True
-              TabOrder = 1
+              PopupMenu = PopupMenu1
+              TabOrder = 0
               OnClick = ClickZ
             end
-            object Panel7: TPanel
-              Left = 1
-              Top = 119
-              Width = 103
-              Height = 21
-              Align = alBottom
-              Caption = 'Z'#39's to Volume'
-              TabOrder = 2
-            end
           end
-          object Panel6: TPanel
+          object Panel4: TPanel
             Left = 2
             Top = 15
-            Width = 275
-            Height = 114
+            Width = 259
+            Height = 41
             Align = alTop
-            TabOrder = 0
-            object mZMaxE: TIntegerLabeledEdit
-              Left = 63
-              Top = 16
-              Width = 42
-              Height = 21
-              EditLabel.Width = 29
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Z Max'
-              TabOrder = 2
-              Text = '98'
-              OnKeyDown = mZMaxEKeyDown
-              Value = 98
-            end
-            object mZMinE: TIntegerLabeledEdit
-              Left = 16
-              Top = 16
-              Width = 41
-              Height = 21
-              EditLabel.Width = 25
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Z Min'
-              TabOrder = 1
-              Text = '0'
-            end
-            object mGenerateZSerieBtn: TButton
-              Left = 189
-              Top = 0
-              Width = 66
-              Height = 25
-              Caption = 'Generate'
-              TabOrder = 0
-              OnClick = mGenerateZSerieBtnClick
-            end
-            object mAddCustomZs: TButton
-              Left = 189
-              Top = 31
-              Width = 66
-              Height = 25
-              Caption = 'Add'
-              TabOrder = 4
-              OnClick = mGenerateZSerieBtnClick
-            end
-            object mZStep: TIntegerLabeledEdit
-              Left = 111
-              Top = 16
-              Width = 42
-              Height = 21
-              EditLabel.Width = 22
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Step'
-              TabOrder = 3
-              Text = '1'
-              OnKeyDown = mZMaxEKeyDown
-              Value = 1
-            end
-            object mFetchSelectedZsBtn: TButton
-              Left = 170
-              Top = 59
-              Width = 89
-              Height = 25
-              Caption = 'Generate Cache'
-              TabOrder = 5
-              OnClick = mFetchSelectedZsBtnClick
-            end
-          end
-          object mMoveOutSelectedBtn: TButton
-            Left = 130
-            Top = 176
-            Width = 25
-            Height = 25
-            Caption = '>'
-            TabOrder = 3
-            OnClick = mMoveOutSelectedBtnClick
-          end
-          object mRestoreUnselectedBtn: TButton
-            Left = 130
-            Top = 207
-            Width = 25
-            Height = 25
-            Caption = '<'
-            TabOrder = 4
-            OnClick = mRestoreUnselectedBtnClick
-          end
-          object Panel8: TPanel
-            Left = 184
-            Top = 129
-            Width = 93
-            Height = 141
-            Align = alRight
-            Caption = 'Panel8'
-            TabOrder = 2
-            object mDeSelectedZs: TListBox
-              Left = 1
+            TabOrder = 1
+            object mGetValidZsBtn: TButton
+              Left = 6
               Top = 1
-              Width = 91
-              Height = 118
-              Align = alClient
-              ItemHeight = 13
-              MultiSelect = True
+              Width = 102
+              Height = 35
+              Caption = 'Fetch Valid Zs'
               TabOrder = 0
-            end
-            object Panel9: TPanel
-              Left = 1
-              Top = 119
-              Width = 91
-              Height = 21
-              Align = alBottom
-              Caption = 'Deselected Z'#39's'
-              TabOrder = 1
+              OnClick = mGetValidZsBtnClick
             end
           end
         end
         object StackGenGB: TGroupBox
           Left = 1
-          Top = 385
-          Width = 279
+          Top = 201
+          Width = 263
           Height = 72
           Align = alTop
-          Caption = 'Stack Generation'
+          Caption = 'Cache/Stack Generation'
           TabOrder = 2
-          object mVolumesFolder: TSTDStringLabeledEdit
-            Left = 18
-            Top = 40
-            Width = 121
-            Height = 21
-            EditLabel.Width = 93
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Output Root Folder'
-            TabOrder = 1
-            Text = 'p:\\volumes'
-            Value = 'p:\\volumes'
-          end
           object mGenerateTiffStackBtn: TButton
-            Left = 155
-            Top = 24
+            Left = 121
+            Top = 17
             Width = 113
-            Height = 33
+            Height = 40
             Caption = 'Generate TIFF Stack'
             TabOrder = 0
             OnClick = mGenerateTiffStackBtnClick
+          end
+          object mFetchSelectedZsBtn: TButton
+            Left = 13
+            Top = 16
+            Width = 97
+            Height = 41
+            Caption = 'Generate Cache'
+            TabOrder = 1
+            OnClick = mFetchSelectedZsBtnClick
           end
         end
         object GroupBox3: TGroupBox
           Left = 1
           Top = 1
-          Width = 279
-          Height = 112
+          Width = 263
+          Height = 200
           Align = alTop
           Caption = 'Region of Interest'
           TabOrder = 0
@@ -16325,9 +16183,9 @@ object MainForm: TMainForm
             Value = 0.050000000000000000
           end
           object mResetButton: TButton
-            Left = 144
-            Top = 74
-            Width = 89
+            Left = 16
+            Top = 149
+            Width = 122
             Height = 25
             Caption = 'Reset Bounds'
             TabOrder = 5
@@ -16335,7 +16193,7 @@ object MainForm: TMainForm
           end
           object mWidthE: TIntegerLabeledEdit
             Left = 17
-            Top = 74
+            Top = 122
             Width = 49
             Height = 21
             EditLabel.Width = 28
@@ -16348,7 +16206,7 @@ object MainForm: TMainForm
           end
           object mHeightE: TIntegerLabeledEdit
             Left = 88
-            Top = 74
+            Top = 122
             Width = 50
             Height = 21
             EditLabel.Width = 31
@@ -16360,8 +16218,8 @@ object MainForm: TMainForm
             Value = 32000
           end
           object mXCoordE: TIntegerLabeledEdit
-            Left = 105
-            Top = 34
+            Left = 17
+            Top = 76
             Width = 49
             Height = 21
             EditLabel.Width = 6
@@ -16373,8 +16231,8 @@ object MainForm: TMainForm
             Value = 8000
           end
           object mYCoordE: TIntegerLabeledEdit
-            Left = 176
-            Top = 34
+            Left = 88
+            Top = 76
             Width = 50
             Height = 21
             EditLabel.Width = 6
@@ -16385,156 +16243,30 @@ object MainForm: TMainForm
             OnKeyDown = mScaleEKeyDown
             Value = 3200
           end
-        end
-        object Panel1: TPanel
-          Left = 1
-          Top = 457
-          Width = 279
-          Height = 25
-          Align = alClient
-          TabOrder = 3
-          object mXC: TIntLabel
-            Left = 16
-            Top = 19
-            Width = 10
-            Height = 13
-            Caption = '-1'
-            Transparent = True
-            Value = -1
-            TheFont.Charset = DEFAULT_CHARSET
-            TheFont.Color = clWindowText
-            TheFont.Height = -11
-            TheFont.Name = 'Tahoma'
-            TheFont.Style = []
-          end
-          object mYC: TIntLabel
-            Left = 65
-            Top = 19
-            Width = 10
-            Height = 13
-            Caption = '-1'
-            Transparent = True
-            Value = -1
-            TheFont.Charset = DEFAULT_CHARSET
-            TheFont.Color = clWindowText
-            TheFont.Height = -11
-            TheFont.Name = 'Tahoma'
-            TheFont.Style = []
-          end
-          object mX: TIntLabel
-            Left = 16
-            Top = 64
-            Width = 10
-            Height = 13
-            Caption = '-1'
-            Transparent = True
-            Value = -1
-            TheFont.Charset = DEFAULT_CHARSET
-            TheFont.Color = clWindowText
-            TheFont.Height = -11
-            TheFont.Name = 'Tahoma'
-            TheFont.Style = []
-          end
-          object mY: TIntLabel
-            Left = 65
-            Top = 64
-            Width = 10
-            Height = 13
-            Caption = '-1'
-            Transparent = True
-            Value = -1
-            TheFont.Charset = DEFAULT_CHARSET
-            TheFont.Color = clWindowText
-            TheFont.Height = -11
-            TheFont.Name = 'Tahoma'
-            TheFont.Style = []
-          end
-          object mStretchCB: TPropertyCheckBox
-            Left = 113
-            Top = 16
-            Width = 97
+          object mUseRenderBoundsCB: TPropertyCheckBox
+            Left = 88
+            Top = 34
+            Width = 130
             Height = 17
-            Caption = 'Stretch'
+            Caption = 'Use render bounds'
             Checked = True
             State = cbChecked
-            TabOrder = 0
-            OnClick = mStretchCBClick
+            TabOrder = 6
           end
         end
-      end
-      object mZoomFactor: mtkIntEdit
-        Left = 804
-        Top = 12
-        Width = 89
-        Height = 21
-        Anchors = [akTop, akRight]
-        TabOrder = 1
-        Text = '10'
-      end
-      object mZoomInBtn: TButton
-        Left = 899
-        Top = 11
-        Width = 26
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = '+'
-        TabOrder = 2
-        OnClick = mZoomBtnClick
-      end
-      object mZoomOutBtn: TButton
-        Left = 927
-        Top = 11
-        Width = 26
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = '-'
-        TabOrder = 3
-        OnClick = mZoomBtnClick
-      end
-      object mDetachBtn: TButton
-        Left = 804
-        Top = 48
-        Width = 102
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = 'Detach Image'
-        TabOrder = 4
-        OnClick = mDetachBtnClick
-      end
-      object mHistoryBackBtn: TButton
-        Left = 804
-        Top = 79
-        Width = 42
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = '<'
-        TabOrder = 5
-        OnClick = historyBtnClick
-      end
-      object mHistoryFFW: TButton
-        Left = 864
-        Top = 79
-        Width = 42
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = '>'
-        TabOrder = 6
-        OnClick = historyBtnClick
       end
     end
     object TabSheet2: TTabSheet
-      Caption = 'Project'
+      Caption = 'Current Project Settings'
       ImageIndex = 1
-      ExplicitLeft = 7
-      ExplicitTop = 22
       object mStackNameE: TSTDStringLabeledEdit
-        Left = 213
-        Top = 221
-        Width = 308
+        Left = 385
+        Top = 64
+        Width = 180
         Height = 21
-        EditLabel.Width = 31
+        EditLabel.Width = 26
         EditLabel.Height = 13
-        EditLabel.Caption = 'Stacks'
+        EditLabel.Caption = 'Stack'
         TabOrder = 4
         Text = 'ALIGNEDSTACK_DEC12'
         Value = 'ALIGNEDSTACK_DEC12'
@@ -16556,9 +16288,9 @@ object MainForm: TMainForm
           '1'
       end
       object mOwnerE: TSTDStringLabeledEdit
-        Left = 27
-        Top = 168
-        Width = 150
+        Left = 12
+        Top = 64
+        Width = 120
         Height = 21
         EditLabel.Width = 32
         EditLabel.Height = 13
@@ -16568,9 +16300,9 @@ object MainForm: TMainForm
         Value = 'Sharmishtaas'
       end
       object mProjectE: TSTDStringLabeledEdit
-        Left = 213
-        Top = 168
-        Width = 306
+        Left = 138
+        Top = 64
+        Width = 241
         Height = 21
         EditLabel.Width = 34
         EditLabel.Height = 13
@@ -16579,82 +16311,10 @@ object MainForm: TMainForm
         Text = 'M270907_Scnn1aTg2Tdt_13'
         Value = 'M270907_Scnn1aTg2Tdt_13'
       end
-      object mImageFormat: TRadioGroup
-        Left = 11
-        Top = 267
-        Width = 134
-        Height = 53
-        Caption = 'Format'
-        Columns = 2
-        ItemIndex = 1
-        Items.Strings = (
-          'JPEG'
-          'TIFF')
-        TabOrder = 5
-      end
-      object mImageCacheFolderE: TSTDStringLabeledEdit
-        Left = 11
-        Top = 344
-        Width = 121
-        Height = 21
-        EditLabel.Width = 102
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Root folder for cache'
-        TabOrder = 9
-        Text = 'c:\ImageCache'
-        Value = 'c:\ImageCache'
-      end
-      object mBrowseForCacheFolder: TButton
-        Left = 144
-        Top = 342
-        Width = 33
-        Height = 25
-        Caption = '...'
-        TabOrder = 8
-        OnClick = mBrowseForCacheFolderClick
-      end
-      object GroupBox1: TGroupBox
-        Left = 605
-        Top = 165
-        Width = 310
-        Height = 228
-        Caption = 'Zs (valid and invalid)'
-        TabOrder = 6
-        object mMissingZsLB: TListBox
-          Left = 153
-          Top = 15
-          Width = 155
-          Height = 211
-          Align = alClient
-          ItemHeight = 13
-          PopupMenu = PopupMenu1
-          TabOrder = 1
-        end
-        object mValidZsLB: TListBox
-          Left = 2
-          Top = 15
-          Width = 151
-          Height = 211
-          Align = alLeft
-          ItemHeight = 13
-          PopupMenu = PopupMenu1
-          TabOrder = 0
-          OnClick = mValidZsLBClick
-        end
-      end
-      object mUpdateZsBtn: TButton
-        Left = 503
-        Top = 366
-        Width = 75
-        Height = 25
-        Caption = 'Update Zs'
-        TabOrder = 7
-        OnClick = mUpdateZsBtnClick
-      end
       object GroupBox2: TGroupBox
-        Left = 607
-        Top = 24
-        Width = 185
+        Left = 12
+        Top = 232
+        Width = 253
         Height = 122
         Caption = 'Bounding box (XY)'
         TabOrder = 1
@@ -16676,50 +16336,260 @@ object MainForm: TMainForm
           TabOrder = 1
         end
       end
+      object GroupBox4: TGroupBox
+        Left = 12
+        Top = 104
+        Width = 253
+        Height = 112
+        Caption = 'Region of Interest'
+        TabOrder = 5
+        object FloatLabeledEdit1: TFloatLabeledEdit
+          Left = 16
+          Top = 34
+          Width = 50
+          Height = 21
+          EditLabel.Width = 25
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Scale'
+          TabOrder = 0
+          Text = '0.05'
+          OnKeyDown = mScaleEKeyDown
+          Value = 0.050000000000000000
+        end
+        object Button1: TButton
+          Left = 144
+          Top = 74
+          Width = 89
+          Height = 25
+          Caption = 'Reset Bounds'
+          TabOrder = 5
+          OnClick = resetButtonClick
+        end
+        object IntegerLabeledEdit1: TIntegerLabeledEdit
+          Left = 17
+          Top = 74
+          Width = 49
+          Height = 21
+          EditLabel.Width = 28
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Width'
+          TabOrder = 3
+          Text = '12000'
+          OnKeyDown = mScaleEKeyDown
+          Value = 12000
+        end
+        object IntegerLabeledEdit2: TIntegerLabeledEdit
+          Left = 88
+          Top = 74
+          Width = 50
+          Height = 21
+          EditLabel.Width = 31
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Height'
+          TabOrder = 4
+          Text = '32000'
+          OnKeyDown = mScaleEKeyDown
+          Value = 32000
+        end
+        object IntegerLabeledEdit3: TIntegerLabeledEdit
+          Left = 105
+          Top = 34
+          Width = 49
+          Height = 21
+          EditLabel.Width = 6
+          EditLabel.Height = 13
+          EditLabel.Caption = 'X'
+          TabOrder = 1
+          Text = '8000'
+          OnKeyDown = mScaleEKeyDown
+          Value = 8000
+        end
+        object IntegerLabeledEdit4: TIntegerLabeledEdit
+          Left = 176
+          Top = 34
+          Width = 50
+          Height = 21
+          EditLabel.Width = 6
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Y'
+          TabOrder = 2
+          Text = '3200'
+          OnKeyDown = mScaleEKeyDown
+          Value = 3200
+        end
+      end
+      object Panel6: TPanel
+        Left = 279
+        Top = 104
+        Width = 269
+        Height = 114
+        BevelEdges = []
+        BevelOuter = bvNone
+        TabOrder = 6
+        object mZMaxE: TIntegerLabeledEdit
+          Left = 63
+          Top = 16
+          Width = 42
+          Height = 21
+          EditLabel.Width = 29
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Z Max'
+          TabOrder = 2
+          Text = '98'
+          OnKeyDown = mZMaxEKeyDown
+          Value = 98
+        end
+        object mZMinE: TIntegerLabeledEdit
+          Left = 16
+          Top = 16
+          Width = 41
+          Height = 21
+          EditLabel.Width = 25
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Z Min'
+          TabOrder = 1
+          Text = '0'
+        end
+        object mGenerateZSerieBtn: TButton
+          Left = 189
+          Top = 0
+          Width = 66
+          Height = 25
+          Caption = 'Generate'
+          TabOrder = 0
+          OnClick = mGenerateZSerieBtnClick
+        end
+        object mAddCustomZs: TButton
+          Left = 189
+          Top = 31
+          Width = 66
+          Height = 25
+          Caption = 'Add'
+          TabOrder = 4
+          OnClick = mGenerateZSerieBtnClick
+        end
+        object mZStep: TIntegerLabeledEdit
+          Left = 111
+          Top = 16
+          Width = 42
+          Height = 21
+          EditLabel.Width = 22
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Step'
+          TabOrder = 3
+          Text = '1'
+          OnKeyDown = mZMaxEKeyDown
+          Value = 1
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Settings'
+      ImageIndex = 2
+      object GroupBox5: TGroupBox
+        Left = 19
+        Top = 160
+        Width = 406
+        Height = 89
+        Caption = 'Stack Generation'
+        TabOrder = 0
+        object mVolumesFolder: TSTDStringLabeledEdit
+          Left = 18
+          Top = 40
+          Width = 375
+          Height = 21
+          EditLabel.Width = 93
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Output Root Folder'
+          TabOrder = 0
+          Text = 'p:\\volumes'
+          Value = 'p:\\volumes'
+        end
+      end
+      object GroupBox6: TGroupBox
+        Left = 19
+        Top = 25
+        Width = 222
+        Height = 129
+        Caption = 'General'
+        TabOrder = 1
+        object mImageCacheFolderE: TSTDStringLabeledEdit
+          Left = 19
+          Top = 40
+          Width = 121
+          Height = 21
+          EditLabel.Width = 102
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Root folder for cache'
+          TabOrder = 0
+          Text = 'c:\ImageCache'
+          Value = 'c:\ImageCache'
+        end
+        object mBrowseForCacheFolder: TButton
+          Left = 152
+          Top = 38
+          Width = 33
+          Height = 25
+          Caption = '...'
+          TabOrder = 1
+          OnClick = mBrowseForCacheFolderClick
+        end
+      end
     end
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 563
+    Top = 664
     Width = 993
-    Height = 237
+    Height = 136
     Align = alBottom
-    Caption = 'mBottomPanel'
     TabOrder = 1
-    object infoMemo: TMemo
-      Left = 1
-      Top = 42
-      Width = 991
-      Height = 194
-      Align = alClient
-      ScrollBars = ssBoth
-      TabOrder = 1
-      WordWrap = False
-    end
-    object Panel2: TPanel
+    object mLogPanel: TPanel
       Left = 1
       Top = 1
-      Width = 991
-      Height = 41
-      Align = alTop
+      Width = 568
+      Height = 134
+      Align = alLeft
       TabOrder = 0
-      object mCLearMemo: TButton
-        Left = 9
-        Top = 10
-        Width = 75
-        Height = 25
-        Caption = 'Clear'
+      object infoMemo: TMemo
+        Left = 1
+        Top = 42
+        Width = 566
+        Height = 91
+        Align = alClient
+        ScrollBars = ssBoth
         TabOrder = 0
-        OnClick = mCLearMemoClick
+        WordWrap = False
       end
-      object mCloseBottomPanelBtn: TButton
-        Left = 944
-        Top = 10
-        Width = 29
-        Height = 25
-        Caption = 'x'
+      object Panel2: TPanel
+        Left = 1
+        Top = 1
+        Width = 566
+        Height = 41
+        Align = alTop
         TabOrder = 1
-        OnClick = mCloseBottomPanelBtnClick
+        DesignSize = (
+          566
+          41)
+        object mCLearMemo: TButton
+          Left = 9
+          Top = 10
+          Width = 75
+          Height = 25
+          Caption = 'Clear'
+          TabOrder = 0
+          OnClick = mCLearMemoClick
+        end
+        object mCloseBottomPanelBtn: TButton
+          Left = 527
+          Top = 5
+          Width = 29
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = 'x'
+          TabOrder = 1
+          OnClick = mCloseBottomPanelBtnClick
+        end
       end
     end
   end
@@ -16727,45 +16597,198 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 993
-    Height = 49
+    Height = 97
     Align = alTop
     TabOrder = 2
-    object mOwnersCB: TComboBox
-      Left = 16
-      Top = 14
-      Width = 102
-      Height = 21
-      Style = csDropDownList
+    object Panel5: TPanel
+      Left = 465
+      Top = 1
+      Width = 527
+      Height = 95
+      Align = alClient
       TabOrder = 0
-      OnChange = mOwnersCBChange
+      object GroupBox8: TGroupBox
+        Left = 1
+        Top = 1
+        Width = 144
+        Height = 93
+        Align = alLeft
+        Caption = 'Image/Mouse properties'
+        TabOrder = 0
+        object mX: TIntLabel
+          Left = 16
+          Top = 43
+          Width = 10
+          Height = 13
+          Caption = '-1'
+          Transparent = True
+          Value = -1
+          TheFont.Charset = DEFAULT_CHARSET
+          TheFont.Color = clWindowText
+          TheFont.Height = -11
+          TheFont.Name = 'Tahoma'
+          TheFont.Style = []
+        end
+        object mXC: TIntLabel
+          Left = 16
+          Top = 19
+          Width = 10
+          Height = 13
+          Caption = '-1'
+          Transparent = True
+          Value = -1
+          TheFont.Charset = DEFAULT_CHARSET
+          TheFont.Color = clWindowText
+          TheFont.Height = -11
+          TheFont.Name = 'Tahoma'
+          TheFont.Style = []
+        end
+        object mY: TIntLabel
+          Left = 65
+          Top = 43
+          Width = 10
+          Height = 13
+          Caption = '-1'
+          Transparent = True
+          Value = -1
+          TheFont.Charset = DEFAULT_CHARSET
+          TheFont.Color = clWindowText
+          TheFont.Height = -11
+          TheFont.Name = 'Tahoma'
+          TheFont.Style = []
+        end
+        object mYC: TIntLabel
+          Left = 65
+          Top = 19
+          Width = 10
+          Height = 13
+          Caption = '-1'
+          Transparent = True
+          Value = -1
+          TheFont.Charset = DEFAULT_CHARSET
+          TheFont.Color = clWindowText
+          TheFont.Height = -11
+          TheFont.Name = 'Tahoma'
+          TheFont.Style = []
+        end
+        object mStretchCB: TPropertyCheckBox
+          Left = 17
+          Top = 64
+          Width = 97
+          Height = 17
+          Caption = 'Stretch'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = mStretchCBClick
+        end
+      end
+      object GroupBox9: TGroupBox
+        Left = 145
+        Top = 1
+        Width = 184
+        Height = 93
+        Align = alLeft
+        Caption = 'Zoom'
+        TabOrder = 1
+        DesignSize = (
+          184
+          93)
+        object mHistoryBackBtn: TButton
+          Left = 11
+          Top = 56
+          Width = 75
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '<'
+          TabOrder = 0
+          OnClick = historyBtnClick
+        end
+        object mHistoryFFW: TButton
+          Left = 92
+          Top = 56
+          Width = 78
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '>'
+          TabOrder = 1
+          OnClick = historyBtnClick
+        end
+        object mZoomFactor: mtkIntEdit
+          Left = 44
+          Top = 29
+          Width = 89
+          Height = 21
+          Anchors = [akTop, akRight]
+          TabOrder = 2
+          Text = '10'
+        end
+        object mZoomInBtn: TButton
+          Left = 140
+          Top = 25
+          Width = 26
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '+'
+          TabOrder = 3
+          OnClick = mZoomBtnClick
+        end
+        object mZoomOutBtn: TButton
+          Left = 11
+          Top = 25
+          Width = 26
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '-'
+          TabOrder = 4
+          OnClick = mZoomBtnClick
+        end
+      end
     end
-    object mProjectsCB: TComboBox
-      Left = 124
-      Top = 14
-      Width = 333
-      Height = 21
-      Style = csDropDownList
-      DropDownCount = 15
+    object Panel1: TPanel
+      Left = 1
+      Top = 1
+      Width = 464
+      Height = 95
+      Align = alLeft
       TabOrder = 1
-      OnChange = mProjectsCBChange
-    end
-    object mStacksCB: TComboBox
-      Left = 463
-      Top = 14
-      Width = 370
-      Height = 21
-      DropDownCount = 25
-      TabOrder = 2
-      OnChange = mStacksCBChange
-    end
-    object mGetValidZsBtn: TButton
-      Left = 848
-      Top = 12
-      Width = 95
-      Height = 26
-      Caption = 'Fetch Valid Zs'
-      TabOrder = 3
-      OnClick = mGetValidZsBtnClick
+      object GroupBox10: TGroupBox
+        Left = 1
+        Top = 1
+        Width = 462
+        Height = 93
+        Align = alClient
+        Caption = 'Project Selection'
+        TabOrder = 0
+        object mOwnersCB: TComboBox
+          Left = 16
+          Top = 25
+          Width = 102
+          Height = 21
+          Style = csDropDownList
+          TabOrder = 0
+          OnChange = mOwnersCBChange
+        end
+        object mProjectsCB: TComboBox
+          Left = 124
+          Top = 25
+          Width = 333
+          Height = 21
+          Style = csDropDownList
+          DropDownCount = 15
+          TabOrder = 1
+          OnChange = mProjectsCBChange
+        end
+        object mStacksCB: TComboBox
+          Left = 16
+          Top = 52
+          Width = 441
+          Height = 21
+          DropDownCount = 25
+          TabOrder = 2
+          OnChange = mStacksCBChange
+        end
+      end
     end
   end
   object mShowBottomPanelBtn: TButton
@@ -16796,8 +16819,8 @@ object MainForm: TMainForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 296
-    Top = 472
+    Left = 720
+    Top = 112
   end
   object mShutDownTimer: TTimer
     Enabled = False
@@ -16809,12 +16832,12 @@ object MainForm: TMainForm
   object mIniFileC: mtkIniFileC
     IniFileName = 'volumecreator.ini'
     RootFolder = '.'
-    Left = 600
-    Top = 272
+    Left = 832
+    Top = 112
   end
   object PopupMenu1: TPopupMenu
-    Left = 376
-    Top = 320
+    Left = 480
+    Top = 360
     object CopyValidZs1: TMenuItem
       Caption = 'Copy Numbers'
       OnClick = CopyValidZs1Click

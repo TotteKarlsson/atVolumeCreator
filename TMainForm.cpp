@@ -58,7 +58,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 
     //Fetch data using URL
     RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-                        mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+                        mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     //First check if we already is having this data
 	try
@@ -286,6 +286,7 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
     {
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
         render(&mCurrentRB);
+        mROIHistory.clear();
         mROIHistory.add(mCurrentRB);
     }
     catch(...)
@@ -335,20 +336,6 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
     {
     	mZs->Selected[mZs->ItemIndex] = false;
     }
-    if(b == mPrevZ)
-    {
-    	if(	mZs->ItemIndex > 0)
-        {
-			mZs->ItemIndex--;
-        }
-    }
-    else if(b == mNextZ)
-    {
-    	if(	mZs->ItemIndex <  mZs->Count -1)
-        {
-			mZs->ItemIndex++;
-        }
-    }
     mZs->Selected[mZs->ItemIndex] = true;
     render();
 }
@@ -358,7 +345,7 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
     int z = toInt(stdstr(mZs->Items->Strings[0]));
 	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+	    mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     //Create image URLs
     StringList urls;
@@ -388,6 +375,7 @@ bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string
 
    	mTiffCP.setMessageHandling(CATCHMESSAGE);
 	mTiffCP.run(s.str());
+
 	//check that files exists
 	if(!fileExists(stackFName) || !fileExists(fName))
     {
@@ -435,52 +423,51 @@ void __fastcall	TMainForm::processEvent(Process* proc)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
 {
-	if(mZs->SelCount == 0)
-    {
-    	Log(lWarning) << "There are no items selected...";
-        return;
-    }
-
-	int selectedAfter;
-    for(int i = 0; i < mZs->Count; i++)
-    {
-    	if(mZs->Selected[i])
-        {
- 			String item = mZs->Items->Strings[i];
-        	mDeSelectedZs->AddItem(item, NULL);
-            selectedAfter = i;
-        }
-    }
-
-    int selCount = mZs->SelCount;
-    mZs->DeleteSelected();
-
-    int newlySelected = selectedAfter - (selCount -1);
-    if(newlySelected > -1 && newlySelected < mZs->Count)
-    {
-    	mZs->Selected[newlySelected] = true;
-        mZs->ItemIndex = newlySelected;
-        render();
-    }
-
-    sortTListBoxNumerically(mDeSelectedZs);
+//	if(mZs->SelCount == 0)
+//    {
+//    	Log(lWarning) << "There are no items selected...";
+//        return;
+//    }
+//
+//	int selectedAfter;
+//    for(int i = 0; i < mZs->Count; i++)
+//    {
+//    	if(mZs->Selected[i])
+//        {
+// 			String item = mZs->Items->Strings[i];
+//        	mDeSelectedZs->AddItem(item, NULL);
+//            selectedAfter = i;
+//        }
+//    }
+//
+//    int selCount = mZs->SelCount;
+//    mZs->DeleteSelected();
+//
+//    int newlySelected = selectedAfter - (selCount -1);
+//    if(newlySelected > -1 && newlySelected < mZs->Count)
+//    {
+//    	mZs->Selected[newlySelected] = true;
+//        mZs->ItemIndex = newlySelected;
+//        render();
+//    }
+//
+//    sortTListBoxNumerically(mDeSelectedZs);
 }
 
 
 void __fastcall TMainForm::mRestoreUnselectedBtnClick(TObject *Sender)
 {
-    for(int i = 0; i < mDeSelectedZs->Count; i++)
-    {
-    	if(mDeSelectedZs->Selected[i])
-        {
- 			String item = mDeSelectedZs->Items->Strings[i];
-        	mZs->AddItem(item, NULL);
-        }
-    }
-    mDeSelectedZs->DeleteSelected();
-    sortTListBoxNumerically(mZs);
+//    for(int i = 0; i < mDeSelectedZs->Count; i++)
+//    {
+//    	if(mDeSelectedZs->Selected[i])
+//        {
+// 			String item = mDeSelectedZs->Items->Strings[i];
+//        	mZs->AddItem(item, NULL);
+//        }
+//    }
+//    mDeSelectedZs->DeleteSelected();
+//    sortTListBoxNumerically(mZs);
 }
-
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
@@ -534,6 +521,8 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
    	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
     StringList zs = rs.getValidZs();
 
+	Log(lInfo) << "Fetched "<<zs.count()<<" valid z's";
+
     //Populate list box
 	populateListBox(zs, mZs);
 
@@ -550,7 +539,7 @@ void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
 {
     int z = toInt(stdstr(mZs->Items->Strings[0]));
 	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-	    mStackNameE->getValue(), "tiff-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+	    mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
     for(int i = 0; i < mZs->Count; i++)
     {
@@ -574,7 +563,7 @@ void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
 
             string in = rs.getImageLocalPathAndFileName();
             //Make sure path exists, if not create it
-            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(z, 4)<<".tif";
+            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(4, z)<<".tif";
             if(createFolder(getFilePath(outName.str())))
             {
                 if(convertTiff(in, outName.str()))
@@ -609,26 +598,26 @@ void __fastcall TMainForm::mUpdateZsBtnClick(TObject *Sender)
     	Log(lInfo) << "Missing Z's: "<<zs[1];
     }
 
-    //Populate list boxes
-    mValidZsLB->Clear();
-    if(zs.size())
-    {
-        StringList validZ(zs[0], ',');
-        for(int i = 0; i < validZ.size(); i++)
-        {
-	        mValidZsLB->Items->Add(vclstr(validZ[i]));
-        }
-    }
+//    //Populate list boxes
+//    mValidZsLB->Clear();
+//    if(zs.size())
+//    {
+//        StringList validZ(zs[0], ',');
+//        for(int i = 0; i < validZ.size(); i++)
+//        {
+//	        mValidZsLB->Items->Add(vclstr(validZ[i]));
+//        }
+//    }
 
-    mMissingZsLB->Clear();
-    if(zs.size() > 1)
-    {
-        StringList missingZ(zs[1], ',');
-        for(int i = 0; i < missingZ.size(); i++)
-        {
-	        mMissingZsLB->Items->Add(vclstr(missingZ[i]));
-        }
-    }
+//    mMissingZsLB->Clear();
+//    if(zs.size() > 1)
+//    {
+//        StringList missingZ(zs[1], ',');
+//        for(int i = 0; i < missingZ.size(); i++)
+//        {
+//	        mMissingZsLB->Items->Add(vclstr(missingZ[i]));
+//        }
+//    }
 }
 
 //---------------------------------------------------------------------------
@@ -691,22 +680,22 @@ void __fastcall TMainForm::mValidZsLBClick(TObject *Sender)
 {
 	//Fetch section info
 	//Get selected z
-    int index = mValidZsLB->ItemIndex;
-    if(index != -1)
-    {
-        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
-
-        vector<int> zs;
-        int test = mValidZsLB->Items->Strings[index].ToInt();
-        zs.push_back(test);
-
-        RenderBox box = rs.getOptimalXYBoxForZs(zs);
-
-        Log(lInfo) << "XMin = " << box.getX1();
-        Log(lInfo) << "XMax = " << box.getX2();
-        Log(lInfo) << "YMin = " << box.getY1();
-        Log(lInfo) << "YMax = " << box.getY2();
-    }
+//    int index = mValidZsLB->ItemIndex;
+//    if(index != -1)
+//    {
+//        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+//
+//        vector<int> zs;
+//        int test = mValidZsLB->Items->Strings[index].ToInt();
+//        zs.push_back(test);
+//
+//        RenderBox box = rs.getOptimalXYBoxForZs(zs);
+//
+//        Log(lInfo) << "XMin = " << box.getX1();
+//        Log(lInfo) << "XMax = " << box.getX2();
+//        Log(lInfo) << "YMin = " << box.getY1();
+//        Log(lInfo) << "YMax = " << box.getY2();
+//    }
 }
 
 //---------------------------------------------------------------------------

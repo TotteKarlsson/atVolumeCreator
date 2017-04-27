@@ -21,6 +21,9 @@
         <Projects Include="VolumeCreator.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="C:\pDisk\tests\radstudiodemos-code\CPP\VCL\ImageProc\ImageProcessing.cbproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="VolumeCreator:Make">
         <MSBuild Projects="VolumeCreator.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="ImageProcessing">
+        <MSBuild Projects="C:\pDisk\tests\radstudiodemos-code\CPP\VCL\ImageProc\ImageProcessing.cbproj"/>
+    </Target>
+    <Target Name="ImageProcessing:Clean">
+        <MSBuild Projects="C:\pDisk\tests\radstudiodemos-code\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ImageProcessing:Make">
+        <MSBuild Projects="C:\pDisk\tests\radstudiodemos-code\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="mtkCommon;mtkMath;VCLCommon;DuneComponents;DuneForms;VolumeCreator"/>
+        <CallTarget Targets="mtkCommon;mtkMath;VCLCommon;DuneComponents;DuneForms;VolumeCreator;ImageProcessing"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;VolumeCreator:Clean"/>
+        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;VolumeCreator:Make"/>
+        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;VolumeCreator:Make;ImageProcessing:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
