@@ -1,6 +1,5 @@
 #ifndef TMainFormH
 #define TMainFormH
-//---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
@@ -31,9 +30,6 @@
 #include "atFetchImagesThread.h"
 #include <Vcl.Menus.hpp>
 #include "mtkIntEdit.h"
-#include "ScBridge.hpp"
-#include "ScSSHChannel.hpp"
-#include "ScSSHClient.hpp"
 #include "TSSHFrame.h"
 
 class TImageForm;
@@ -54,13 +50,13 @@ __published:	// IDE-managed Components
 	TPageControl *PageControl1;
 	TTabSheet *TabSheet1;
 	TTabSheet *TabSheet2;
-	TGroupBox *ZsBG;
+	TGroupBox *Zs_GB;
 	TFloatLabeledEdit *mScaleE;
 	TSTDStringLabeledEdit *mOwnerE;
 	TSTDStringLabeledEdit *mProjectE;
 	TSplitter *Splitter1;
 	TPanel *mBottomPanel;
-	TGroupBox *GroupBox3;
+	TGroupBox *ROI_GB;
 	TButton *mResetButton;
 	TButton *mHistoryBackBtn;
 	TButton *mHistoryFFW;
@@ -124,6 +120,7 @@ __published:	// IDE-managed Components
 	TGroupBox *TestSSHGB;
 	TButton *CMDButton;
 	TEdit *mCMD;
+	TTimer *CreateCacheTimer;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -173,6 +170,7 @@ __published:	// IDE-managed Components
 	void __fastcall TSSHFrame1ScSSHClientAfterConnect(TObject *Sender);
 	void __fastcall TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall CreateCacheTimerTimer(TObject *Sender);
 
 
 	private:	// User declarations
@@ -181,6 +179,7 @@ __published:	// IDE-managed Components
         RenderClient									mRC;
         int												getCurrentZ();
 		TImageForm*										mImageForm;
+		bool        									mRenderEnabled;
 
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;

@@ -41,7 +41,6 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
     return written;
 }
 
-
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
@@ -104,6 +103,12 @@ void FetchImagesThread::worker()
 
 	    for(int i = 0; i < mImageURLs.count(); i++)
 	    {
+
+        	if(mIsTimeToDie)
+            {
+            	break;
+            }
+
 	    	string url = mImageURLs[i];
 
             //Check cache first. if already in cache, don't fetch
@@ -111,7 +116,7 @@ void FetchImagesThread::worker()
            	Poco::File f(outFilePathANDFileName);
             if(fileExists(outFilePathANDFileName) && f.getSize() > 200)
             {
-            	Log(lInfo) << "File is in cache";
+            	Log(lInfo) << "File "<<outFilePathANDFileName<<" is in cache";
             }
             else
 			{
@@ -184,41 +189,10 @@ void FetchImagesThread::worker()
         }
 
         mIsTimeToDie = true;
-
-
-//        //First check if we already is having this data
-//        //This will fetch from DB, or, if present, from the cache
-//        TMemoryStream* imageMem = rs.getImage(z);
-//
-//        if(imageMem)
-//        {
-//            Image1->Picture->Graphic->LoadFromStream(imageMem);
-//
-//            //Save to local box folder
-//            Image1->Invalidate();
-//			outName.str("");
-//            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(z, 4)<<".tif";
-//            string in = rs.getImageLocalPathAndFileName();
-//            //Make sure path exists, if not create it
-//            if(createFolder(getFilePath(outName.str())))
-//            {
-//                if(convertTiff(in, outName.str()))
-//                {
-//                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
-//                    addTiffToStack(stackFName, outName.str());
-//                }
-//            }
-//        }
-//	    rs.clearImageMemory();
-//        Application->ProcessMessages();
-//    }
-
-
 	}
   	Log(lInfo) << "Finished Image fetching thread..";
     mIsRunning = false;
     mIsFinished = true;
-
 }
 
 void FetchImagesThread::setup(const StringList& urls, const string& cacheFolder)

@@ -37,7 +37,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 993
     Height = 661
-    ActivePage = TabSheet4
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16090,7 +16090,7 @@ object MainForm: TMainForm
         Height = 520
         Align = alLeft
         TabOrder = 0
-        object ZsBG: TGroupBox
+        object Zs_GB: TGroupBox
           Left = 1
           Top = 201
           Width = 263
@@ -16129,7 +16129,7 @@ object MainForm: TMainForm
             OnClick = mFetchSelectedZsBtnClick
           end
         end
-        object GroupBox3: TGroupBox
+        object ROI_GB: TGroupBox
           Left = 1
           Top = 1
           Width = 263
@@ -16231,13 +16231,14 @@ object MainForm: TMainForm
         Align = alTop
         TabOrder = 1
         object GroupBox8: TGroupBox
-          Left = 594
+          Left = 776
           Top = 1
           Width = 144
           Height = 111
           Align = alLeft
           Caption = 'Image/Mouse properties'
           TabOrder = 0
+          ExplicitLeft = 594
           object mX: TIntLabel
             Left = 16
             Top = 43
@@ -16296,13 +16297,14 @@ object MainForm: TMainForm
           end
         end
         object GroupBox9: TGroupBox
-          Left = 738
+          Left = 920
           Top = 1
           Width = 184
           Height = 111
           Align = alLeft
           Caption = 'Zoom'
           TabOrder = 1
+          ExplicitLeft = 738
           DesignSize = (
             184
             111)
@@ -16359,7 +16361,7 @@ object MainForm: TMainForm
         object GroupBox1: TGroupBox
           Left = 1
           Top = 1
-          Width = 593
+          Width = 775
           Height = 111
           Align = alLeft
           Caption = 'Project Selection'
@@ -16397,17 +16399,17 @@ object MainForm: TMainForm
           object mProjectsCB: TComboBox
             Left = 247
             Top = 37
-            Width = 333
+            Width = 522
             Height = 21
             Style = csDropDownList
-            DropDownCount = 15
+            DropDownCount = 25
             TabOrder = 1
             OnChange = mProjectsCBChange
           end
           object mStacksCB: TComboBox
             Left = 16
-            Top = 83
-            Width = 564
+            Top = 85
+            Width = 753
             Height = 21
             DropDownCount = 25
             TabOrder = 2
@@ -16915,5 +16917,11 @@ object MainForm: TMainForm
         OnClick = About1Click
       end
     end
+  end
+  object CreateCacheTimer: TTimer
+    Interval = 150
+    OnTimer = CreateCacheTimerTimer
+    Left = 32
+    Top = 400
   end
 end

@@ -28,6 +28,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     mRC.setBaseURL(mBaseUrlE->getValue());
     mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
 
+
     //Populate owners
     StringList o = mRC.getOwners();
     if(o.size())
@@ -60,7 +61,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
         }
     }
 
-    enableDisableGroupBox(StackGenerationGB, false);
+
 	enableDisableGroupBox(TestSSHGB, false);
 
     TabSheet5->TabVisible = false;

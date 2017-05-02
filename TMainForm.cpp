@@ -19,9 +19,6 @@
 #pragma link "TPropertyCheckBox"
 #pragma link "mtkIniFileC"
 #pragma link "mtkIntEdit"
-#pragma link "ScBridge"
-#pragma link "ScSSHChannel"
-#pragma link "ScSSHClient"
 #pragma link "TSSHFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
@@ -35,13 +32,13 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
     mLogLevel(lAny),
     mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsg),
-//    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
-    mImageForm(NULL)
+    mImageForm(NULL),
+    mRenderEnabled(false)
 {
-//	mTiffCP.FOnStateEvent = processEvent;
+
     setupIniFile();
     setupAndReadIniParameters();
 
@@ -176,6 +173,11 @@ TCanvas* TMainForm::getCanvas()
 void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
+	if(mRenderEnabled == false)
+    {
+    	return;
+    }
+
 	if(Button == TMouseButton::mbRight)
     {
 		mResetButton->Click();
@@ -348,26 +350,28 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
-    int z = toInt(stdstr(mZs->Items->Strings[0]));
-	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-	    mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
 
-    //Create image URLs
-    StringList urls;
-    for(int i = 0; i < mZs->Count; i++)
+	if(mCreateCacheThread.isRunning())
     {
-        int	z = toInt(stdstr(mZs->Items->Strings[i]));
-    	urls.append(rs.getURLForZ(z));
-    }
-
-	mCreateCacheThread.setup(urls, mImageCacheFolderE->getValue());
-    if(!mCreateCacheThread.isRunning())
-    {
-		mCreateCacheThread.start();
+		mCreateCacheThread.stop();
     }
     else
     {
-    	Log(lInfo) << "Creating cache thread is already running..";
+        int z = toInt(stdstr(mZs->Items->Strings[0]));
+        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
+            mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+
+        //Create image URLs
+        StringList urls;
+        for(int i = 0; i < mZs->Count; i++)
+        {
+            int	z = toInt(stdstr(mZs->Items->Strings[i]));
+            urls.append(rs.getURLForZ(z));
+        }
+
+        mCreateCacheThread.setup(urls, mImageCacheFolderE->getValue());
+        mCreateCacheThread.start();
+        CreateCacheTimer->Enabled = true;
     }
 }
 
@@ -605,7 +609,7 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 	ClickZ(Sender);
 }
 
-//---------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
 {
 	//Update Projects CB
@@ -614,6 +618,13 @@ void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
     {
 		return;
     }
+
+    //Disable uninitialized sections of the UI
+	enableDisableGroupBox(ROI_GB, false);
+	enableDisableGroupBox(Zs_GB, false);
+    enableDisableGroupBox(StackGenerationGB, false);
+   	mRenderEnabled = false;
+	mStacksCB->Clear();
 
     string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
     mOwnerE->setValue(owner);
@@ -635,6 +646,11 @@ void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
 		return;
     }
 
+    //Disable uninitialized sections of the UI
+	enableDisableGroupBox(ROI_GB, false);
+	enableDisableGroupBox(Zs_GB, false);
+    enableDisableGroupBox(StackGenerationGB, false);
+	mRenderEnabled = false;
     string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
     string project = stdstr(mProjectsCB->Items->Strings[mProjectsCB->ItemIndex]);
     mProjectE->setValue(project);
@@ -662,7 +678,14 @@ void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
    	mGetValidZsBtnClick(NULL);
     resetButtonClick(NULL);
 	ClickZ(NULL);
+
+    //Disable uninitialized sections of the UI
+	enableDisableGroupBox(ROI_GB, true);
+	enableDisableGroupBox(Zs_GB, true);
+    enableDisableGroupBox(StackGenerationGB, true);
+	mRenderEnabled = true;
 }
+
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
@@ -831,4 +854,18 @@ void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
     }
 }
 
+
+void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
+{
+	if(mCreateCacheThread.isRunning())
+    {
+		mFetchSelectedZsBtn->Caption = "Stop Cache Creation";
+    }
+    else
+    {
+		CreateCacheTimer->Enabled = false;
+		mFetchSelectedZsBtn->Caption = "Generate Cache";
+
+    }
+}
 
