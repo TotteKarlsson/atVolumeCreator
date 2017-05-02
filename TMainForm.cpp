@@ -9,6 +9,7 @@
 #include "mtkExeFile.h"
 #include "mtkMathUtils.h"
 #include "atImageForm.h"
+#include "TMemoLogger.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -18,31 +19,34 @@
 #pragma link "TPropertyCheckBox"
 #pragma link "mtkIniFileC"
 #pragma link "mtkIntEdit"
+#pragma link "ScBridge"
+#pragma link "ScSSHChannel"
+#pragma link "ScSSHClient"
+#pragma link "TSSHFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 using namespace mtk;
 using namespace std;
 extern string gLogFileName;
 
-bool convertTiff(const string& in, const string& out);
-bool addTiffToStack(const string& stackFName, const string& fName);
 void sendToClipBoard(const string& str);
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
     mLogLevel(lAny),
     mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsg),
-    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
+//    mTiffCP("C:\\cygwin\\bin\\tiffcp.exe"),
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
     mImageForm(NULL)
 {
-	mTiffCP.FOnStateEvent = processEvent;
+//	mTiffCP.FOnStateEvent = processEvent;
     setupIniFile();
     setupAndReadIniParameters();
 
     mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
+  	TMemoLogger::mMemoIsEnabled = true;
 }
 
 //---------------------------------------------------------------------------
@@ -160,7 +164,7 @@ double TMainForm::getImageStretchFactor()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mStretchCBClick(TObject *Sender)
 {
-	Image1->Stretch = mStretchCB->Checked;
+//	Image1->Stretch = mStretchCB->Checked;
 }
 
 TCanvas* TMainForm::getCanvas()
@@ -284,6 +288,7 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
     //Get saved renderbox for current slice
 	try
     {
+	    mScaleE->setValue(0.05);
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
         render(&mCurrentRB);
         mROIHistory.clear();
@@ -366,59 +371,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
     }
 }
 
-bool __fastcall	TMainForm::addTiffToStack(const string& stackFName, const string& fName)
-{
-    //Call external progam to stack the tiff
-    //output = call(["C:\\cygwin\\bin\\tiffcp", "-a", stackThisFile, stackFileName])
-    stringstream s;
-    s<<"-a "<<fName<<" "<<stackFName;
-
-   	mTiffCP.setMessageHandling(CATCHMESSAGE);
-	mTiffCP.run(s.str());
-
-	//check that files exists
-	if(!fileExists(stackFName) || !fileExists(fName))
-    {
-    	Log(lError) << "File does not exist...";
-        return false;
-    }
-	sleep(100);
-	return true;
-}
-
-//---------------------------------------------------------------------------
-bool convertTiff(const string& in, const string& out)
-{
-    MagickBooleanType status;
-    MagickWand *magick_wand;
-
-    MagickWandGenesis();
-    magick_wand = NewMagickWand();
-    status = MagickReadImage(magick_wand, in.c_str());
-    if (status == MagickFalse)
-    {
-        return false;
-    }
-
-    status = MagickWriteImages(magick_wand, out.c_str(), MagickTrue);
-    if (status == MagickFalse)
-    {
-    	//Bad
-        return false;
-    }
-    magick_wand = DestroyMagickWand(magick_wand);
-    MagickWandTerminus();
-    return true;
-}
-
-void __fastcall	TMainForm::processEvent(Process* proc)
-{
-	vector<string> out = proc->getOutput();
-    for(int i = 0; i < out.size(); i++)
-    {
-    	Log(lInfo) << out[i];
-    }
-}
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
@@ -470,36 +422,6 @@ void __fastcall TMainForm::mRestoreUnselectedBtnClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mGenerateZSerieBtnClick(TObject *Sender)
-{
-	TButton* b = dynamic_cast<TButton*>(Sender);
-    if(b == mGenerateZSerieBtn)
-    {
-        mZs->Clear();
-        for(int i = mZMinE->getValue(); i <= mZMaxE->getValue(); i+=mZStep->getValue())
-        {
-            mZs->AddItem(IntToStr(i), NULL);
-        }
-
-        mZs->ItemIndex = 0;
-    }
-//    else if(b == mAddCustomZs)
-//    {
-//        mZs->Clear();
-//		//Parse edit box
-//        StringList l(mCustomZsE->getValue(), ',');
-//        for(int i = 0; i < l.size(); i++)
-//        {
-//        	//Make sure we are adding an integer
-//        	int v = mtk::toInt(l[i]);
-//            mZs->AddItem(IntToStr(v), NULL);
-//        }
-//        mZs->ItemIndex = 0;
-//    }
-}
-
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 {
 	//Browse for folder
@@ -525,57 +447,6 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 
     //Populate list box
 	populateListBox(zs, mZs);
-
-    //Set ZMin and ZMax
-    if(zs.count() > 1)
-    {
-    	mZMinE->setValue(mtk::toInt(zs[0]));
-    	mZMaxE->setValue(mtk::toInt(zs[zs.count() -1 ]));
-    }
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mGenerateTiffStackBtnClick(TObject *Sender)
-{
-    int z = toInt(stdstr(mZs->Items->Strings[0]));
-	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-	    mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
-
-    for(int i = 0; i < mZs->Count; i++)
-    {
-    	int z = toInt(stdstr(mZs->Items->Strings[i]));
-
-        //First check if we already is having this data
-        //This will fetch from DB, or, if present, from the cache
-        TMemoryStream* imageMem = rs.getImage(z);
-
-        if(imageMem)
-        {
-            //Image1->Picture->Graphic->LoadFromStream(imageMem);
-
-            //Save to local box folder
-            //Image1->Invalidate();
-			stringstream outName;
-
-		    outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"-"<<mScaleE->getValue()<<".tif";
-			string stackFName(outName.str());
-		    outName.str("");
-
-            string in = rs.getImageLocalPathAndFileName();
-            //Make sure path exists, if not create it
-            outName << mVolumesFolder->getValue() <<"\\" << rs.getProjectName() <<"\\"<<mScaleE->getValue()<<"\\"<<createZeroPaddedString(4, z)<<".tif";
-            if(createFolder(getFilePath(outName.str())))
-            {
-                if(convertTiff(in, outName.str()))
-                {
-                    Log(lInfo) << "Converted file: "<<in<<" to "<<outName;
-                    addTiffToStack(stackFName, outName.str());
-                }
-            }
-        }
-	    rs.clearImageMemory();
-        Application->ProcessMessages();
-    }
 }
 
 //---------------------------------------------------------------------------
@@ -786,6 +657,11 @@ void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
 
     string stack = stdstr(mStacksCB->Items->Strings[mStacksCB->ItemIndex]);
 	mStackNameE->setValue(stack);
+
+	mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
+   	mGetValidZsBtnClick(NULL);
+    resetButtonClick(NULL);
+	ClickZ(NULL);
 }
 
 //---------------------------------------------------------------------------
@@ -815,4 +691,144 @@ void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
     Splitter2->Top = mBottomPanel->Top - 1;
 }
 
+
+void __fastcall TMainForm::TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender)
+{
+	MLog() << stdstr(TSSHFrame1->ScSSHShell1->ReadString());
+}
+
+
+void __fastcall TMainForm::CMDButtonClick(TObject *Sender)
+{
+	stringstream cmd;
+    cmd << stdstr(mCMD->Text) << endl;
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+}
+
+string escape(const string& before)
+{
+    string escaped(before);
+    //Pretty bisarre syntax.. see http://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings
+    escaped = replaceSubstring("'", "'\"'\"'", escaped);
+    return "'" + escaped + "'";
+}
+
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::RunClick(TObject *Sender)
+{
+	string scriptName("getVolume.sh");
+    stringstream cmd;
+	//First copy our script to host
+    string remoteScript(joinPath(stdstr(mVolumesFolder->Text), scriptName, '/'));
+	cmd << "touch "<< remoteScript << endl;
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+	cmd.str("");
+
+	cmd << "chmod +x "<< remoteScript << endl;
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+	cmd.str("");
+
+    StringList lines(getStrings(BashScriptMemo));
+    if(lines.size() <= 1)
+    {
+    	Log(lError) << "Can't populate remote script. Script Memo is Empty??";
+        return;
+    }
+
+	cmd << "echo \"\" > " <<remoteScript << endl;
+    //Copy content of memo
+    for(int i = 0 ; i < lines.size(); i++)
+    {
+		Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
+		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScript << endl;
+    }
+
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+    cmd.str("");
+
+	//Create commandline for remote bash script
+	cmd<< remoteScript;
+
+    //First argument is number of sections
+    cmd<<" "<<mZs->Count;
+
+    //Second argument is section numbers
+    cmd << " '";
+	for(int i = 0; i < mZs->Count; i++)
+//	for(int i = 0; i < 2; i++)
+    {
+    	cmd << mZs->Items->Strings[i].ToInt();
+        if(i < mZs->Count -1)
+        {
+        	cmd << " ";
+        }
+    }
+    cmd <<"'";
+
+    //Third argument is root outputfolder
+    cmd <<" "<<stdstr(mVolumesFolder->Text);
+
+    //Fourth arg is custom outputfolder
+	cmd <<" "<<stdstr(mCustomOutputFolder->Text);
+
+    //Fifth arg is custom outputfolder
+	cmd <<" "<<stdstr(mChannelNameE->Text);
+
+	//Sixth is owner
+    cmd <<" "<<stdstr(mOwnerE->Text);
+
+    //7th - project
+    cmd <<" "<<stdstr(mProjectE->Text);
+
+	//8th - stack
+	cmd <<" "<<stdstr(mStackNameE->Text);
+
+    //9th - scale
+	cmd <<" "<<stdstr(ScaleE->Text);
+
+	//10th - static bounds?
+    cmd <<" "<<mtk::toString(BoundsCB->Checked);
+
+    if(BoundsCB->Checked)
+    {
+    	//Pass bounds, xmin, xmax, ymin,ymax
+        cmd <<" '"
+        	<<mXCoordE->getValue()<<","
+        	<<mXCoordE->getValue() + mWidthE->getValue()<<","
+            <<mYCoordE->getValue()<<","
+            <<mYCoordE->getValue() + mHeightE->getValue()<<"'";
+    }
+
+    cmd << endl;
+
+    //Now execute..
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TSSHFrame1ScSSHClientAfterConnect(TObject *Sender)
+{
+	enableDisableGroupBox(StackGenerationGB, true);
+	enableDisableGroupBox(TestSSHGB, true);
+
+  	TSSHFrame1->ScSSHClientAfterConnect(Sender);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender)
+{
+	TSSHFrame1->ScSSHClientAfterDisconnect(Sender);
+	enableDisableGroupBox(StackGenerationGB, false);
+	enableDisableGroupBox(TestSSHGB, false);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if(Key == VK_ESCAPE)
+    {
+        Close();
+    }
+}
+
+

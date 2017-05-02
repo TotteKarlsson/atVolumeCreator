@@ -10,8 +10,8 @@ mStack(stack)
 
 void RenderProject::setupForStack(const string& owner, const string& project, const string& stack)
 {
-	mOwner = owner;
-    mProject = project;
-    mStack = stack;
+	mOwner 		= owner;
+    mProject 	= project;
+    mStack 		= stack;
 }
 

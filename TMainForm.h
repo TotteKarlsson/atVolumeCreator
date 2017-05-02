@@ -31,6 +31,10 @@
 #include "atFetchImagesThread.h"
 #include <Vcl.Menus.hpp>
 #include "mtkIntEdit.h"
+#include "ScBridge.hpp"
+#include "ScSSHChannel.hpp"
+#include "ScSSHClient.hpp"
+#include "TSSHFrame.h"
 
 class TImageForm;
 using mtk::Process;
@@ -43,9 +47,7 @@ class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
-	TGroupBox *StackGenGB;
 	TSTDStringLabeledEdit *mStackNameE;
-	TButton *mGenerateTiffStackBtn;
 	TMemo *infoMemo;
 	TIdHTTP *IdHTTP1;
 	TTimer *mShutDownTimer;
@@ -54,7 +56,6 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheet2;
 	TGroupBox *ZsBG;
 	TFloatLabeledEdit *mScaleE;
-	TSTDStringLabeledEdit *mBaseUrlE;
 	TSTDStringLabeledEdit *mOwnerE;
 	TSTDStringLabeledEdit *mProjectE;
 	TSplitter *Splitter1;
@@ -73,42 +74,19 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter2;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *CopyValidZs1;
-	TGroupBox *GroupBox2;
-	TButton *GetOptimalBoundsBtn;
-	TButton *mGetListOfBoundsBtn;
 	TButton *mZoomOutBtn;
 	TButton *mZoomInBtn;
 	TIntegerLabeledEdit *mWidthE;
 	TIntegerLabeledEdit *mHeightE;
 	TIntegerLabeledEdit *mXCoordE;
 	TIntegerLabeledEdit *mYCoordE;
-	TButton *mGetValidZsBtn;
-	TPanel *mToppanel;
-	TComboBox *mOwnersCB;
-	TComboBox *mProjectsCB;
-	TComboBox *mStacksCB;
 	TButton *mCloseBottomPanelBtn;
 	mtkIntEdit *mZoomFactor;
 	TButton *mShowBottomPanelBtn;
-	TGroupBox *GroupBox4;
-	TFloatLabeledEdit *FloatLabeledEdit1;
-	TButton *Button1;
-	TIntegerLabeledEdit *IntegerLabeledEdit1;
-	TIntegerLabeledEdit *IntegerLabeledEdit2;
-	TIntegerLabeledEdit *IntegerLabeledEdit3;
-	TIntegerLabeledEdit *IntegerLabeledEdit4;
 	TTabSheet *TabSheet3;
 	TButton *mBrowseForCacheFolder;
 	TSTDStringLabeledEdit *mImageCacheFolderE;
-	TGroupBox *GroupBox5;
-	TSTDStringLabeledEdit *mVolumesFolder;
 	TGroupBox *GroupBox6;
-	TPanel *Panel6;
-	TIntegerLabeledEdit *mZMaxE;
-	TIntegerLabeledEdit *mZMinE;
-	TButton *mGenerateZSerieBtn;
-	TButton *mAddCustomZs;
-	TIntegerLabeledEdit *mZStep;
 	TPropertyCheckBox *mUseRenderBoundsCB;
 	TPanel *mLogPanel;
 	TPanel *Panel5;
@@ -116,13 +94,36 @@ __published:	// IDE-managed Components
 	TIntLabel *mYC;
 	TIntLabel *mX;
 	TIntLabel *mY;
-	TPropertyCheckBox *mStretchCB;
 	TGroupBox *GroupBox8;
 	TGroupBox *GroupBox9;
-	TPanel *Panel1;
-	TGroupBox *GroupBox10;
 	TButton *mFetchSelectedZsBtn;
-	TPanel *Panel4;
+	TSSHFrame *TSSHFrame1;
+	TTabSheet *TabSheet4;
+	TGroupBox *StackGenerationGB;
+	TSTDStringLabeledEdit *mVolumesFolder;
+	TSTDStringLabeledEdit *mCustomOutputFolder;
+	TSTDStringLabeledEdit *mChannelNameE;
+	TButton *Run;
+	TFloatLabeledEdit *ScaleE;
+	TPropertyCheckBox *BoundsCB;
+	TMainMenu *MainMenu1;
+	TMenuItem *File1;
+	TMenuItem *Help1;
+	TMenuItem *About1;
+	TGroupBox *GroupBox4;
+	TSTDStringLabeledEdit *mBaseUrlE;
+	TTabSheet *TabSheet5;
+	TMemo *BashScriptMemo;
+	TGroupBox *GroupBox1;
+	TLabel *Label1;
+	TLabel *Label2;
+	TLabel *Label3;
+	TComboBox *mOwnersCB;
+	TComboBox *mProjectsCB;
+	TComboBox *mStacksCB;
+	TGroupBox *TestSSHGB;
+	TButton *CMDButton;
+	TEdit *mCMD;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -150,9 +151,9 @@ __published:	// IDE-managed Components
 	void __fastcall mMoveOutSelectedBtnClick(TObject *Sender);
 	void __fastcall mRestoreUnselectedBtnClick(TObject *Sender);
 	void __fastcall mGetValidZsBtnClick(TObject *Sender);
-	void __fastcall mGenerateZSerieBtnClick(TObject *Sender);
+
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
-	void __fastcall mGenerateTiffStackBtnClick(TObject *Sender);
+
 	void __fastcall mCLearMemoClick(TObject *Sender);
 	void __fastcall mUpdateZsBtnClick(TObject *Sender);
 	void __fastcall CopyValidZs1Click(TObject *Sender);
@@ -165,11 +166,18 @@ __published:	// IDE-managed Components
 	void __fastcall mCloseBottomPanelBtnClick(TObject *Sender);
 	void __fastcall mShowBottomPanelBtnClick(TObject *Sender);
 	void __fastcall mStacksCBChange(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender);
+	void __fastcall CMDButtonClick(TObject *Sender);
+	void __fastcall RunClick(TObject *Sender);
+	void __fastcall About1Click(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHClientAfterConnect(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 
 	private:	// User declarations
 		void	    									UpdateZList();
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
-       	mtk::Process									mTiffCP;
         RenderClient									mRC;
         int												getCurrentZ();
 		TImageForm*										mImageForm;
@@ -182,10 +190,8 @@ __published:	// IDE-managed Components
         mtk::Property<int>	                            mBottomPanelHeight;
 		mtk::Property<mtk::LogLevel>	                mLogLevel;
 
-		bool 		__fastcall							addTiffToStack(const string& stackFName, const string& fName);
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
-		void 		__fastcall 							processEvent(Process* proc);
 		double 											getImageStretchFactor();
 
         //Drawing stuff
