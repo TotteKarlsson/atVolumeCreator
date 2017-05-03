@@ -8,18 +8,6 @@
 //---------------------------------------------------------------------------
 using namespace mtk;
 
-string getImageCacheFileNameAndPathFromURL(const string& url, const string& cacheRootFolder)
-{
-    vector<string> cachePaths = splitStringAtWord(url, "/owner/");
-    if(cachePaths.size() == 2)
-    {
-		string fldr = substitute(cachePaths[1],"/","\\\\");
-		return joinPath(cacheRootFolder, fldr, "image.tiff");
-    }
-
-   	return "";
-}
-
 int getImageZFromURL(const string& url)
 {
     vector<string> cachePaths = splitStringAtWord(url, "/z/");
@@ -185,7 +173,6 @@ void FetchImagesThread::worker()
                 /* we're done with libcurl, so clean it up */
                 curl_global_cleanup();
             }
-
         }
 
         mIsTimeToDie = true;

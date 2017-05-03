@@ -11,8 +11,8 @@
 using namespace mtk;
 using std::string;
 USEFORM("TMainForm.cpp", MainForm);
-USEFORM("atImageForm.cpp", ImageForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
+USEFORM("atImageForm.cpp", ImageForm);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";

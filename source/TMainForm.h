@@ -31,14 +31,16 @@
 #include <Vcl.Menus.hpp>
 #include "mtkIntEdit.h"
 #include "TSSHFrame.h"
+#include "TImageControlsFrame.h"
 
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
 using mtk::IniFileProperties;
 using mtk::TRegistryProperties;
-
 extern string gApplicationRegistryRoot;
+void brightnessContrast(TImage *imageSelected);
+
 class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
@@ -60,7 +62,6 @@ __published:	// IDE-managed Components
 	TButton *mResetButton;
 	TButton *mHistoryBackBtn;
 	TButton *mHistoryFFW;
-	TPanel *Panel3;
 	TPanel *mLeftPanel;
 	TPaintBox *PaintBox1;
 	TListBox *mZs;
@@ -83,7 +84,6 @@ __published:	// IDE-managed Components
 	TButton *mBrowseForCacheFolder;
 	TSTDStringLabeledEdit *mImageCacheFolderE;
 	TGroupBox *GroupBox6;
-	TPropertyCheckBox *mUseRenderBoundsCB;
 	TPanel *mLogPanel;
 	TPanel *Panel5;
 	TIntLabel *mXC;
@@ -121,6 +121,13 @@ __published:	// IDE-managed Components
 	TButton *CMDButton;
 	TEdit *mCMD;
 	TTimer *CreateCacheTimer;
+	TIntegerLabeledEdit *MaxIntensity;
+	TIntegerLabeledEdit *MinIntensity;
+	TScrollBox *ScrollBox1;
+	TGroupBox *CacheGB;
+	TGroupBox *PostProcessingGB;
+	TCheckBox *ApplyPostProcCB;
+	TCheckBox *IMContrastControl;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -128,14 +135,12 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-
 	void __fastcall IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCount);
 	void __fastcall IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCountMax);
 	void __fastcall IdHTTP1Status(TObject *ASender, const TIdStatus AStatus, const UnicodeString AStatusText);
 	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
 	void __fastcall mStretchCBClick(TObject *Sender);
-
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -145,17 +150,12 @@ __published:	// IDE-managed Components
 	void __fastcall historyBtnClick(TObject *Sender);
 	void __fastcall TraverseZClick(TObject *Sender);
 	void __fastcall mFetchSelectedZsBtnClick(TObject *Sender);
-	void __fastcall mMoveOutSelectedBtnClick(TObject *Sender);
-	void __fastcall mRestoreUnselectedBtnClick(TObject *Sender);
 	void __fastcall mGetValidZsBtnClick(TObject *Sender);
-
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
-
 	void __fastcall mCLearMemoClick(TObject *Sender);
 	void __fastcall mUpdateZsBtnClick(TObject *Sender);
 	void __fastcall CopyValidZs1Click(TObject *Sender);
 	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
-	void __fastcall mValidZsLBClick(TObject *Sender);
 	void __fastcall mZoomBtnClick(TObject *Sender);
 	void __fastcall mOwnersCBChange(TObject *Sender);
 	void __fastcall mProjectsCBChange(TObject *Sender);
@@ -171,7 +171,8 @@ __published:	// IDE-managed Components
 	void __fastcall TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall CreateCacheTimerTimer(TObject *Sender);
-
+	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 
 	private:	// User declarations
 		void	    									UpdateZList();
@@ -192,6 +193,7 @@ __published:	// IDE-managed Components
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
 		double 											getImageStretchFactor();
+        void											updateScale();
 
         //Drawing stuff
         TBrushStyle 									BrushStyle;

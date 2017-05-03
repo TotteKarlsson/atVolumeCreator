@@ -36,8 +36,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <VCL_Custom_Styles>&quot;Amethyst Kamri|VCLSTYLE|$(PUBLIC)\Documents\RAD Studio\10.0\Styles\AmethystKamri.vsf&quot;</VCL_Custom_Styles>
-        <ILINK_LibraryPath>P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <IncludePath>P:\libs\atapi\source\vcl\frames\;$(IncludePath)</IncludePath>
+        <ILINK_LibraryPath>forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <IncludePath>forms\;P:\libs\atapi\source\vcl\frames\;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
         <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
@@ -87,9 +87,10 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <Icon_MainIcon>resources\VolumeCreator.ico</Icon_MainIcon>
+        <VerInfo_Release>1</VerInfo_Release>
+        <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <LinkPackageStatics>sbridge170.lib</LinkPackageStatics>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.1.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>5</VerInfo_MinorVer>
         <PostBuildEvent><![CDATA[xcopy $(OUTPUTDIR)VolumeCreator.exe $(APP_RELEASES)\VolumeCreator /y
@@ -146,6 +147,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="atROIHistory.cpp">
             <DependentOn>atROIHistory.h</DependentOn>
             <BuildOrder>5</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="forms\Brightness.cpp">
+            <BuildOrder>13</BuildOrder>
         </CppCompile>
         <CppCompile Include="Initializing.cpp">
             <DependentOn>Initializing.h</DependentOn>

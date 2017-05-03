@@ -18,7 +18,7 @@ const int HTTP_RESPONSE_OK = 200;
 
 RenderClient::RenderClient(Idhttp::TIdHTTP* c,  const string& baseURL, const string& owner,
                             const string& project, const string& stack,
-                            const string& imageType, int z, const RenderBox& box, double scale, const string& cacheFolder)
+                            const string& imageType, int z, const RenderBox& box, double scale, int minInt, int maxInt, const string& cacheFolder)
 :
 mC(c),
 mBaseURL(baseURL),
@@ -27,9 +27,23 @@ mImageType(imageType),
 mZ(z),
 mRenderBox(box),
 mScale(scale),
+mMinIntensity(minInt),
+mMaxIntensity(maxInt),
 mLocalCacheFolder(cacheFolder)
 {
 	mImageMemory = new TMemoryStream();
+}
+
+bool RenderClient::init(const string& owner, const string& project,
+		const string& stack, const string& imageType, int z, const RenderBox& box, double scale, int minInt, int maxInt)
+{
+    mProject.setupForStack(owner, project, stack);
+    mImageType = (imageType);
+    mZ = (z);
+    mRenderBox = (box);
+	mScale = (scale);
+	mMinIntensity = (minInt);
+	mMaxIntensity = (maxInt);
 }
 
 RenderClient::~RenderClient()
@@ -70,6 +84,7 @@ StringList RenderClient::getOwners()
         Log(lError) << "Failed fetching owners";
     }
 
+    owners.sort();
     return owners;
 }
 
@@ -115,6 +130,7 @@ StringList RenderClient::getProjectsForOwner(const string& o)
         Log(lError) << "Failed fetching owners";
     }
 
+    projects.sort();
     return projects;
 }
 
@@ -161,6 +177,7 @@ StringList RenderClient::getStacksForProject(const string& owner, const string& 
         Log(lError) << "Failed fetching owners";
     }
 
+    stacks.sort();
     return stacks;
 }
 
@@ -185,6 +202,7 @@ TMemoryStream* RenderClient::getImage(int z)
 
         try
         {
+//        	string url(getURLC());
 	    	mC->Get(getURLC(), mImageMemory);
         }
         catch(...)
@@ -197,6 +215,34 @@ TMemoryStream* RenderClient::getImage(int z)
         {
             mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
         }
+    }
+
+    return mImageMemory;
+}
+
+TMemoryStream* RenderClient::reloadImage(int z)
+{
+	mZ = z;
+	if(!mImageMemory)
+    {
+		mImageMemory = new TMemoryStream();
+    }
+	//First check if we already is having this data
+    Log(lInfo) << "Fetching from server";
+
+    try
+    {
+        mC->Get(getURLC(), mImageMemory);
+    }
+    catch(...)
+    {
+        Log(lError) << "There was an uncaught ERROR!";
+    }
+
+    //Save to cache (in a thread)
+    if(createFolder(getFilePath(getImageLocalPathAndFileName())))
+    {
+        mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
     }
 
     return mImageMemory;
@@ -301,17 +347,25 @@ vector<RenderBox> RenderClient::getBounds()
 	return mLatestBounds;
 }
 
+
 string RenderClient::getImageLocalPathAndFileName()
 {
-    vector<string> cachePaths = splitStringAtWord(getURL(), "/owner/");
-    string currentPath;
+	return getImageCacheFileNameAndPathFromURL(getURL(), mLocalCacheFolder);
+}
+
+string getImageCacheFileNameAndPathFromURL(const string& url, const string& cacheRootFolder)
+{
+    vector<string> cachePaths = splitStringAtWord(url, "/owner/");
     if(cachePaths.size() == 2)
     {
 		string fldr = substitute(cachePaths[1],"/","\\\\");
-		return joinPath(mLocalCacheFolder, fldr, "image.tiff");
+		fldr = substitute(fldr,"?","\\\\");
+		fldr = substitute(fldr,"&","\\\\");
+		fldr = substitute(fldr,"=","\\\\");
+		return joinPath(cacheRootFolder, fldr, "image.jpg");
     }
 
-   	return currentPath;
+   	return "";
 }
 
 bool RenderClient::checkCacheForCurrentURL()
@@ -334,7 +388,9 @@ string RenderClient::getURLForZ(int z)
     sUrl << "/stack/"	<<mProject.getCurrentStackname();
     sUrl << "/z/"<<z;
     sUrl << "/box/"<<mRenderBox.getX1()<<","<<mRenderBox.getY1() << "," << mRenderBox.getWidth() << ","<<mRenderBox.getHeight() << ","<<mScale;
-    sUrl << "/tiff-image";
+    sUrl << "/jpeg-image";
+	sUrl << "?minIntensity="<<mMinIntensity;
+	sUrl << "&maxIntensity="<<mMaxIntensity;
 	return sUrl.str();
 }
 
@@ -344,12 +400,14 @@ string RenderClient::getURL()
     //z/{1}/box/5000,9000,1300,1300,{2}/tiff-image");
 	stringstream sUrl;
     sUrl << mBaseURL;
-    sUrl << "/owner/" 		<< mProject.getProjectOwner();
+    sUrl << "/owner/" 	<< mProject.getProjectOwner();
     sUrl << "/project/" << mProject.getProjectName();
     sUrl << "/stack/"	<<mProject.getCurrentStackname();
     sUrl << "/z/"<<mZ;
     sUrl << "/box/"<<round(mRenderBox.getX1())<<","<<round(mRenderBox.getY1()) << "," << round(mRenderBox.getWidth()) << ","<<round(mRenderBox.getHeight()) << ","<<mScale;
-    sUrl << "/tiff-image";
+    sUrl << "/jpeg-image";
+	sUrl << "?minIntensity="<<mMinIntensity;
+	sUrl << "&maxIntensity="<<mMaxIntensity;
 	return sUrl.str();
 }
 

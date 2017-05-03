@@ -31,16 +31,30 @@ class RenderClient
 {
 	public:
 							            RenderClient(Idhttp::TIdHTTP* c,
-                        	            						const string& baseURL = gEmptyString,
-                        	            					  	const string& owner = gEmptyString,
-                        	            					  	const string& project = gEmptyString,
-                                                              	const string& stack = gEmptyString,
-                                                              	const string& imageType = "tiff-image",
-                                                              	int z = 0,
-                                                              	const RenderBox& box = RenderBox(),
-                                                                double mScale = 0.01,
-                                                                const string& cacheFolder = gEmptyString);
+                        	            						const string& baseURL 	    = gEmptyString,
+                        	            					  	const string& owner 	    = gEmptyString,
+                        	            					  	const string& project 	    = gEmptyString,
+                                                              	const string& stack 	    = gEmptyString,
+                                                              	const string& imageType     = "jpeg-image",
+                                                              	int z 					    = 0,
+                                                              	const RenderBox& box 	    = RenderBox(),
+                                                                double scale 			    = 0.01,
+                                                                int	minInt					= 0,
+                                                                int maxInt					= 65535,
+                                                                const string& cacheFolder 	= gEmptyString);
+
 							            ~RenderClient();
+
+		bool							init(				  	const string& owner 	    = gEmptyString,
+                        	            					  	const string& project 	    = gEmptyString,
+                                                              	const string& stack 	    = gEmptyString,
+                                                              	const string& imageType     = "jpeg-image",
+                                                              	int z 					    = 0,
+                                                              	const RenderBox& box 	    = RenderBox(),
+                                                                double scale 			    = 0.01,
+                                                                int	minInt					= 0,
+                                                                int maxInt					= 65535
+                                                                );
 
 		void							setBaseURL(const string& baseURL){mBaseURL = baseURL;}
 		StringList						getOwners();
@@ -50,6 +64,7 @@ class RenderClient
 		string				            getURL();
 		const char* 		            getURLC(){return getURL().c_str();}
         TMemoryStream*		            getImage(int z = 0);
+        TMemoryStream*		            reloadImage(int z = 0);
         string							getURLForZ(int z);
         bool				            checkCacheForCurrentURL();
         string				            getImageLocalPathAndFileName();
@@ -74,7 +89,11 @@ class RenderClient
         string 			                mImageType;
         RenderBox			            mRenderBox;
         string							mLocalCacheFolder;
+        int								mMinIntensity;
+        int								mMaxIntensity;
         RenderBox						parseBoundsResponse(const string& s);
 };
+
+string getImageCacheFileNameAndPathFromURL(const string& url, const string& cacheRootFolder);
 
 #endif

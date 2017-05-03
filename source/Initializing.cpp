@@ -21,7 +21,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     mCurrentRB.setY1(mYCoordE->getValue());
     mCurrentRB.setWidth(mWidthE->getValue());
     mCurrentRB.setHeight(mHeightE->getValue());
-
     mROIHistory.add(mOriginalRB);
 
     //Setup renderclient
@@ -62,14 +61,14 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     }
 
 
-	enableDisableGroupBox(TestSSHGB, false);
+	enableDisableGroupBox(TestSSHGB, 		false);
+	enableDisableGroupBox(PostProcessingGB, false);
 
     TabSheet5->TabVisible = false;
     TabSheet2->TabVisible = false;
 
     //Setup path for ssh
 	TSSHFrame1->ScFileStorage->Path = vclstr(gAppDataLocation);
-
 }
 
 void TMainForm::setupIniFile()
@@ -86,7 +85,6 @@ void TMainForm::setupIniFile()
 
 	//For convenience and for option form, populate appProperties container
 	mAppProperties.append(&mGeneralProperties);
-
 }
 
 bool TMainForm::setupAndReadIniParameters()
@@ -110,6 +108,9 @@ bool TMainForm::setupAndReadIniParameters()
     mGeneralProperties.add((BaseProperty*)  &mWidthE->getProperty()->setup(		        "VIEW_WIDTH", 		                0));
     mGeneralProperties.add((BaseProperty*)  &mHeightE->getProperty()->setup(	        "VIEW_HEIGHT", 		                0));
 
+    mGeneralProperties.add((BaseProperty*)  &MinIntensity->getProperty()->setup(	    "MIN_INTENSITY", 		            0));
+    mGeneralProperties.add((BaseProperty*)  &MaxIntensity->getProperty()->setup(	    "MAX_INTENSITY", 		            65535));
+
 	mGeneralProperties.add((BaseProperty*)  &mImageCacheFolderE->getProperty()->setup(	"IMAGE_CACHE_FOLDER",  				"C:\\ImageCache"));
 
 	//Read from file. Create if file do not exist
@@ -126,6 +127,10 @@ bool TMainForm::setupAndReadIniParameters()
     mYCoordE->update();
     mWidthE->update();
     mHeightE->update();
+
+	MinIntensity->update();
+	MaxIntensity->update();
+
 
 	mImageCacheFolderE->update();
 

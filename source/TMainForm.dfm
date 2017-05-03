@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Volume Creator'
-  ClientHeight = 819
-  ClientWidth = 993
+  ClientHeight = 910
+  ClientWidth = 1150
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,29 +24,30 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 661
-    Width = 993
+    Top = 752
+    Width = 1150
     Height = 3
     Cursor = crVSplit
     Align = alBottom
     ExplicitLeft = 21
     ExplicitTop = 724
+    ExplicitWidth = 993
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 993
-    Height = 661
+    Width = 1150
+    Height = 752
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'General'
       object PaintBox1: TPaintBox
-        Left = 266
+        Left = 321
         Top = 113
-        Width = 719
-        Height = 520
+        Width = 821
+        Height = 611
         Align = alClient
         Color = clBtnFace
         ParentColor = False
@@ -56,10 +57,10 @@ object MainForm: TMainForm
         ExplicitHeight = 635
       end
       object Image1: TImage
-        Left = 266
+        Left = 321
         Top = 113
-        Width = 719
-        Height = 520
+        Width = 821
+        Height = 611
         Align = alClient
         AutoSize = True
         Picture.Data = {
@@ -16070,175 +16071,230 @@ object MainForm: TMainForm
         OnMouseDown = FormMouseDown
         OnMouseMove = FormMouseMove
         OnMouseUp = FormMouseUp
+        ExplicitLeft = 266
         ExplicitTop = 0
         ExplicitWidth = 715
         ExplicitHeight = 715
       end
-      object Splitter1: TSplitter
-        Left = 265
-        Top = 113
-        Width = 1
-        Height = 520
-        ExplicitLeft = 400
-        ExplicitTop = 38
-        ExplicitHeight = 660
-      end
       object mLeftPanel: TPanel
         Left = 0
         Top = 113
-        Width = 265
-        Height = 520
+        Width = 321
+        Height = 611
         Align = alLeft
         TabOrder = 0
-        object Zs_GB: TGroupBox
+        object ScrollBox1: TScrollBox
           Left = 1
-          Top = 201
-          Width = 263
-          Height = 318
+          Top = 1
+          Width = 319
+          Height = 609
           Align = alClient
-          Caption = 'Sections'
-          TabOrder = 1
-          object Panel3: TPanel
-            Left = 2
-            Top = 15
-            Width = 259
-            Height = 260
-            Align = alClient
+          TabOrder = 0
+          object ROI_GB: TGroupBox
+            Left = 0
+            Top = 0
+            Width = 315
+            Height = 161
+            Align = alTop
+            Caption = 'Image Parameters'
             TabOrder = 0
+            object mScaleE: TFloatLabeledEdit
+              Left = 16
+              Top = 34
+              Width = 50
+              Height = 21
+              EditLabel.Width = 25
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Scale'
+              TabOrder = 0
+              Text = '0.05'
+              OnKeyDown = mScaleEKeyDown
+              Value = 0.050000000000000000
+            end
+            object mResetButton: TButton
+              Left = 157
+              Top = 101
+              Width = 137
+              Height = 45
+              Caption = 'Reset to Layer Bounds'
+              TabOrder = 5
+              OnClick = resetButtonClick
+            end
+            object mWidthE: TIntegerLabeledEdit
+              Left = 17
+              Top = 122
+              Width = 49
+              Height = 21
+              EditLabel.Width = 28
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Width'
+              TabOrder = 3
+              Text = '12000'
+              OnKeyDown = mScaleEKeyDown
+              Value = 12000
+            end
+            object mHeightE: TIntegerLabeledEdit
+              Left = 88
+              Top = 122
+              Width = 50
+              Height = 21
+              EditLabel.Width = 31
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Height'
+              TabOrder = 4
+              Text = '32000'
+              OnKeyDown = mScaleEKeyDown
+              Value = 32000
+            end
+            object mXCoordE: TIntegerLabeledEdit
+              Left = 17
+              Top = 76
+              Width = 49
+              Height = 21
+              EditLabel.Width = 6
+              EditLabel.Height = 13
+              EditLabel.Caption = 'X'
+              TabOrder = 1
+              Text = '8000'
+              OnKeyDown = mScaleEKeyDown
+              Value = 8000
+            end
+            object mYCoordE: TIntegerLabeledEdit
+              Left = 88
+              Top = 76
+              Width = 50
+              Height = 21
+              EditLabel.Width = 6
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Y'
+              TabOrder = 2
+              Text = '3200'
+              OnKeyDown = mScaleEKeyDown
+              Value = 3200
+            end
+            object MaxIntensity: TIntegerLabeledEdit
+              Left = 229
+              Top = 34
+              Width = 66
+              Height = 21
+              EditLabel.Width = 66
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Max Intensity'
+              TabOrder = 6
+              Text = '65535'
+              OnKeyDown = IntensityKeyDown
+              Value = 65535
+            end
+            object MinIntensity: TIntegerLabeledEdit
+              Left = 157
+              Top = 34
+              Width = 66
+              Height = 21
+              EditLabel.Width = 62
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Min Intensity'
+              TabOrder = 7
+              Text = '0'
+              OnKeyDown = IntensityKeyDown
+            end
+          end
+          object Zs_GB: TGroupBox
+            Left = 0
+            Top = 266
+            Width = 315
+            Height = 339
+            Align = alClient
+            Caption = 'Sections'
+            Constraints.MinHeight = 300
+            TabOrder = 1
+            ExplicitTop = 305
+            ExplicitHeight = 300
+            object CacheGB: TGroupBox
+              Left = 2
+              Top = 232
+              Width = 311
+              Height = 105
+              Align = alBottom
+              Caption = 'Local Cache'
+              TabOrder = 0
+              ExplicitLeft = 1
+              ExplicitTop = 210
+              ExplicitWidth = 351
+              object mFetchSelectedZsBtn: TButton
+                Left = 16
+                Top = 32
+                Width = 100
+                Height = 50
+                Caption = 'Generate Cache'
+                TabOrder = 0
+                OnClick = mFetchSelectedZsBtnClick
+              end
+            end
             object mZs: TListBox
-              Left = 1
-              Top = 1
-              Width = 257
-              Height = 258
+              Left = 2
+              Top = 15
+              Width = 311
+              Height = 217
               Align = alClient
               ItemHeight = 13
               MultiSelect = True
               PopupMenu = PopupMenu1
-              TabOrder = 0
+              TabOrder = 1
               OnClick = ClickZ
+              ExplicitHeight = 130
             end
           end
-          object mFetchSelectedZsBtn: TButton
-            Left = 2
-            Top = 275
-            Width = 259
-            Height = 41
-            Align = alBottom
-            Caption = 'Generate Cache'
-            TabOrder = 1
-            OnClick = mFetchSelectedZsBtnClick
-          end
-        end
-        object ROI_GB: TGroupBox
-          Left = 1
-          Top = 1
-          Width = 263
-          Height = 200
-          Align = alTop
-          Caption = 'Region of Interest'
-          TabOrder = 0
-          object mScaleE: TFloatLabeledEdit
-            Left = 16
-            Top = 34
-            Width = 50
-            Height = 21
-            EditLabel.Width = 25
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Scale'
-            TabOrder = 0
-            Text = '0.05'
-            OnKeyDown = mScaleEKeyDown
-            Value = 0.050000000000000000
-          end
-          object mResetButton: TButton
-            Left = 13
-            Top = 149
-            Width = 137
-            Height = 45
-            Caption = 'Reset to Layer Bounds'
-            TabOrder = 5
-            OnClick = resetButtonClick
-          end
-          object mWidthE: TIntegerLabeledEdit
-            Left = 17
-            Top = 122
-            Width = 49
-            Height = 21
-            EditLabel.Width = 28
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Width'
-            TabOrder = 3
-            Text = '12000'
-            OnKeyDown = mScaleEKeyDown
-            Value = 12000
-          end
-          object mHeightE: TIntegerLabeledEdit
-            Left = 88
-            Top = 122
-            Width = 50
-            Height = 21
-            EditLabel.Width = 31
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Height'
-            TabOrder = 4
-            Text = '32000'
-            OnKeyDown = mScaleEKeyDown
-            Value = 32000
-          end
-          object mXCoordE: TIntegerLabeledEdit
-            Left = 17
-            Top = 76
-            Width = 49
-            Height = 21
-            EditLabel.Width = 6
-            EditLabel.Height = 13
-            EditLabel.Caption = 'X'
-            TabOrder = 1
-            Text = '8000'
-            OnKeyDown = mScaleEKeyDown
-            Value = 8000
-          end
-          object mYCoordE: TIntegerLabeledEdit
-            Left = 88
-            Top = 76
-            Width = 50
-            Height = 21
-            EditLabel.Width = 6
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Y'
+          object PostProcessingGB: TGroupBox
+            Left = 0
+            Top = 161
+            Width = 315
+            Height = 105
+            Align = alTop
+            Caption = 'Post Processing'
             TabOrder = 2
-            Text = '3200'
-            OnKeyDown = mScaleEKeyDown
-            Value = 3200
-          end
-          object mUseRenderBoundsCB: TPropertyCheckBox
-            Left = 88
-            Top = 34
-            Width = 130
-            Height = 17
-            Caption = 'Use render bounds'
-            Checked = True
-            State = cbChecked
-            TabOrder = 6
+            ExplicitTop = 200
+            ExplicitWidth = 298
+            object ApplyPostProcCB: TCheckBox
+              Left = 14
+              Top = 24
+              Width = 97
+              Height = 17
+              Caption = 'Apply'
+              TabOrder = 0
+            end
+            object IMContrastControl: TCheckBox
+              Left = 87
+              Top = 47
+              Width = 207
+              Height = 17
+              Caption = 'Sigmoidal non-linearity contrast control'
+              TabOrder = 1
+            end
           end
         end
       end
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 985
+        Width = 1142
         Height = 113
         Align = alTop
         TabOrder = 1
+        ExplicitWidth = 985
+        object Splitter1: TSplitter
+          Left = 593
+          Top = 1
+          Width = 2
+          Height = 111
+        end
         object GroupBox8: TGroupBox
-          Left = 776
+          Left = 595
           Top = 1
           Width = 144
           Height = 111
           Align = alLeft
           Caption = 'Image/Mouse properties'
           TabOrder = 0
-          ExplicitLeft = 594
           object mX: TIntLabel
             Left = 16
             Top = 43
@@ -16297,14 +16353,13 @@ object MainForm: TMainForm
           end
         end
         object GroupBox9: TGroupBox
-          Left = 920
+          Left = 739
           Top = 1
           Width = 184
           Height = 111
           Align = alLeft
           Caption = 'Zoom'
           TabOrder = 1
-          ExplicitLeft = 738
           DesignSize = (
             184
             111)
@@ -16316,6 +16371,7 @@ object MainForm: TMainForm
             Anchors = [akTop, akRight]
             Caption = '<'
             TabOrder = 0
+            Visible = False
             OnClick = historyBtnClick
           end
           object mHistoryFFW: TButton
@@ -16326,6 +16382,7 @@ object MainForm: TMainForm
             Anchors = [akTop, akRight]
             Caption = '>'
             TabOrder = 1
+            Visible = False
             OnClick = historyBtnClick
           end
           object mZoomFactor: mtkIntEdit
@@ -16361,11 +16418,14 @@ object MainForm: TMainForm
         object GroupBox1: TGroupBox
           Left = 1
           Top = 1
-          Width = 775
+          Width = 592
           Height = 111
           Align = alLeft
           Caption = 'Project Selection'
           TabOrder = 2
+          DesignSize = (
+            592
+            111)
           object Label1: TLabel
             Left = 16
             Top = 21
@@ -16389,7 +16449,7 @@ object MainForm: TMainForm
           end
           object mOwnersCB: TComboBox
             Left = 16
-            Top = 37
+            Top = 34
             Width = 225
             Height = 21
             Style = csDropDownList
@@ -16398,19 +16458,21 @@ object MainForm: TMainForm
           end
           object mProjectsCB: TComboBox
             Left = 247
-            Top = 37
-            Width = 522
+            Top = 34
+            Width = 339
             Height = 21
             Style = csDropDownList
+            Anchors = [akLeft, akTop, akRight]
             DropDownCount = 25
             TabOrder = 1
             OnChange = mProjectsCBChange
           end
           object mStacksCB: TComboBox
             Left = 16
-            Top = 85
-            Width = 753
+            Top = 82
+            Width = 570
             Height = 21
+            Anchors = [akLeft, akTop, akRight]
             DropDownCount = 25
             TabOrder = 2
             OnChange = mStacksCBChange
@@ -16421,6 +16483,8 @@ object MainForm: TMainForm
     object TabSheet2: TTabSheet
       Caption = 'Current Project Settings'
       ImageIndex = 1
+      ExplicitWidth = 985
+      ExplicitHeight = 633
       object mStackNameE: TSTDStringLabeledEdit
         Left = 764
         Top = 83
@@ -16464,6 +16528,8 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
+      ExplicitWidth = 985
+      ExplicitHeight = 633
       object StackGenerationGB: TGroupBox
         Left = 14
         Top = 3
@@ -16586,11 +16652,13 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
+      ExplicitWidth = 985
+      ExplicitHeight = 633
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
-        Width = 985
-        Height = 633
+        Width = 1142
+        Height = 724
         Align = alClient
         Lines.Strings = (
           '#! /bin/bash'
@@ -16736,11 +16804,15 @@ object MainForm: TMainForm
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
+        ExplicitWidth = 985
+        ExplicitHeight = 633
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitWidth = 985
+      ExplicitHeight = 633
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16798,37 +16870,42 @@ object MainForm: TMainForm
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 664
-    Width = 993
+    Top = 755
+    Width = 1150
     Height = 136
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 664
+    ExplicitWidth = 993
     object mLogPanel: TPanel
       Left = 1
       Top = 1
-      Width = 991
+      Width = 1148
       Height = 134
       Align = alClient
       TabOrder = 0
+      ExplicitWidth = 991
       object infoMemo: TMemo
         Left = 1
         Top = 42
-        Width = 989
+        Width = 1146
         Height = 91
         Align = alClient
         ScrollBars = ssBoth
         TabOrder = 0
         WordWrap = False
+        ExplicitWidth = 989
       end
       object Panel2: TPanel
         Left = 1
         Top = 1
-        Width = 989
+        Width = 1146
         Height = 41
         Align = alTop
         TabOrder = 1
+        ExplicitWidth = 989
         DesignSize = (
-          989
+          1146
           41)
         object mCLearMemo: TButton
           Left = 9
@@ -16840,7 +16917,7 @@ object MainForm: TMainForm
           OnClick = mCLearMemoClick
         end
         object mCloseBottomPanelBtn: TButton
-          Left = 950
+          Left = 1107
           Top = 5
           Width = 29
           Height = 25
@@ -16848,20 +16925,23 @@ object MainForm: TMainForm
           Caption = 'x'
           TabOrder = 1
           OnClick = mCloseBottomPanelBtnClick
+          ExplicitLeft = 950
         end
       end
     end
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 800
-    Width = 993
+    Top = 891
+    Width = 1150
     Height = 19
     Align = alBottom
     Caption = '^'
     TabOrder = 2
     Visible = False
     OnClick = mShowBottomPanelBtnClick
+    ExplicitTop = 800
+    ExplicitWidth = 993
   end
   object IdHTTP1: TIdHTTP
     OnStatus = IdHTTP1Status

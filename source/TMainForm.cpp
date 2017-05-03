@@ -10,6 +10,27 @@
 #include "mtkMathUtils.h"
 #include "atImageForm.h"
 #include "TMemoLogger.h"
+
+
+
+#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
+#define SigmoidalContrast(x) \
+  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
+#define ThrowWandException(wand) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=MagickGetException(wand,&severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=(char *) MagickRelinquishMemory(description); \
+  exit(-1); \
+}
+
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -20,6 +41,7 @@
 #pragma link "mtkIniFileC"
 #pragma link "mtkIntEdit"
 #pragma link "TSSHFrame"
+#pragma link "TImageControlsFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 using namespace mtk;
@@ -27,6 +49,8 @@ using namespace std;
 extern string gLogFileName;
 
 void sendToClipBoard(const string& str);
+TImage *CurrImage;
+
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
@@ -44,6 +68,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 
     mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
   	TMemoLogger::mMemoIsEnabled = true;
+	CurrImage = Image1;
 }
 
 //---------------------------------------------------------------------------
@@ -58,8 +83,8 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     int z = toInt(stdstr(mZs->Items->Strings[ii]));
 
     //Fetch data using URL
-    RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-                        mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
+	mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
     //First check if we already is having this data
 	try
@@ -67,9 +92,9 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
         try
         {
             Log(lDebug) << "Loading z = "<<z;
-            Log(lDebug) << "URL = "<< rs.getURL();
+            Log(lDebug) << "URL = "<< mRC.getURL();
 
-            TMemoryStream* imageMem = rs.getImage(z);
+            TMemoryStream* imageMem = mRC.getImage(z);
             if(imageMem)
             {
                 Image1->Picture->Graphic->LoadFromStream(imageMem);
@@ -85,7 +110,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     }
     __finally
     {
-    	rs.clearImageMemory();
+    	mRC.clearImageMemory();
     }
 }
 
@@ -250,6 +275,8 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     //Add to render history
     mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
     mROIHistory.add(mCurrentRB);
+
+    updateScale();
 	ClickZ(Sender);
 }
 
@@ -359,7 +386,7 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
     {
         int z = toInt(stdstr(mZs->Items->Strings[0]));
         RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-            mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), mImageCacheFolderE->getValue());
+            mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue(), mImageCacheFolderE->getValue());
 
         //Create image URLs
         StringList urls;
@@ -373,56 +400,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
         mCreateCacheThread.start();
         CreateCacheTimer->Enabled = true;
     }
-}
-
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mMoveOutSelectedBtnClick(TObject *Sender)
-{
-//	if(mZs->SelCount == 0)
-//    {
-//    	Log(lWarning) << "There are no items selected...";
-//        return;
-//    }
-//
-//	int selectedAfter;
-//    for(int i = 0; i < mZs->Count; i++)
-//    {
-//    	if(mZs->Selected[i])
-//        {
-// 			String item = mZs->Items->Strings[i];
-//        	mDeSelectedZs->AddItem(item, NULL);
-//            selectedAfter = i;
-//        }
-//    }
-//
-//    int selCount = mZs->SelCount;
-//    mZs->DeleteSelected();
-//
-//    int newlySelected = selectedAfter - (selCount -1);
-//    if(newlySelected > -1 && newlySelected < mZs->Count)
-//    {
-//    	mZs->Selected[newlySelected] = true;
-//        mZs->ItemIndex = newlySelected;
-//        render();
-//    }
-//
-//    sortTListBoxNumerically(mDeSelectedZs);
-}
-
-
-void __fastcall TMainForm::mRestoreUnselectedBtnClick(TObject *Sender)
-{
-//    for(int i = 0; i < mDeSelectedZs->Count; i++)
-//    {
-//    	if(mDeSelectedZs->Selected[i])
-//        {
-// 			String item = mDeSelectedZs->Items->Strings[i];
-//        	mZs->AddItem(item, NULL);
-//        }
-//    }
-//    mDeSelectedZs->DeleteSelected();
-//    sortTListBoxNumerically(mZs);
 }
 
 //---------------------------------------------------------------------------
@@ -551,32 +528,8 @@ void __fastcall TMainForm::GetOptimalBoundsBtnClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mValidZsLBClick(TObject *Sender)
-{
-	//Fetch section info
-	//Get selected z
-//    int index = mValidZsLB->ItemIndex;
-//    if(index != -1)
-//    {
-//        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
-//
-//        vector<int> zs;
-//        int test = mValidZsLB->Items->Strings[index].ToInt();
-//        zs.push_back(test);
-//
-//        RenderBox box = rs.getOptimalXYBoxForZs(zs);
-//
-//        Log(lInfo) << "XMin = " << box.getX1();
-//        Log(lInfo) << "XMax = " << box.getX2();
-//        Log(lInfo) << "YMin = " << box.getY1();
-//        Log(lInfo) << "YMax = " << box.getY2();
-//    }
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 {
-
 	TButton* b = dynamic_cast<TButton*>(Sender);
 
 	double zoomFactor = mZoomFactor->getValue();
@@ -594,6 +547,13 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
     mWidthE->setValue( mCurrentRB.getWidth());
     mHeightE->setValue(mCurrentRB.getHeight());
 
+    updateScale();
+}
+
+void TMainForm::updateScale()
+{
+    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+
     //Scale the scaling
     double scale  = (double) Image1->Height / (double) mCurrentRB.getHeight();
     Log(lInfo) << "Scaling is: " << scale;
@@ -606,7 +566,7 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
     	scale = 1.0;
     }
 	mScaleE->setValue(scale);
-	ClickZ(Sender);
+	ClickZ(NULL);
 }
 
 //--------------------------------------------------------------------------
@@ -854,7 +814,6 @@ void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
     }
 }
 
-
 void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
@@ -865,7 +824,139 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
     {
 		CreateCacheTimer->Enabled = false;
 		mFetchSelectedZsBtn->Caption = "Generate Cache";
-
     }
 }
+
+void __fastcall TMainForm::Button1Click(TObject *Sender)
+{
+    MagickBooleanType status;
+    PixelInfo pixel;
+    MagickWand *contrast_wand, *image_wand;
+    PixelIterator *contrast_iterator, *iterator;
+    PixelWand **contrast_pixels, **pixels;
+    register ssize_t x;
+    size_t width;
+    ssize_t y;
+
+    MagickWandGenesis();
+    image_wand=NewMagickWand();
+
+    string currImage = mRC.getImageLocalPathAndFileName();
+
+    status=MagickReadImage(image_wand, currImage.c_str());
+    if (status == MagickFalse)
+    {
+    	ThrowWandException(image_wand);
+    }
+
+    contrast_wand = CloneMagickWand(image_wand);
+
+    /*
+    Sigmoidal non-linearity contrast control.
+    */
+    iterator=NewPixelIterator(image_wand);
+    contrast_iterator=NewPixelIterator(contrast_wand);
+    if ((iterator == (PixelIterator *) NULL) || (contrast_iterator == (PixelIterator *) NULL))
+    {
+    	ThrowWandException(image_wand);
+    }
+
+    for (y=0; y < (ssize_t) MagickGetImageHeight(image_wand); y++)
+    {
+	    pixels=PixelGetNextIteratorRow(iterator,&width);
+    	contrast_pixels=PixelGetNextIteratorRow(contrast_iterator,&width);
+    	if ((pixels == (PixelWand **) NULL) || (contrast_pixels == (PixelWand **) NULL))
+        {
+      		break;
+        }
+
+        for (x=0; x < (ssize_t) width; x++)
+        {
+        	PixelGetMagickColor(pixels[x],&pixel);
+          	pixel.red=SigmoidalContrast(pixel.red);
+          	pixel.green=SigmoidalContrast(pixel.green);
+          	pixel.blue=SigmoidalContrast(pixel.blue);
+          	pixel.index=SigmoidalContrast(pixel.index);
+        	//      PixelSetMagickColor(contrast_pixels[x],&pixel);
+          	PixelSetPixelColor(contrast_pixels[x],&pixel);
+        }
+
+    	(void) PixelSyncIterator(contrast_iterator);
+    }
+
+    if (y < (ssize_t) MagickGetImageHeight(image_wand))
+    {
+        ThrowWandException(image_wand);
+    }
+
+    contrast_iterator=DestroyPixelIterator(contrast_iterator);
+    iterator=DestroyPixelIterator(iterator);
+    image_wand=DestroyMagickWand(image_wand);
+
+    /*
+    Write the image then destroy it.
+    */
+    status = MagickWriteImages(contrast_wand,currImage.c_str(),MagickTrue);
+    if (status == MagickFalse)
+    {
+    	ThrowWandException(image_wand);
+    }
+
+    contrast_wand = DestroyMagickWand(contrast_wand);
+    MagickWandTerminus();
+
+    //Reload
+    ClickZ(Sender);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+	if(Key != VK_RETURN)
+    {
+    	return;
+    }
+    int minInt = MinIntensity->getValue();
+    int maxInt = MaxIntensity->getValue();
+    int ii = mZs->ItemIndex;
+    if(ii == -1)
+    {
+        return;
+    }
+
+    int z = toInt(stdstr(mZs->Items->Strings[ii]));
+
+    //Fetch data using URL
+    mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
+    mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), minInt, maxInt);
+
+    //First check if we already is having this data
+    try
+    {
+        try
+        {
+            Log(lDebug) << "Loading z = "<<z;
+            Log(lDebug) << "URL = "<< mRC.getURL();
+
+            TMemoryStream* imageMem = mRC.reloadImage(z);
+            if(imageMem)
+            {
+                Image1->Picture->Graphic->LoadFromStream(imageMem);
+                Image1->Invalidate();
+            }
+
+            Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+        }
+        __except(EXCEPTION_EXECUTE_HANDLER)
+        {
+            Log(lError) << "There was a memory problem..";
+        }
+    }
+    __finally
+    {
+        mRC.clearImageMemory();
+    }
+}
+
 
