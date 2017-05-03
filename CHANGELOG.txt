@@ -1,3 +1,22 @@
+Release 0.5.1 (May 3)
+=======================
+* Added ability to set min and maxintensity for fetched sections from Render
+* Added some DICOM data
+* Restructured source files
+* Added control of cache thread
+* Many updates to UI
+* Added a style
+* Added remote stack creation over SSH
+* Before employing remote SSH commands
+* Added info files
+* Creating a VolumeCreator release
+* Cleaned up test UI
+* Added finding of bounding box
+* Renamed RenderService to client
+* Added image fetching thread
+* Added more processing stuff
+* Added logging
+
 Release 0.5.0 (March 10)
 =======================
 * Created an initial release
