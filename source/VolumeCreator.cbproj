@@ -87,10 +87,10 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Release>2</VerInfo_Release>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <LinkPackageStatics>sbridge170.lib</LinkPackageStatics>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.1.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.2.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>5</VerInfo_MinorVer>
         <PostBuildEvent><![CDATA[xcopy $(OUTPUTDIR)VolumeCreator.exe $(APP_RELEASES)\VolumeCreator /y
