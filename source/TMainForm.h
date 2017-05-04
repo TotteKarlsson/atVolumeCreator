@@ -58,7 +58,7 @@ __published:	// IDE-managed Components
 	TSTDStringLabeledEdit *mProjectE;
 	TSplitter *Splitter1;
 	TPanel *mBottomPanel;
-	TGroupBox *ROI_GB;
+	TGroupBox *imageParasGB;
 	TButton *mResetButton;
 	TButton *mHistoryBackBtn;
 	TButton *mHistoryFFW;
@@ -96,12 +96,7 @@ __published:	// IDE-managed Components
 	TSSHFrame *TSSHFrame1;
 	TTabSheet *TabSheet4;
 	TGroupBox *StackGenerationGB;
-	TSTDStringLabeledEdit *mVolumesFolder;
-	TSTDStringLabeledEdit *mCustomOutputFolder;
-	TSTDStringLabeledEdit *mChannelNameE;
 	TButton *Run;
-	TFloatLabeledEdit *ScaleE;
-	TPropertyCheckBox *BoundsCB;
 	TMainMenu *MainMenu1;
 	TMenuItem *File1;
 	TMenuItem *Help1;
@@ -128,6 +123,16 @@ __published:	// IDE-managed Components
 	TGroupBox *PostProcessingGB;
 	TCheckBox *ApplyPostProcCB;
 	TCheckBox *IMContrastControl;
+	TCheckListBox *StacksForProjectCB;
+	TGroupBox *MultiStackCreationGB;
+	TPanel *Panel1;
+	TSTDStringLabeledEdit *FilterStacksEdit;
+	TPanel *Panel3;
+	TPropertyCheckBox *BoundsCB;
+	TFloatLabeledEdit *VolumesScaleE;
+	TSTDStringLabeledEdit *VolumesFolder;
+	TSTDStringLabeledEdit *SubFolder1;
+	TSTDStringLabeledEdit *SubFolder2;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -173,6 +178,9 @@ __published:	// IDE-managed Components
 	void __fastcall CreateCacheTimerTimer(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall SubFolder2Change(TObject *Sender);
+
 
 	private:	// User declarations
 		void	    									UpdateZList();

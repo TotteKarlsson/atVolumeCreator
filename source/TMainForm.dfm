@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Volume Creator'
-  ClientHeight = 910
+  ClientHeight = 871
   ClientWidth = 1150
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,7 +24,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 752
+    Top = 713
     Width = 1150
     Height = 3
     Cursor = crVSplit
@@ -37,7 +37,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1150
-    Height = 752
+    Height = 713
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
@@ -47,7 +47,7 @@ object MainForm: TMainForm
         Left = 321
         Top = 113
         Width = 821
-        Height = 611
+        Height = 572
         Align = alClient
         Color = clBtnFace
         ParentColor = False
@@ -60,7 +60,7 @@ object MainForm: TMainForm
         Left = 321
         Top = 113
         Width = 821
-        Height = 611
+        Height = 572
         Align = alClient
         AutoSize = True
         Picture.Data = {
@@ -16080,17 +16080,19 @@ object MainForm: TMainForm
         Left = 0
         Top = 113
         Width = 321
-        Height = 611
+        Height = 572
         Align = alLeft
         TabOrder = 0
         object ScrollBox1: TScrollBox
           Left = 1
           Top = 1
           Width = 319
-          Height = 609
+          Height = 570
           Align = alClient
+          DoubleBuffered = True
+          ParentDoubleBuffered = False
           TabOrder = 0
-          object ROI_GB: TGroupBox
+          object imageParasGB: TGroupBox
             Left = 0
             Top = 0
             Width = 315
@@ -16202,24 +16204,18 @@ object MainForm: TMainForm
             Left = 0
             Top = 266
             Width = 315
-            Height = 339
+            Height = 300
             Align = alClient
             Caption = 'Sections'
-            Constraints.MinHeight = 300
             TabOrder = 1
-            ExplicitTop = 305
-            ExplicitHeight = 300
             object CacheGB: TGroupBox
               Left = 2
-              Top = 232
+              Top = 193
               Width = 311
               Height = 105
               Align = alBottom
               Caption = 'Local Cache'
               TabOrder = 0
-              ExplicitLeft = 1
-              ExplicitTop = 210
-              ExplicitWidth = 351
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 32
@@ -16234,14 +16230,13 @@ object MainForm: TMainForm
               Left = 2
               Top = 15
               Width = 311
-              Height = 217
+              Height = 178
               Align = alClient
               ItemHeight = 13
               MultiSelect = True
               PopupMenu = PopupMenu1
               TabOrder = 1
               OnClick = ClickZ
-              ExplicitHeight = 130
             end
           end
           object PostProcessingGB: TGroupBox
@@ -16251,9 +16246,8 @@ object MainForm: TMainForm
             Height = 105
             Align = alTop
             Caption = 'Post Processing'
+            Enabled = False
             TabOrder = 2
-            ExplicitTop = 200
-            ExplicitWidth = 298
             object ApplyPostProcCB: TCheckBox
               Left = 14
               Top = 24
@@ -16268,6 +16262,7 @@ object MainForm: TMainForm
               Width = 207
               Height = 17
               Caption = 'Sigmoidal non-linearity contrast control'
+              Enabled = False
               TabOrder = 1
             end
           end
@@ -16280,7 +16275,6 @@ object MainForm: TMainForm
         Height = 113
         Align = alTop
         TabOrder = 1
-        ExplicitWidth = 985
         object Splitter1: TSplitter
           Left = 593
           Top = 1
@@ -16469,7 +16463,7 @@ object MainForm: TMainForm
           end
           object mStacksCB: TComboBox
             Left = 16
-            Top = 82
+            Top = 85
             Width = 570
             Height = 21
             Anchors = [akLeft, akTop, akRight]
@@ -16483,8 +16477,6 @@ object MainForm: TMainForm
     object TabSheet2: TTabSheet
       Caption = 'Current Project Settings'
       ImageIndex = 1
-      ExplicitWidth = 985
-      ExplicitHeight = 633
       object mStackNameE: TSTDStringLabeledEdit
         Left = 764
         Top = 83
@@ -16528,82 +16520,144 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
-      ExplicitWidth = 985
-      ExplicitHeight = 633
       object StackGenerationGB: TGroupBox
-        Left = 14
-        Top = 3
-        Width = 592
-        Height = 385
+        Left = 0
+        Top = 0
+        Width = 571
+        Height = 685
+        Align = alLeft
         Caption = 'Stack Generation'
         TabOrder = 0
-        object mVolumesFolder: TSTDStringLabeledEdit
-          Left = 16
-          Top = 38
-          Width = 182
-          Height = 21
-          EditLabel.Width = 93
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Output Root Folder'
+        ExplicitLeft = 7
+        ExplicitTop = 3
+        ExplicitHeight = 558
+        object MultiStackCreationGB: TGroupBox
+          Left = 2
+          Top = 129
+          Width = 567
+          Height = 554
+          Align = alClient
+          Caption = 'Stack Creation'
           TabOrder = 0
-          Text = '/nas4/volumes'
-          Value = '/nas4/volumes'
+          ExplicitLeft = 32
+          ExplicitTop = 234
+          ExplicitWidth = 449
+          ExplicitHeight = 293
+          object StacksForProjectCB: TCheckListBox
+            AlignWithMargins = True
+            Left = 17
+            Top = 76
+            Width = 201
+            Height = 473
+            Margins.Left = 15
+            Align = alLeft
+            ItemHeight = 13
+            TabOrder = 0
+            ExplicitLeft = 2
+            ExplicitTop = 79
+            ExplicitHeight = 218
+          end
+          object Run: TButton
+            Left = 262
+            Top = 73
+            Width = 131
+            Height = 103
+            Caption = 'Run'
+            TabOrder = 1
+            OnClick = RunClick
+          end
+          object Panel1: TPanel
+            Left = 2
+            Top = 15
+            Width = 563
+            Height = 58
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 2
+            ExplicitWidth = 445
+            object FilterStacksEdit: TSTDStringLabeledEdit
+              Left = 16
+              Top = 20
+              Width = 121
+              Height = 21
+              EditLabel.Width = 24
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Filter'
+              TabOrder = 0
+              OnKeyDown = FilterStacksEditKeyDown
+            end
+          end
         end
-        object mCustomOutputFolder: TSTDStringLabeledEdit
-          Left = 16
-          Top = 94
-          Width = 182
-          Height = 21
-          EditLabel.Width = 106
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Custom Output Folder'
+        object Panel3: TPanel
+          Left = 2
+          Top = 15
+          Width = 567
+          Height = 114
+          Align = alTop
           TabOrder = 1
-          Text = 'Test'
-          Value = 'Test'
-        end
-        object mChannelNameE: TSTDStringLabeledEdit
-          Left = 16
-          Top = 142
-          Width = 182
-          Height = 21
-          EditLabel.Width = 69
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Channel Name'
-          TabOrder = 2
-          Text = 'Test'
-          Value = 'Test'
-        end
-        object Run: TButton
-          Left = 401
-          Top = 280
-          Width = 161
-          Height = 89
-          Caption = 'Run'
-          TabOrder = 3
-          OnClick = RunClick
-        end
-        object ScaleE: TFloatLabeledEdit
-          Left = 256
-          Top = 38
-          Width = 81
-          Height = 21
-          EditLabel.Width = 25
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Scale'
-          TabOrder = 4
-          Text = '0.50'
-          Value = 0.500000000000000000
-        end
-        object BoundsCB: TPropertyCheckBox
-          Left = 256
-          Top = 75
-          Width = 97
-          Height = 17
-          Caption = 'Static Bounds'
-          Checked = True
-          State = cbChecked
-          TabOrder = 5
-          Value = True
+          object BoundsCB: TPropertyCheckBox
+            Left = 356
+            Top = 28
+            Width = 97
+            Height = 17
+            Caption = 'Static Bounds'
+            Checked = True
+            Enabled = False
+            State = cbChecked
+            TabOrder = 0
+            Value = True
+          end
+          object VolumesScaleE: TFloatLabeledEdit
+            Left = 252
+            Top = 26
+            Width = 81
+            Height = 21
+            EditLabel.Width = 25
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Scale'
+            TabOrder = 1
+            Text = '0.50'
+            Value = 0.500000000000000000
+          end
+          object VolumesFolder: TSTDStringLabeledEdit
+            Left = 12
+            Top = 26
+            Width = 182
+            Height = 21
+            EditLabel.Width = 93
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Output Root Folder'
+            TabOrder = 2
+            Text = '/nas4/volumes'
+            Value = '/nas4/volumes'
+          end
+          object SubFolder1: TSTDStringLabeledEdit
+            Left = 12
+            Top = 77
+            Width = 182
+            Height = 21
+            EditLabel.Width = 55
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Subfolder 1'
+            TabOrder = 3
+            Text = 'Test'
+            Value = 'Test'
+          end
+          object SubFolder2: TSTDStringLabeledEdit
+            Left = 252
+            Top = 77
+            Width = 182
+            Height = 21
+            EditLabel.Width = 122
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Subfolder 2 (Stack Name)'
+            Enabled = False
+            ReadOnly = True
+            TabOrder = 4
+            Text = 'Test'
+            OnChange = SubFolder2Change
+            Value = 'Test'
+          end
         end
       end
       inline TSSHFrame1: TSSHFrame
@@ -16624,10 +16678,10 @@ object MainForm: TMainForm
         end
       end
       object TestSSHGB: TGroupBox
-        Left = 612
-        Top = 259
+        Left = 610
+        Top = 213
         Width = 217
-        Height = 129
+        Height = 70
         Caption = 'Remote Command'
         TabOrder = 2
         object CMDButton: TButton
@@ -16645,36 +16699,33 @@ object MainForm: TMainForm
           Width = 153
           Height = 21
           TabOrder = 1
-          Text = 'la'
+          Text = 'ls'
         end
       end
     end
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
-      ExplicitWidth = 985
-      ExplicitHeight = 633
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
         Width = 1142
-        Height = 724
+        Height = 685
         Align = alClient
         Lines.Strings = (
           '#! /bin/bash'
+          ''
           'echo "You are about to run the GETVOLUME script"'
-          ''
-          'echo "The following arguments are to be used: "'
-          ''
-          'count=1'
-          'for var in "$@"'
-          'do'
-          '    echo $count ":" "$var"'
-          '    let "count += 1"'
-          'done'
+          '#echo "The following arguments are to be used: "'
+          '#'
+          '#count=1'
+          '#for var in "$@"'
+          '#do'
+          '#    echo $count ":" "$var"'
+          '#    let "count += 1"'
+          '#done'
           ''
           'args=("$@")'
-          ''
           'nrOfSections=${args[0]}'
           'sections_str=${args[1]}'
           'rootOutPutFolder=${args[2]}'
@@ -16685,16 +16736,20 @@ object MainForm: TMainForm
           'stack=${args[7]}'
           'scale=${args[8]}'
           'use_bounds=${args[9]}'
+          ''
+          ''
+          'info=$rootOutPutFolder/$customFolder/$channel"_info.txt"'
+          'echo "Job was started on: "`date` > $info'
+          ''
+          'echo "Zs: "$sections_str >> $info'
           'if [ "$use_bounds"  == "true" ]; then'
           '    bounds=${args[10]}'
-          '    echo "Using bounds:" $bounds'
+          '    echo "Using bounds:" $bounds >> $info'
           'fi'
           ''
           'fmt='#39'tiff'#39
           'filter='#39'false'#39
-          ''
           'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
-          ''
           ''
           
             '#JAVA CLIENT SETTINGS ==========================================' +
@@ -16706,20 +16761,15 @@ object MainForm: TMainForm
           ''
           '#Java class'
           'jc='#39'org.janelia.render.client.RenderSectionClient'#39
-          ''
           'script_name=`basename "$0"`'
           'script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"'
           'running_from=`pwd -P`'
-          'echo "This script file name is:"$script_name'
-          'echo "Located in folder:"$script_path'
-          'echo "Running from folder:"$running_from'
-          'echo "Copy too root outputfolder"'
-          'mkdir -p $rootOutPutFolder/$customFolder/$channel'
           ''
-          
-            '#cp $script_path/$script_name $rootOutPutFolder/$customFolder/$c' +
-            'hannel'
-          'date > $rootOutPutFolder/$customFolder_$channel"_status.txt"'
+          '#echo "This script file name is:"$script_name'
+          '#echo "Located in folder: "$script_path'
+          '#echo "Running from folder: "$running_from'
+          ''
+          'mkdir -p $rootOutPutFolder/$customFolder/$channel'
           ''
           
             '#Create job inputs =============================================' +
@@ -16765,8 +16815,8 @@ object MainForm: TMainForm
           '      echo "Waiting for jobs to finish..."'
           '      wait'
           '      jobs=0'
-          '    fi      '
-          'done    '
+          '    fi'
+          'done'
           ''
           '#Wait for the java jobs to finish..'
           'FAIL=0'
@@ -16777,42 +16827,37 @@ object MainForm: TMainForm
           'done'
           ''
           '#Create a tiff stack here'
-          ''
-          ''
           
-            'stackFileName=$rootOutPutFolder/$customFolder"_"$channel"_stack.' +
-            'tiff"'
-          'echo $stackFileName'
+            'stackFileName=$rootOutPutFolder/$customFolder/$channel"_stack.ti' +
+            'ff"'
+          'echo "Creating stack file: "$stackFileName >> $info'
           ''
           '#Empty outpurfile'
           '> $stackFileName'
           ''
-          'echo "Creating stack $stackFileName from files: "'
           'for file in $rootOutPutFolder/$customFolder/$channel/*.tiff; do'
-          #9'echo $file'
+          #9'echo $file >> $info'
           #9'tiffcp -a $file $stackFileName'
           'done'
           ''
           'if [ "$FAIL" == "0" ];'
           'then'
-          'echo "===============  FINISHED =============="'
+          
+            'echo "===============  FINISHED STACK CREATION SCRIPT ==========' +
+            '===="'
           'else'
           'echo "FAIL! ($FAIL)"'
           'fi'
           ''
-          'date >> $rootOutPutFolder/$customFolder_$channel"_status.txt"')
+          'echo "Job ended on: "`date` >> $info')
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
-        ExplicitWidth = 985
-        ExplicitHeight = 633
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
-      ExplicitWidth = 985
-      ExplicitHeight = 633
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16870,13 +16915,11 @@ object MainForm: TMainForm
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 755
+    Top = 716
     Width = 1150
     Height = 136
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 664
-    ExplicitWidth = 993
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -16884,7 +16927,6 @@ object MainForm: TMainForm
       Height = 134
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 991
       object infoMemo: TMemo
         Left = 1
         Top = 42
@@ -16894,7 +16936,6 @@ object MainForm: TMainForm
         ScrollBars = ssBoth
         TabOrder = 0
         WordWrap = False
-        ExplicitWidth = 989
       end
       object Panel2: TPanel
         Left = 1
@@ -16903,7 +16944,6 @@ object MainForm: TMainForm
         Height = 41
         Align = alTop
         TabOrder = 1
-        ExplicitWidth = 989
         DesignSize = (
           1146
           41)
@@ -16925,14 +16965,13 @@ object MainForm: TMainForm
           Caption = 'x'
           TabOrder = 1
           OnClick = mCloseBottomPanelBtnClick
-          ExplicitLeft = 950
         end
       end
     end
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 891
+    Top = 852
     Width = 1150
     Height = 19
     Align = alBottom
@@ -16940,8 +16979,6 @@ object MainForm: TMainForm
     TabOrder = 2
     Visible = False
     OnClick = mShowBottomPanelBtnClick
-    ExplicitTop = 800
-    ExplicitWidth = 993
   end
   object IdHTTP1: TIdHTTP
     OnStatus = IdHTTP1Status
@@ -17001,7 +17038,7 @@ object MainForm: TMainForm
   object CreateCacheTimer: TTimer
     Interval = 150
     OnTimer = CreateCacheTimerTimer
-    Left = 32
-    Top = 400
+    Left = 232
+    Top = 368
   end
 end

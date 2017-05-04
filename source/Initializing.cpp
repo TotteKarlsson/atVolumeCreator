@@ -62,6 +62,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 
 
 	enableDisableGroupBox(TestSSHGB, 		false);
+	enableDisableGroupBox(StackGenerationGB,false);
 	enableDisableGroupBox(PostProcessingGB, false);
 
     TabSheet5->TabVisible = false;
@@ -107,11 +108,17 @@ bool TMainForm::setupAndReadIniParameters()
     mGeneralProperties.add((BaseProperty*)  &mYCoordE->getProperty()->setup(	        "VIEW_Y_COORD",    	                0));
     mGeneralProperties.add((BaseProperty*)  &mWidthE->getProperty()->setup(		        "VIEW_WIDTH", 		                0));
     mGeneralProperties.add((BaseProperty*)  &mHeightE->getProperty()->setup(	        "VIEW_HEIGHT", 		                0));
-
     mGeneralProperties.add((BaseProperty*)  &MinIntensity->getProperty()->setup(	    "MIN_INTENSITY", 		            0));
     mGeneralProperties.add((BaseProperty*)  &MaxIntensity->getProperty()->setup(	    "MAX_INTENSITY", 		            65535));
 
 	mGeneralProperties.add((BaseProperty*)  &mImageCacheFolderE->getProperty()->setup(	"IMAGE_CACHE_FOLDER",  				"C:\\ImageCache"));
+
+    //Stack Generation
+	mGeneralProperties.add((BaseProperty*)  &VolumesFolder->getProperty()->setup(		"VOLUMES_ROOT_FOLDER",  	  		"/nas1/temp"));
+	mGeneralProperties.add((BaseProperty*)  &SubFolder1->getProperty()->setup(			"VOLUMES_SUB_FOLDER_1",  	  		"temp"));
+	mGeneralProperties.add((BaseProperty*)  &SubFolder2->getProperty()->setup(			"VOLUMES_SUB_FOLDER_2",  	  		"temp"));
+	mGeneralProperties.add((BaseProperty*)  &VolumesScaleE->getProperty()->setup(	   	"VOLUMES_SCALE",  	 		 		0.01));
+
 
 	//Read from file. Create if file do not exist
 	mGeneralProperties.read();
@@ -121,21 +128,19 @@ bool TMainForm::setupAndReadIniParameters()
 	mOwnerE->update();
 	mProjectE->update();
     mStackNameE->update();
-
     mScaleE->update();
     mXCoordE->update();
     mYCoordE->update();
     mWidthE->update();
     mHeightE->update();
-
 	MinIntensity->update();
 	MaxIntensity->update();
-
-
 	mImageCacheFolderE->update();
-
+    VolumesFolder->update();
+    SubFolder1->update();
+    SubFolder2->update();
+    VolumesScaleE->update();
 	mBottomPanel->Height = mBottomPanelHeight;
-
-	return true;
+    return true;
 }
 

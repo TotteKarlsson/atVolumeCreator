@@ -11,8 +11,6 @@
 #include "atImageForm.h"
 #include "TMemoLogger.h"
 
-
-
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define SigmoidalContrast(x) \
   (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
@@ -29,7 +27,6 @@
   description=(char *) MagickRelinquishMemory(description); \
   exit(-1); \
 }
-
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -50,12 +47,12 @@ extern string gLogFileName;
 
 void sendToClipBoard(const string& str);
 TImage *CurrImage;
-
+extern string gAppDataLocation;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
     mLogLevel(lAny),
-    mLogFileReader(joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), "volumeCreator", gLogFileName), logMsg),
+    mLogFileReader(joinPath(gAppDataLocation, gLogFileName), logMsg),
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
@@ -426,6 +423,7 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 
 	Log(lInfo) << "Fetched "<<zs.count()<<" valid z's";
 
+	Zs_GB->Caption = " Z Values (" + IntToStr((int) zs.count()) + ") ";
     //Populate list box
 	populateListBox(zs, mZs);
 }
@@ -580,7 +578,7 @@ void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
     }
 
     //Disable uninitialized sections of the UI
-	enableDisableGroupBox(ROI_GB, false);
+	enableDisableGroupBox(imageParasGB, false);
 	enableDisableGroupBox(Zs_GB, false);
     enableDisableGroupBox(StackGenerationGB, false);
    	mRenderEnabled = false;
@@ -607,7 +605,7 @@ void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
     }
 
     //Disable uninitialized sections of the UI
-	enableDisableGroupBox(ROI_GB, false);
+	enableDisableGroupBox(imageParasGB, false);
 	enableDisableGroupBox(Zs_GB, false);
     enableDisableGroupBox(StackGenerationGB, false);
 	mRenderEnabled = false;
@@ -620,12 +618,12 @@ void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
     if(s.size())
     {
 		populateDropDown(s, mStacksCB);
+		populateCheckListBox(s, StacksForProjectCB);
     }
 }
 
 void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
 {
-
     if(mStacksCB->ItemIndex == -1)
     {
 		return;
@@ -635,14 +633,15 @@ void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
 	mStackNameE->setValue(stack);
 
 	mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
+	SubFolder2->setValue(mStackNameE->getValue());
+
    	mGetValidZsBtnClick(NULL);
     resetButtonClick(NULL);
 	ClickZ(NULL);
 
     //Disable uninitialized sections of the UI
-	enableDisableGroupBox(ROI_GB, true);
+	enableDisableGroupBox(imageParasGB, true);
 	enableDisableGroupBox(Zs_GB, true);
-    enableDisableGroupBox(StackGenerationGB, true);
 	mRenderEnabled = true;
 }
 
@@ -677,9 +676,17 @@ void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
 
 void __fastcall TMainForm::TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender)
 {
-	MLog() << stdstr(TSSHFrame1->ScSSHShell1->ReadString());
+	//Parse messages from the server
+    string line(stdstr(TSSHFrame1->ScSSHShell1->ReadString()));
+//	if(contains("$",line) || contains("echo",line) || contains("[main]", line))
+//    {
+//
+//    }
+//    else
+    {
+ 		Log(lInfo) << line;
+    }
 }
-
 
 void __fastcall TMainForm::CMDButtonClick(TObject *Sender)
 {
@@ -699,11 +706,15 @@ string escape(const string& before)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::RunClick(TObject *Sender)
 {
-	string scriptName("getVolume.sh");
     stringstream cmd;
-	//First copy our script to host
-    string remoteScript(joinPath(stdstr(mVolumesFolder->Text), scriptName, '/'));
-	cmd << "touch "<< remoteScript << endl;
+	//First create remote folders
+    string folders(joinPath(stdstr(VolumesFolder->Text), stdstr(SubFolder1->Text), '/'));
+    cmd << "mkdir -p "<<folders;
+
+    string scriptName("getVolume.sh");
+    string remoteScript(joinPath(folders, scriptName, '/'));
+
+	cmd << " && touch "<< remoteScript << endl;
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
 	cmd.str("");
 
@@ -722,7 +733,7 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
     //Copy content of memo
     for(int i = 0 ; i < lines.size(); i++)
     {
-		Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
+		//Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
 		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScript << endl;
     }
 
@@ -738,7 +749,6 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
     //Second argument is section numbers
     cmd << " '";
 	for(int i = 0; i < mZs->Count; i++)
-//	for(int i = 0; i < 2; i++)
     {
     	cmd << mZs->Items->Strings[i].ToInt();
         if(i < mZs->Count -1)
@@ -749,13 +759,13 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
     cmd <<"'";
 
     //Third argument is root outputfolder
-    cmd <<" "<<stdstr(mVolumesFolder->Text);
+    cmd <<" "<<stdstr(VolumesFolder->Text);
 
     //Fourth arg is custom outputfolder
-	cmd <<" "<<stdstr(mCustomOutputFolder->Text);
+	cmd <<" "<<stdstr(SubFolder1->Text);
 
     //Fifth arg is custom outputfolder
-	cmd <<" "<<stdstr(mChannelNameE->Text);
+	cmd <<" "<<stdstr(SubFolder2->Text);
 
 	//Sixth is owner
     cmd <<" "<<stdstr(mOwnerE->Text);
@@ -767,7 +777,7 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
 	cmd <<" "<<stdstr(mStackNameE->Text);
 
     //9th - scale
-	cmd <<" "<<stdstr(ScaleE->Text);
+	cmd <<" "<<stdstr(VolumesScaleE->Text);
 
 	//10th - static bounds?
     cmd <<" "<<mtk::toString(BoundsCB->Checked);
@@ -957,6 +967,34 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
     {
         mRC.clearImageMemory();
     }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	String filter = FilterStacksEdit->Text;
+
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SubFolder2Change(TObject *Sender)
+{
+	//User changed stack.. Clear check list box and select current one
+    for(int i = 0; i < StacksForProjectCB->Items->Count; i++)
+    {
+        if(StacksForProjectCB->Items->Strings[i] == SubFolder2->Text)
+        {
+	    	StacksForProjectCB->Checked[i] = true;
+        }
+        else
+        {
+    		StacksForProjectCB->Checked[i] = false;
+        }
+    }
+
+    //Check the currently selected one
+
+
 }
 
 
