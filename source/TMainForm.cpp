@@ -633,11 +633,24 @@ void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
 	mStackNameE->setValue(stack);
 
 	mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
-	SubFolder2->setValue(mStackNameE->getValue());
 
    	mGetValidZsBtnClick(NULL);
-    resetButtonClick(NULL);
+//    resetButtonClick(NULL);
 	ClickZ(NULL);
+
+    //Update stack generation page
+	//User changed stack.. Clear check list box and select current one
+    for(int i = 0; i < StacksForProjectCB->Items->Count; i++)
+    {
+        if(StacksForProjectCB->Items->Strings[i] == mStacksCB->Text)
+        {
+	    	StacksForProjectCB->Checked[i] = true;
+        }
+        else
+        {
+    		StacksForProjectCB->Checked[i] = false;
+        }
+    }
 
     //Disable uninitialized sections of the UI
 	enableDisableGroupBox(imageParasGB, true);
@@ -706,42 +719,88 @@ string escape(const string& before)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::RunClick(TObject *Sender)
 {
+	//Create remote jobs by script
+    string scriptName("runner.sh");
+
+    //Create empty, runnable script on server
+	string remoteScriptName = createEmptyScriptFileOnServer(scriptName);
+
+	//Populate remote script
+	if(!populateRemoteScript(remoteScriptName))
+    {
+    	Log(lError) << "Failed to populate remote script.. bailing";
+    	return;
+    }
+
+    //Create command lines (jobs)
+   	vector<string> commands;
+    StringList stacks = getCheckedItems(StacksForProjectCB);
+	for(int i = 0; i < stacks.size() ; i++)
+    {
+		commands.push_back(createRemoteCommand(remoteScriptName, stacks[i]));
+        Log(lDebug) << "Command "<<i<<" :"<<commands[i];
+    }
+
+	for(int i = 0; i < commands.size(); i++)
+    {
+    	runJob(commands[i]);
+    }
+}
+
+string TMainForm::createEmptyScriptFileOnServer(const string& scriptName)
+{
     stringstream cmd;
+
 	//First create remote folders
     string folders(joinPath(stdstr(VolumesFolder->Text), stdstr(SubFolder1->Text), '/'));
     cmd << "mkdir -p "<<folders;
 
-    string scriptName("getVolume.sh");
     string remoteScript(joinPath(folders, scriptName, '/'));
 
 	cmd << " && touch "<< remoteScript << endl;
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
 	cmd.str("");
 
+    //Make executable
 	cmd << "chmod +x "<< remoteScript << endl;
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-	cmd.str("");
+	return remoteScript;
+}
 
+bool TMainForm::populateRemoteScript(const string& remoteScriptName)
+{
+    stringstream cmd;
     StringList lines(getStrings(BashScriptMemo));
     if(lines.size() <= 1)
     {
     	Log(lError) << "Can't populate remote script. Script Memo is Empty??";
-        return;
+        return false;
     }
 
-	cmd << "echo \"\" > " <<remoteScript << endl;
+	cmd << "echo \"\" > " <<remoteScriptName << endl;
     //Copy content of memo
     for(int i = 0 ; i < lines.size(); i++)
     {
 		//Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
-		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScript << endl;
+		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScriptName << endl;
     }
 
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
     cmd.str("");
+    return true;
+}
+
+void TMainForm::runJob(const string& job)
+{
+    TSSHFrame1->ScSSHShell1->WriteString(vclstr(job));
+}
+
+string TMainForm::createRemoteCommand(const string& remoteScript, const string& stack)
+{
+	stringstream cmd;
 
 	//Create commandline for remote bash script
-	cmd<< remoteScript;
+	cmd << remoteScript;
 
     //First argument is number of sections
     cmd<<" "<<mZs->Count;
@@ -765,7 +824,7 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
 	cmd <<" "<<stdstr(SubFolder1->Text);
 
     //Fifth arg is custom outputfolder
-	cmd <<" "<<stdstr(SubFolder2->Text);
+	cmd <<" "<<stack;
 
 	//Sixth is owner
     cmd <<" "<<stdstr(mOwnerE->Text);
@@ -773,13 +832,10 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
     //7th - project
     cmd <<" "<<stdstr(mProjectE->Text);
 
-	//8th - stack
-	cmd <<" "<<stdstr(mStackNameE->Text);
-
-    //9th - scale
+    //8th - scale
 	cmd <<" "<<stdstr(VolumesScaleE->Text);
 
-	//10th - static bounds?
+	//9th - static bounds?
     cmd <<" "<<mtk::toString(BoundsCB->Checked);
 
     if(BoundsCB->Checked)
@@ -792,10 +848,12 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
             <<mYCoordE->getValue() + mHeightE->getValue()<<"'";
     }
 
+    cmd << " &" ;
     cmd << endl;
 
-    //Now execute..
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+//    //Now execute..
+//    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
+	return cmd.str();
 }
 
 //---------------------------------------------------------------------------
@@ -973,28 +1031,6 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
 void __fastcall TMainForm::FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	String filter = FilterStacksEdit->Text;
-
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::SubFolder2Change(TObject *Sender)
-{
-	//User changed stack.. Clear check list box and select current one
-    for(int i = 0; i < StacksForProjectCB->Items->Count; i++)
-    {
-        if(StacksForProjectCB->Items->Strings[i] == SubFolder2->Text)
-        {
-	    	StacksForProjectCB->Checked[i] = true;
-        }
-        else
-        {
-    		StacksForProjectCB->Checked[i] = false;
-        }
-    }
-
-    //Check the currently selected one
-
-
 }
 
 

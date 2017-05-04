@@ -132,7 +132,6 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *VolumesScaleE;
 	TSTDStringLabeledEdit *VolumesFolder;
 	TSTDStringLabeledEdit *SubFolder1;
-	TSTDStringLabeledEdit *SubFolder2;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -179,8 +178,6 @@ __published:	// IDE-managed Components
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall SubFolder2Change(TObject *Sender);
-
 
 	private:	// User declarations
 		void	    									UpdateZList();
@@ -222,6 +219,12 @@ __published:	// IDE-managed Components
       	TCanvas*										getCanvas();
 
 		FetchImagesThread								mCreateCacheThread;
+
+        //Remote jobs
+		string 											createRemoteCommand(const string& remoteScript, const string& stack);
+		string 											createEmptyScriptFileOnServer(const string& stack);
+		bool                							populateRemoteScript(const string& script);
+        void 											runJob(const string& job);
 
 public:		// User declarations
 	__fastcall TMainForm(TComponent* Owner);

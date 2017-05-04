@@ -38,7 +38,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 713
-    ActivePage = TabSheet1
+    ActivePage = TabSheet5
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16463,7 +16463,7 @@ object MainForm: TMainForm
           end
           object mStacksCB: TComboBox
             Left = 16
-            Top = 85
+            Top = 80
             Width = 570
             Height = 21
             Anchors = [akLeft, akTop, akRight]
@@ -16522,40 +16522,30 @@ object MainForm: TMainForm
       ImageIndex = 3
       object StackGenerationGB: TGroupBox
         Left = 0
-        Top = 0
-        Width = 571
-        Height = 685
-        Align = alLeft
-        Caption = 'Stack Generation'
+        Top = 70
+        Width = 1142
+        Height = 615
+        Align = alClient
+        Caption = 'Stack Output'
         TabOrder = 0
-        ExplicitLeft = 7
-        ExplicitTop = 3
-        ExplicitHeight = 558
         object MultiStackCreationGB: TGroupBox
           Left = 2
           Top = 129
-          Width = 567
-          Height = 554
+          Width = 1138
+          Height = 484
           Align = alClient
-          Caption = 'Stack Creation'
+          Caption = 'Stacks'
           TabOrder = 0
-          ExplicitLeft = 32
-          ExplicitTop = 234
-          ExplicitWidth = 449
-          ExplicitHeight = 293
           object StacksForProjectCB: TCheckListBox
             AlignWithMargins = True
             Left = 17
             Top = 76
             Width = 201
-            Height = 473
+            Height = 403
             Margins.Left = 15
             Align = alLeft
             ItemHeight = 13
             TabOrder = 0
-            ExplicitLeft = 2
-            ExplicitTop = 79
-            ExplicitHeight = 218
           end
           object Run: TButton
             Left = 262
@@ -16569,12 +16559,11 @@ object MainForm: TMainForm
           object Panel1: TPanel
             Left = 2
             Top = 15
-            Width = 563
+            Width = 1134
             Height = 58
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 2
-            ExplicitWidth = 445
             object FilterStacksEdit: TSTDStringLabeledEdit
               Left = 16
               Top = 20
@@ -16591,9 +16580,10 @@ object MainForm: TMainForm
         object Panel3: TPanel
           Left = 2
           Top = 15
-          Width = 567
+          Width = 1138
           Height = 114
           Align = alTop
+          BevelOuter = bvNone
           TabOrder = 1
           object BoundsCB: TPropertyCheckBox
             Left = 356
@@ -16643,43 +16633,40 @@ object MainForm: TMainForm
             Text = 'Test'
             Value = 'Test'
           end
-          object SubFolder2: TSTDStringLabeledEdit
-            Left = 252
-            Top = 77
-            Width = 182
-            Height = 21
-            EditLabel.Width = 122
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Subfolder 2 (Stack Name)'
-            Enabled = False
-            ReadOnly = True
-            TabOrder = 4
-            Text = 'Test'
-            OnChange = SubFolder2Change
-            Value = 'Test'
-          end
         end
       end
       inline TSSHFrame1: TSSHFrame
-        Left = 610
-        Top = 4
-        Width = 227
-        Height = 203
+        Left = 0
+        Top = 0
+        Width = 1142
+        Height = 70
+        Align = alTop
         AutoSize = True
         TabOrder = 1
-        ExplicitLeft = 610
-        ExplicitTop = 4
+        ExplicitWidth = 1142
+        inherited ScFileStorage: TScFileStorage
+          Left = 24
+          Top = 160
+        end
         inherited ScSSHShell1: TScSSHShell
           OnAsyncReceive = TSSHFrame1ScSSHShell1AsyncReceive
+          Left = 232
+          Top = 192
+        end
+        inherited ScSSHChannel: TScSSHChannel
+          Left = 136
+          Top = 176
         end
         inherited ScSSHClient: TScSSHClient
           AfterConnect = TSSHFrame1ScSSHClientAfterConnect
           AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
+          Left = 24
+          Top = 144
         end
       end
       object TestSSHGB: TGroupBox
-        Left = 610
-        Top = 213
+        Left = 527
+        Top = 0
         Width = 217
         Height = 70
         Caption = 'Remote Command'
@@ -16715,41 +16702,38 @@ object MainForm: TMainForm
         Lines.Strings = (
           '#! /bin/bash'
           ''
-          'echo "You are about to run the GETVOLUME script"'
-          '#echo "The following arguments are to be used: "'
-          '#'
-          '#count=1'
-          '#for var in "$@"'
-          '#do'
-          '#    echo $count ":" "$var"'
-          '#    let "count += 1"'
-          '#done'
-          ''
           'args=("$@")'
           'nrOfSections=${args[0]}'
           'sections_str=${args[1]}'
           'rootOutPutFolder=${args[2]}'
           'customFolder=${args[3]}'
-          'channel=${args[4]}'
+          'stack=${args[4]}'
           'owner=${args[5]}'
           'proj=${args[6]}'
-          'stack=${args[7]}'
-          'scale=${args[8]}'
-          'use_bounds=${args[9]}'
-          ''
-          ''
-          'info=$rootOutPutFolder/$customFolder/$channel"_info.txt"'
-          'echo "Job was started on: "`date` > $info'
-          ''
-          'echo "Zs: "$sections_str >> $info'
-          'if [ "$use_bounds"  == "true" ]; then'
-          '    bounds=${args[10]}'
-          '    echo "Using bounds:" $bounds >> $info'
-          'fi'
-          ''
+          'scale=${args[7]}'
+          'use_bounds=${args[8]}'
           'fmt='#39'tiff'#39
           'filter='#39'false'#39
           'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
+          ''
+          '#Write run info to file'
+          'info=$rootOutPutFolder/$customFolder/$stack"_info.txt"'
+          'echo "This job was started on: "`date` > $info'
+          'echo "Owner: "$owner >> $info'
+          'echo "Project: "$proj >> $info'
+          'echo "StackName: "$stack >> $info'
+          'echo "Scale: "$scale >> $info'
+          'echo "Format: "$fmt >> $info'
+          'echo "Filter: "$filter >> $info'
+          'echo "BaseDataURL: "$baseDataURL >> $info'
+          'echo "Using static bounds: "$use_bounds >> $info'
+          'echo "Number of Z'#39's: "$nrOfSections >> $info'
+          ''
+          'echo "Zs: "$sections_str >> $info'
+          'if [ "$use_bounds"  == "true" ]; then'
+          '    bounds=${args[9]}'
+          '    echo "Using bounds:" $bounds >> $info'
+          'fi'
           ''
           
             '#JAVA CLIENT SETTINGS ==========================================' +
@@ -16769,7 +16753,7 @@ object MainForm: TMainForm
           '#echo "Located in folder: "$script_path'
           '#echo "Running from folder: "$running_from'
           ''
-          'mkdir -p $rootOutPutFolder/$customFolder/$channel'
+          'mkdir -p $rootOutPutFolder/$customFolder/$stack'
           ''
           
             '#Create job inputs =============================================' +
@@ -16800,15 +16784,15 @@ object MainForm: TMainForm
           
             '    #java_args="  -cp $classpath $jc --stack $stack --rootDirect' +
             'ory $rootOutPutFolder --customOutputFolder $customFolder --chann' +
-            'elName $channel --scale $scale --owner $owner                 --' +
-            'doFilter false --fillWithNoise false --baseDataUrl $baseDataURL ' +
-            '--format $fmt --project $proj ${output[$i]}"'
+            'elName $stack --scale $scale --owner $owner                 --do' +
+            'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
+            'format $fmt --project $proj ${output[$i]}"'
           
             '    java_args="  -cp $classpath $jc --stack $stack --rootDirecto' +
             'ry $rootOutPutFolder --customOutputFolder $customFolder --channe' +
-            'lName $channel --scale $scale --owner $owner --bounds $bounds --' +
-            'doFilter false --fillWithNoise false --baseDataUrl $baseDataURL ' +
-            '--format $fmt --project $proj ${output[$i]}"'
+            'lName $stack --scale $scale --owner $owner --bounds $bounds --do' +
+            'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
+            'format $fmt --project $proj ${output[$i]}"'
           '    eval java $java_args &'
           '    if (( $jobs >= $maxJobs ))'
           '    then'
@@ -16828,14 +16812,14 @@ object MainForm: TMainForm
           ''
           '#Create a tiff stack here'
           
-            'stackFileName=$rootOutPutFolder/$customFolder/$channel"_stack.ti' +
-            'ff"'
+            'stackFileName=$rootOutPutFolder/$customFolder/$stack"_stack.tiff' +
+            '"'
           'echo "Creating stack file: "$stackFileName >> $info'
           ''
           '#Empty outpurfile'
           '> $stackFileName'
           ''
-          'for file in $rootOutPutFolder/$customFolder/$channel/*.tiff; do'
+          'for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
           #9'echo $file >> $info'
           #9'tiffcp -a $file $stackFileName'
           'done'
@@ -16849,7 +16833,7 @@ object MainForm: TMainForm
           'echo "FAIL! ($FAIL)"'
           'fi'
           ''
-          'echo "Job ended on: "`date` >> $info')
+          'echo "This job ended on: "`date` >> $info')
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
