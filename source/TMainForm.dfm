@@ -38,7 +38,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 713
-    ActivePage = TabSheet5
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16065,6 +16065,7 @@ object MainForm: TMainForm
           0700D67007008F8F070048AE0700000AD7A3FFFFFFFF80E17A54FFFFFFFF00CD
           CC4CFFFFFFFF009A9999FFFFFFFF80666626FFFFFFFFF0285C0FFFFFFFFF801B
           0D50FFFFFFFF00583954FFFFFFFF}
+        PopupMenu = ImagePopup
         Proportional = True
         Stretch = True
         Transparent = True
@@ -16122,7 +16123,7 @@ object MainForm: TMainForm
               TabOrder = 5
               OnClick = resetButtonClick
             end
-            object mWidthE: TIntegerLabeledEdit
+            object Width: TIntegerLabeledEdit
               Left = 17
               Top = 122
               Width = 49
@@ -16135,7 +16136,7 @@ object MainForm: TMainForm
               OnKeyDown = mScaleEKeyDown
               Value = 12000
             end
-            object mHeightE: TIntegerLabeledEdit
+            object Height: TIntegerLabeledEdit
               Left = 88
               Top = 122
               Width = 50
@@ -16148,7 +16149,7 @@ object MainForm: TMainForm
               OnKeyDown = mScaleEKeyDown
               Value = 32000
             end
-            object mXCoordE: TIntegerLabeledEdit
+            object XCoord: TIntegerLabeledEdit
               Left = 17
               Top = 76
               Width = 49
@@ -16161,7 +16162,7 @@ object MainForm: TMainForm
               OnKeyDown = mScaleEKeyDown
               Value = 8000
             end
-            object mYCoordE: TIntegerLabeledEdit
+            object YCoord: TIntegerLabeledEdit
               Left = 88
               Top = 76
               Width = 50
@@ -16219,7 +16220,7 @@ object MainForm: TMainForm
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 32
-                Width = 100
+                Width = 129
                 Height = 50
                 Caption = 'Generate Cache'
                 TabOrder = 0
@@ -16234,7 +16235,7 @@ object MainForm: TMainForm
               Align = alClient
               ItemHeight = 13
               MultiSelect = True
-              PopupMenu = PopupMenu1
+              PopupMenu = ZsPopUpMenu
               TabOrder = 1
               OnClick = ClickZ
             end
@@ -16441,16 +16442,16 @@ object MainForm: TMainForm
             Height = 13
             Caption = 'Stacks'
           end
-          object mOwnersCB: TComboBox
+          object OwnerCB: TComboBox
             Left = 16
             Top = 34
             Width = 225
             Height = 21
             Style = csDropDownList
             TabOrder = 0
-            OnChange = mOwnersCBChange
+            OnChange = OwnerCBChange
           end
-          object mProjectsCB: TComboBox
+          object ProjectCB: TComboBox
             Left = 247
             Top = 34
             Width = 339
@@ -16459,9 +16460,9 @@ object MainForm: TMainForm
             Anchors = [akLeft, akTop, akRight]
             DropDownCount = 25
             TabOrder = 1
-            OnChange = mProjectsCBChange
+            OnChange = ProjectCBChange
           end
-          object mStacksCB: TComboBox
+          object StackCB: TComboBox
             Left = 16
             Top = 80
             Width = 570
@@ -16469,7 +16470,34 @@ object MainForm: TMainForm
             Anchors = [akLeft, akTop, akRight]
             DropDownCount = 25
             TabOrder = 2
-            OnChange = mStacksCBChange
+            OnChange = StackCBChange
+          end
+        end
+        object GroupBox2: TGroupBox
+          Left = 923
+          Top = 1
+          Width = 218
+          Height = 111
+          Align = alClient
+          Caption = 'Misc'
+          TabOrder = 3
+          object OpenInNDVIZBtn: TButton
+            Left = 22
+            Top = 25
+            Width = 139
+            Height = 25
+            Caption = 'Open in NeuroData VIZ'
+            TabOrder = 0
+            OnClick = OpenInNDVIZBtnClick
+          end
+          object OpenFromNDVIZBtn: TButton
+            Left = 22
+            Top = 56
+            Width = 139
+            Height = 25
+            Caption = 'Open from NeuroData VIZ'
+            TabOrder = 1
+            OnClick = OpenInNDVIZBtnClick
           end
         end
       end
@@ -16477,6 +16505,10 @@ object MainForm: TMainForm
     object TabSheet2: TTabSheet
       Caption = 'Current Project Settings'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mStackNameE: TSTDStringLabeledEdit
         Left = 764
         Top = 83
@@ -16693,6 +16725,10 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
@@ -16842,6 +16878,10 @@ object MainForm: TMainForm
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16997,9 +17037,9 @@ object MainForm: TMainForm
     Left = 928
     Top = 32
   end
-  object PopupMenu1: TPopupMenu
-    Left = 480
-    Top = 360
+  object ZsPopUpMenu: TPopupMenu
+    Left = 96
+    Top = 480
     object CopyValidZs1: TMenuItem
       Caption = 'Copy Numbers'
       OnClick = CopyValidZs1Click
@@ -17024,5 +17064,13 @@ object MainForm: TMainForm
     OnTimer = CreateCacheTimerTimer
     Left = 232
     Top = 368
+  end
+  object ImagePopup: TPopupMenu
+    Left = 416
+    Top = 216
+    object ParseNDVIZURL1: TMenuItem
+      Caption = 'Parse NDVIZ URL'
+      OnClick = ParseNDVIZURL1Click
+    end
   end
 end

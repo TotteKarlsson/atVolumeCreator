@@ -10,7 +10,6 @@
 #include "mtkPoint.h"
 #include "mtkMathUtils.h"
 //---------------------------------------------------------------------------
-
 using namespace std;
 using namespace mtk;
 
@@ -29,7 +28,8 @@ mRenderBox(box),
 mScale(scale),
 mMinIntensity(minInt),
 mMaxIntensity(maxInt),
-mLocalCacheFolder(cacheFolder)
+mLocalCacheFolder(cacheFolder),
+mFetchImageThread(*this)
 {
 	mImageMemory = new TMemoryStream();
 }
@@ -49,6 +49,20 @@ bool RenderClient::init(const string& owner, const string& project,
 RenderClient::~RenderClient()
 {
 	delete mImageMemory;
+}
+
+void RenderClient::copyImageData(MemoryStruct chunk)
+{
+	try
+    {
+//	    mImageMemory->Clear();
+//        mImageMemory->Position = 0;
+//		mImageMemory->ReadBuffer(&chunk.memory[0], chunk.size);
+    }
+    catch(const EReadError& e)
+    {
+    	Log(lError) << "Failed to read memory buffer";
+    }
 }
 
 string RenderClient::getProjectName()
@@ -134,53 +148,24 @@ StringList RenderClient::getProjectsForOwner(const string& o)
     return projects;
 }
 
-StringList RenderClient::getStacksForProject(const string& owner, const string& p)
+void RenderClient::assignOnImageCallback(RCCallBack cb)
 {
-    stringstream sUrl;
-    sUrl << mBaseURL;
-    sUrl << "/owner/"<<owner;
-    sUrl << "/stackIds";
-    Log(lDebug5) << "Fetching stackId data using URL: "<<sUrl.str();
-
-    StringList stacks;
-    TStringStream* zstrings = new TStringStream;;
-    mC->Get(sUrl.str().c_str(), zstrings);
-
-    if( mC->ResponseCode == HTTP_RESPONSE_OK)
-    {
-        string s = stdstr(zstrings->DataString);
-        s = stripCharacters("\"[]}", s);
-        Log(lInfo) << s;
-        //Parse result
-        StringList t1(s,'{');
-
-        //Go trough list and get unique stacks
-        for(int i = 0; i < t1.count(); i++)
-        {
-        	string line = t1[i];
-            if(contains(p, t1[i]))
-            {
-            	StringList l(t1[i], ',');
-                if(l.count() == 3)
-                {
-                	StringList l2(l[2], ':');
-                	if(l2.count() == 2 && !stacks.contains(l[2]))
-                    {
-                		stacks.append(l2[1]);
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        Log(lError) << "Failed fetching owners";
-    }
-
-    stacks.sort();
-    return stacks;
+	mFetchImageThread.onImage = cb;
 }
 
+bool RenderClient::getImageInThread(int z)
+{
+	mZ = z;
+
+	if(!mImageMemory)
+    {
+		mImageMemory = new TMemoryStream();
+    }
+
+	mFetchImageThread.setup(getURLForZ(z), mLocalCacheFolder);
+	mFetchImageThread.start(true);
+    return true;
+}
 
 TMemoryStream* RenderClient::getImage(int z)
 {
@@ -190,11 +175,13 @@ TMemoryStream* RenderClient::getImage(int z)
     {
 		mImageMemory = new TMemoryStream();
     }
+
 	//First check if we already is having this data
     if(checkCacheForCurrentURL())
     {
         Log(lInfo) << "Fetching from cache";
     	mImageMemory->LoadFromFile(getImageLocalPathAndFileName().c_str());
+	    return mImageMemory;
     }
     else
     {
@@ -202,22 +189,26 @@ TMemoryStream* RenderClient::getImage(int z)
 
         try
         {
-//        	string url(getURLC());
 	    	mC->Get(getURLC(), mImageMemory);
+            //Save to cache (in a thread)
+            if(createFolder(getFilePath(getImageLocalPathAndFileName())))
+            {
+                mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
+            }
+            return mImageMemory;
         }
         catch(...)
         {
         	Log(lError) << "There was an uncaught ERROR!";
-        }
-
-        //Save to cache (in a thread)
-        if(createFolder(getFilePath(getImageLocalPathAndFileName())))
-        {
-            mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
+            delete mImageMemory;
+            mImageMemory = NULL;
         }
     }
+}
 
-    return mImageMemory;
+TMemoryStream* RenderClient::getImageMemory()
+{
+	return mImageMemory;
 }
 
 TMemoryStream* RenderClient::reloadImage(int z)
@@ -347,25 +338,9 @@ vector<RenderBox> RenderClient::getBounds()
 	return mLatestBounds;
 }
 
-
 string RenderClient::getImageLocalPathAndFileName()
 {
 	return getImageCacheFileNameAndPathFromURL(getURL(), mLocalCacheFolder);
-}
-
-string getImageCacheFileNameAndPathFromURL(const string& url, const string& cacheRootFolder)
-{
-    vector<string> cachePaths = splitStringAtWord(url, "/owner/");
-    if(cachePaths.size() == 2)
-    {
-		string fldr = substitute(cachePaths[1],"/","\\\\");
-		fldr = substitute(fldr,"?","\\\\");
-		fldr = substitute(fldr,"&","\\\\");
-		fldr = substitute(fldr,"=","\\\\");
-		return joinPath(cacheRootFolder, fldr, "image.jpg");
-    }
-
-   	return "";
 }
 
 bool RenderClient::checkCacheForCurrentURL()
@@ -492,5 +467,52 @@ RenderBox RenderClient::parseBoundsResponse(const string& _s)
     	Log(lError) << "Bad bounds format..";
     }
     return bounds;
+}
+
+StringList RenderClient::getStacksForProject(const string& owner, const string& p)
+{
+    stringstream sUrl;
+    sUrl << mBaseURL;
+    sUrl << "/owner/"<<owner;
+    sUrl << "/stackIds";
+    Log(lDebug5) << "Fetching stackId data using URL: "<<sUrl.str();
+
+    StringList stacks;
+    TStringStream* zstrings = new TStringStream;;
+    mC->Get(sUrl.str().c_str(), zstrings);
+
+    if( mC->ResponseCode == HTTP_RESPONSE_OK)
+    {
+        string s = stdstr(zstrings->DataString);
+        s = stripCharacters("\"[]}", s);
+        Log(lInfo) << s;
+        //Parse result
+        StringList t1(s,'{');
+
+        //Go trough list and get unique stacks
+        for(int i = 0; i < t1.count(); i++)
+        {
+        	string line = t1[i];
+            if(contains(p, t1[i]))
+            {
+            	StringList l(t1[i], ',');
+                if(l.count() == 3)
+                {
+                	StringList l2(l[2], ':');
+                	if(l2.count() == 2 && !stacks.contains(l[2]))
+                    {
+                		stacks.append(l2[1]);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        Log(lError) << "Failed fetching owners";
+    }
+
+    stacks.sort();
+    return stacks;
 }
 

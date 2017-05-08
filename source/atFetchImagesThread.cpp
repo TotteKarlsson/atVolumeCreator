@@ -5,50 +5,11 @@
 #include <curl/easy.h>
 #include "Poco/File.h"
 #include "mtkFileUtils.h"
+#include "atRenderClientUtils.h"
 //---------------------------------------------------------------------------
 using namespace mtk;
 
-int getImageZFromURL(const string& url)
-{
-    vector<string> cachePaths = splitStringAtWord(url, "/z/");
-    if(cachePaths.size() == 2)
-    {
-    	//Extract
-		cachePaths = splitString(cachePaths[1], '/');
-        if(cachePaths.size() > 2)
-        {
-        	return mtk::toInt(cachePaths[1]);
-        }
-    }
-    return -1;
-}
-
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
-static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-  size_t realsize = size * nmemb;
-  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-  mem->memory = (char*) realloc(mem->memory, mem->size + realsize + 1);
-
-  if(mem->memory == NULL)
-  {
-    /* out of memory! */
-    Log(lError) << "Not enough memory (realloc returned NULL)\n";
-    return 0;
-  }
-
-  memcpy(&(mem->memory[mem->size]), contents, realsize);
-  mem->size += realsize;
-  mem->memory[mem->size] = 0;
-
-  return realsize;
-}
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
 
 FetchImagesThread::FetchImagesThread(const StringList& urls, const string& cacheRoot)
 :
@@ -187,3 +148,25 @@ void FetchImagesThread::setup(const StringList& urls, const string& cacheFolder)
 	mImageURLs = urls;
     mCacheRootFolder = cacheFolder;
 }
+
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+  size_t realsize = size * nmemb;
+  struct MemoryStruct *mem = (struct MemoryStruct*)userp;
+
+  mem->memory = (char*) realloc(mem->memory, mem->size + realsize + 1);
+
+  if(mem->memory == NULL)
+  {
+    /* out of memory! */
+    Log(lError) << "Not enough memory (realloc returned NULL)\n";
+    return 0;
+  }
+
+  memcpy(&(mem->memory[mem->size]), contents, realsize);
+  mem->size += realsize;
+  mem->memory[mem->size] = 0;
+  return realsize;
+}
+
+

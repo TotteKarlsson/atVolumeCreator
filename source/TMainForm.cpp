@@ -45,7 +45,6 @@ using namespace mtk;
 using namespace std;
 extern string gLogFileName;
 
-void sendToClipBoard(const string& str);
 TImage *CurrImage;
 extern string gAppDataLocation;
 //---------------------------------------------------------------------------
@@ -66,6 +65,22 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
+    mRC.assignOnImageCallback(onImage);
+}
+
+void __fastcall TMainForm::onImage()
+{
+	//This is called from a thread and need to be synchronized with the UI main thread
+	TMemoryStream* imageMem = mRC.getImageMemory();
+    if(imageMem)
+    {
+    	const char* pic = mRC.getImageLocalPathAndFileName().c_str();
+	    Image1->Picture->Graphic->LoadFromFile(pic);
+//        Image1->Picture->Graphic->LoadFromStream(imageMem);
+        Image1->Invalidate();
+	    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+		this->Image1->Cursor = crDefault;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -83,32 +98,34 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
 	mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
-    //First check if we already is having this data
-	try
-    {
-        try
-        {
-            Log(lDebug) << "Loading z = "<<z;
-            Log(lDebug) << "URL = "<< mRC.getURL();
-
-            TMemoryStream* imageMem = mRC.getImage(z);
-            if(imageMem)
-            {
-                Image1->Picture->Graphic->LoadFromStream(imageMem);
-                Image1->Invalidate();
-            }
-
-            Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
-        }
-        __except(EXCEPTION_EXECUTE_HANDLER)
-        {
-            Log(lError) << "There was a memory problem..";
-        }
-    }
-    __finally
-    {
-    	mRC.clearImageMemory();
-    }
+//	Image1->Picture->Graphic->Empty = true;
+	this->Image1->Cursor = crHourGlass;
+    mRC.getImageInThread(z);
+//	try
+//    {
+//        try
+//        {
+//            Log(lDebug) << "Loading z = "<<z;
+//            Log(lDebug) << "URL = "<< mRC.getURL();
+//
+//            TMemoryStream* imageMem = mRC.getImage(z);
+//            if(imageMem)
+//            {
+//                Image1->Picture->Graphic->LoadFromStream(imageMem);
+//                Image1->Invalidate();
+//            }
+//
+//            Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+//        }
+//        __except(EXCEPTION_EXECUTE_HANDLER)
+//        {
+//            Log(lError) << "There was a memory problem..";
+//        }
+//    }
+//    __finally
+//    {
+//    	mRC.clearImageMemory();
+//    }
 }
 
 void __fastcall TMainForm::mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -128,7 +145,7 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
 {
 	if(Key == VK_RETURN)
     {
-        mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+        mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
 		ClickZ(Sender);
     }
 }
@@ -164,7 +181,7 @@ TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
 
 double TMainForm::getImageStretchFactor()
 {
-	if((mScaleE->getValue() * mHeightE->getValue() * mWidthE->getValue()) == 0)
+	if((mScaleE->getValue() * Height->getValue() * Width->getValue()) == 0)
     {
     	Log(lError) << "Tried to divide by zero!";
     	return 1;
@@ -172,11 +189,11 @@ double TMainForm::getImageStretchFactor()
 
     if(Image1->Height < Image1->Width)
     {
-    	return Image1->Height / (mScaleE->getValue() * mHeightE->getValue());
+    	return Image1->Height / (mScaleE->getValue() * Height->getValue());
     }
     else
     {
-		return Image1->Width / (mScaleE->getValue() * mWidthE->getValue());
+		return Image1->Width / (mScaleE->getValue() * Width->getValue());
     }
 }
 
@@ -202,7 +219,8 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 
 	if(Button == TMouseButton::mbRight)
     {
-		mResetButton->Click();
+    	//Open popup
+
         return;
     }
 
@@ -263,14 +281,14 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 		return;
     }
 
-	mXCoordE->setValue(mXCoordE->getValue() + mTopLeftSelCorner.X);
-	mYCoordE->setValue(mYCoordE->getValue() + mTopLeftSelCorner.Y);
+	XCoord->setValue(XCoord->getValue() + mTopLeftSelCorner.X);
+	YCoord->setValue(YCoord->getValue() + mTopLeftSelCorner.Y);
 
-    mWidthE->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
-    mHeightE->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
+    Width->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
+    Height->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
 
     //Add to render history
-    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
     mROIHistory.add(mCurrentRB);
 
     updateScale();
@@ -329,10 +347,10 @@ void TMainForm::render(RenderBox* box)
 	if(box)
     {
         mCurrentRB = *(box);
-        mXCoordE->setValue(mCurrentRB.getX1());
-        mYCoordE->setValue(mCurrentRB.getY1());
-        mWidthE->setValue(mCurrentRB.getWidth());
-        mHeightE->setValue(mCurrentRB.getHeight());
+        XCoord->setValue(mCurrentRB.getX1());
+        YCoord->setValue(mCurrentRB.getY1());
+        Width->setValue(mCurrentRB.getWidth());
+        Height->setValue(mCurrentRB.getHeight());
     }
 
 	ClickZ(NULL);
@@ -447,27 +465,6 @@ void __fastcall TMainForm::mUpdateZsBtnClick(TObject *Sender)
 	    Log(lInfo) << "Valid Z's: "<<zs[0];
     	Log(lInfo) << "Missing Z's: "<<zs[1];
     }
-
-//    //Populate list boxes
-//    mValidZsLB->Clear();
-//    if(zs.size())
-//    {
-//        StringList validZ(zs[0], ',');
-//        for(int i = 0; i < validZ.size(); i++)
-//        {
-//	        mValidZsLB->Items->Add(vclstr(validZ[i]));
-//        }
-//    }
-
-//    mMissingZsLB->Clear();
-//    if(zs.size() > 1)
-//    {
-//        StringList missingZ(zs[1], ',');
-//        for(int i = 0; i < missingZ.size(); i++)
-//        {
-//	        mMissingZsLB->Items->Add(vclstr(missingZ[i]));
-//        }
-//    }
 }
 
 //---------------------------------------------------------------------------
@@ -475,7 +472,7 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 {
 	//Figure out wich listbox called
 
-	TListBox* lb = dynamic_cast<TListBox*>(PopupMenu1->PopupComponent);
+	TListBox* lb = dynamic_cast<TListBox*>(ZsPopUpMenu->PopupComponent);
 
     if(!lb)
     {
@@ -491,19 +488,6 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
         }
     }
 	sendToClipBoard(zs.str());
-}
-
-void sendToClipBoard(const string& str)
-{
-    const char* output = str.c_str();
-    const size_t len = strlen(output) + 1;
-    HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
-    memcpy(GlobalLock(hMem), output, len);
-    GlobalUnlock(hMem);
-    OpenClipboard(0);
-    EmptyClipboard();
-    SetClipboardData(CF_TEXT, hMem);
-    CloseClipboard();
 }
 
 //---------------------------------------------------------------------------
@@ -537,20 +521,21 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
     }
 
 	//Modify bounding box with x%
-    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
     mCurrentRB.zoom(zoomFactor);
 
-	mXCoordE->setValue(mCurrentRB.getX1());
-    mYCoordE->setValue(mCurrentRB.getY1());
-    mWidthE->setValue( mCurrentRB.getWidth());
-    mHeightE->setValue(mCurrentRB.getHeight());
+	XCoord->setValue(mCurrentRB.getX1());
+    YCoord->setValue(mCurrentRB.getY1());
+    Width->setValue( mCurrentRB.getWidth());
+    Height->setValue(mCurrentRB.getHeight());
 
     updateScale();
+	ClickZ(Sender);
 }
 
 void TMainForm::updateScale()
 {
-    mCurrentRB = RenderBox(mXCoordE->getValue(), mYCoordE->getValue(), mWidthE->getValue(), mHeightE->getValue());
+    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
 
     //Scale the scaling
     double scale  = (double) Image1->Height / (double) mCurrentRB.getHeight();
@@ -564,15 +549,14 @@ void TMainForm::updateScale()
     	scale = 1.0;
     }
 	mScaleE->setValue(scale);
-	ClickZ(NULL);
 }
 
 //--------------------------------------------------------------------------
-void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
+void __fastcall TMainForm::OwnerCBChange(TObject *Sender)
 {
 	//Update Projects CB
     //Get selected owner
-    if(mOwnersCB->ItemIndex == -1)
+    if(OwnerCB->ItemIndex == -1)
     {
 		return;
     }
@@ -582,24 +566,24 @@ void __fastcall TMainForm::mOwnersCBChange(TObject *Sender)
 	enableDisableGroupBox(Zs_GB, false);
     enableDisableGroupBox(StackGenerationGB, false);
    	mRenderEnabled = false;
-	mStacksCB->Clear();
+	StackCB->Clear();
 
-    string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
+    string owner = stdstr(OwnerCB->Items->Strings[OwnerCB->ItemIndex]);
     mOwnerE->setValue(owner);
 
     //Populate projects
     StringList p = mRC.getProjectsForOwner(mOwnerE->getValue());
     if(p.size())
     {
-		populateDropDown(p, mProjectsCB);
+		populateDropDown(p, ProjectCB);
     }
 }
 
-void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
+void __fastcall TMainForm::ProjectCBChange(TObject *Sender)
 {
 	//Update Stacks CB
     //Get selected owner
-    if(mProjectsCB->ItemIndex == -1)
+    if(ProjectCB->ItemIndex == -1)
     {
 		return;
     }
@@ -609,27 +593,27 @@ void __fastcall TMainForm::mProjectsCBChange(TObject *Sender)
 	enableDisableGroupBox(Zs_GB, false);
     enableDisableGroupBox(StackGenerationGB, false);
 	mRenderEnabled = false;
-    string owner = stdstr(mOwnersCB->Items->Strings[mOwnersCB->ItemIndex]);
-    string project = stdstr(mProjectsCB->Items->Strings[mProjectsCB->ItemIndex]);
+    string owner = stdstr(OwnerCB->Items->Strings[OwnerCB->ItemIndex]);
+    string project = stdstr(ProjectCB->Items->Strings[ProjectCB->ItemIndex]);
     mProjectE->setValue(project);
 
     //Populate stacks
     StringList s = mRC.getStacksForProject(owner, mProjectE->getValue());
     if(s.size())
     {
-		populateDropDown(s, mStacksCB);
+		populateDropDown(s, StackCB);
 		populateCheckListBox(s, StacksForProjectCB);
     }
 }
 
-void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
+void __fastcall TMainForm::StackCBChange(TObject *Sender)
 {
-    if(mStacksCB->ItemIndex == -1)
+    if(StackCB->ItemIndex == -1)
     {
 		return;
     }
 
-    string stack = stdstr(mStacksCB->Items->Strings[mStacksCB->ItemIndex]);
+    string stack = stdstr(StackCB->Items->Strings[StackCB->ItemIndex]);
 	mStackNameE->setValue(stack);
 
 	mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
@@ -642,7 +626,7 @@ void __fastcall TMainForm::mStacksCBChange(TObject *Sender)
 	//User changed stack.. Clear check list box and select current one
     for(int i = 0; i < StacksForProjectCB->Items->Count; i++)
     {
-        if(StacksForProjectCB->Items->Strings[i] == mStacksCB->Text)
+        if(StacksForProjectCB->Items->Strings[i] == StackCB->Text)
         {
 	    	StacksForProjectCB->Checked[i] = true;
         }
@@ -842,10 +826,10 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     {
     	//Pass bounds, xmin, xmax, ymin,ymax
         cmd <<" '"
-        	<<mXCoordE->getValue()<<","
-        	<<mXCoordE->getValue() + mWidthE->getValue()<<","
-            <<mYCoordE->getValue()<<","
-            <<mYCoordE->getValue() + mHeightE->getValue()<<"'";
+        	<<XCoord->getValue()<<","
+        	<<XCoord->getValue() + Width->getValue()<<","
+            <<YCoord->getValue()<<","
+            <<YCoord->getValue() + Height->getValue()<<"'";
     }
 
     cmd << " &" ;
@@ -895,8 +879,23 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
     }
 }
 
-void __fastcall TMainForm::Button1Click(TObject *Sender)
+void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
 {
+	TButton* b = dynamic_cast<TButton*>(Sender);
+
+    if(b == OpenInNDVIZBtn)
+    {
+	    string   url(createNDVIZURL());
+		ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
+		return;
+    }
+
+    if(b == OpenFromNDVIZBtn)
+    {
+		ParseNDVIZURL1Click(NULL);
+		return;
+    }
+
     MagickBooleanType status;
     PixelInfo pixel;
     MagickWand *contrast_wand, *image_wand;
@@ -908,7 +907,6 @@ void __fastcall TMainForm::Button1Click(TObject *Sender)
 
     MagickWandGenesis();
     image_wand=NewMagickWand();
-
     string currImage = mRC.getImageLocalPathAndFileName();
 
     status=MagickReadImage(image_wand, currImage.c_str());
@@ -1031,6 +1029,197 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
 void __fastcall TMainForm::FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	String filter = FilterStacksEdit->Text;
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ParseNDVIZURL1Click(TObject *Sender)
+{
+	Log(lInfo) << "Parsing clip board data";
+	string cb = getClipBoardText();
+    Log(lInfo) <<"ClipBoard: "<<cb;
+    StringList url(cb, '{');
+    //Structure of ndviz URL
+	//http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!
+    //{
+    //	'layers':
+    //	{
+    //		'ACQGephyrin':
+	//		{
+    //			'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/Forrest/H16_03_005_HSV_HEF1AG65_R2An15dTom/ACQGephyrin'_'max':0.15259
+    //		}
+    //	}
+    //_'navigation':
+    //	{
+    //		'pose':
+    //		{
+    //			'position':
+    //			{
+    //				'voxelSize':[1_1_1]_'voxelCoordinates':[4341.58935546875_680.30517578125_2]
+    //			}
+    //		}
+    //	_'zoomFactor':1.8876945060824133
+    //	}
+    //}
+
+    if(url.size() < 5)
+    {
+	   	Log(lError) <<"Failed to parse render URL.";
+        return;
+    }
+
+    // '
+    //	type
+    //'
+    //:
+    //'
+    //image
+    //'
+    //_
+    //'
+    //source
+    //'
+    //:
+    //'
+    //render://http://ibs-forrestc-ux1.corp.alleninstitute.org/Forrest/H16_03_005_HSV_HEF1AG65_R2An15dTom/ACQGephyrin
+    //
+    //'
+    //_
+    //'
+    //max
+    //'
+    //:0.15259}}_
+    //'
+    //navigation
+    //':
+	//Now extract line with 'render'
+    //Extract line with render URL
+    string rurl1 = url.getLineContaining("render");
+    if(!rurl1.size())
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+
+	Log(lInfo) <<rurl1;
+
+    //Cut string on '\''
+    StringList url_items(rurl1, '\'');
+
+	Log(lInfo) <<url_items.getLineContaining("render");
+	StringList pass3(url_items.getLineContaining("render"), '/');
+
+    Log(lInfo) << "Pass3" << pass3;
+	//Element 5,6 and 7 are owner, project and stack
+    if(url_items.size() < 8)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+    string owner(pass3[5]);
+    string project(pass3[6]);
+    string stack(pass3[7]);
+
+    Log(lInfo) <<"Owner: "<<owner;
+    Log(lInfo) <<"Project: "<<project;
+    Log(lInfo) <<"Stack: "<<stack;
+
+	//Now get z, x,y and zoom factor
+    //				'voxelSize':[1_1_1]_'voxelCoordinates':[4341.58935546875_680.30517578125_2]
+    string rurl2 = url.getLineContaining("voxel");
+    if(rurl2.size() == 0)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+
+    StringList pass4(rurl2, '[');
+    Log(lDebug) << pass4;
+    if(pass4.size() < 3)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+    string nrs(pass4[2]);
+    Log(lDebug) << nrs;
+    StringList pass5(nrs, '_');
+	Log(lDebug) << pass5;
+    double x = toDouble(pass5[0]);
+    double y = toDouble(pass5[1]);
+    int z = toInt(pass5[2]);
+    Log(lDebug) << "x = "<<x <<", y = "<<y<<", z = "<<z;
+    //Zoomfactor
+    StringList pass6(pass5[3], ':');
+    Log(lDebug) << pass6;
+    double zf = toDouble(pass6[1]);
+    Log(lDebug) << "ZoomFactor: "<<zf;
+
+    //Assume we got proper numbers, populate application
+    int i = OwnerCB->Items->IndexOf(owner.c_str());
+    if(i < 0)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+
+	OwnerCB->ItemIndex = i;
+    OwnerCB->OnChange(NULL);
+    i = ProjectCB->Items->IndexOf(project.c_str());
+    if(i < 0)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+
+	ProjectCB->ItemIndex = i;
+    ProjectCB->OnChange(NULL);
+
+    i = StackCB->Items->IndexOf(stack.c_str());
+    if(i < 0)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+
+	StackCB->ItemIndex = i;
+    StackCB->OnChange(NULL);
+
+    XCoord->setValue(x);
+    YCoord->setValue(y);
+
+    i = mZs->Items->IndexOf(mtk::toString(z).c_str());
+    if(i < 0)
+    {
+    	Log(lError) <<"Failed to parse render URL";
+        return;
+    }
+	mZs->ItemIndex = i;
+    mZs->Selected[i] = true;
+    mZs->OnClick(NULL);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CreateNDVIZURL1Click(TObject *Sender)
+{
+    string url(createNDVIZURL());
+    Log(lInfo) << url;
+}
+
+string TMainForm::createNDVIZURL()
+{
+	string URL("http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!{'layers':{'STACK':{'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/OWNER/PROJECT/STACK'_'max':MAX_INTENSITY}}_'navigation':{'pose':{'position':{'voxelSize':[1_1_1]_'voxelCoordinates':[X_CENTER_Y_CENTER_Z_VALUE]}}_'zoomFactor':ZOOM_FACTOR}}");
+    Log(lInfo) << URL;
+
+    double xCenter = XCoord->getValue() + Width->getValue()/2.;
+	double yCenter = YCoord->getValue() + Height->getValue()/2.;
+    URL = replaceSubstring("STACK", 	        stdstr(StackCB->Text), 	                                URL);
+    URL = replaceSubstring("OWNER", 	        stdstr(OwnerCB->Text), 	                                URL);
+    URL = replaceSubstring("PROJECT", 	        stdstr(ProjectCB->Text), 	                                URL);
+    URL = replaceSubstring("MAX_INTENSITY", 	mtk::toString(2.0 * (MaxIntensity->getValue()/65535.0)), 	URL);
+    URL = replaceSubstring("X_CENTER", 			mtk::toString(xCenter), 					                URL);
+    URL = replaceSubstring("Y_CENTER", 			mtk::toString(yCenter), 					                URL);
+    URL = replaceSubstring("Z_VALUE", 			mtk::toString(getCurrentZ()), 	 			                URL);
+    URL = replaceSubstring("ZOOM_FACTOR", 		mtk::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
+	return URL;
 }
 
 

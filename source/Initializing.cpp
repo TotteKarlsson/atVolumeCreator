@@ -17,10 +17,10 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 
 	gLogger.setLogLevel(mLogLevel);
 	mLogFileReader.start(true);
-    mCurrentRB.setX1(mXCoordE->getValue());
-    mCurrentRB.setY1(mYCoordE->getValue());
-    mCurrentRB.setWidth(mWidthE->getValue());
-    mCurrentRB.setHeight(mHeightE->getValue());
+    mCurrentRB.setX1(XCoord->getValue());
+    mCurrentRB.setY1(YCoord->getValue());
+    mCurrentRB.setWidth(Width->getValue());
+    mCurrentRB.setHeight(Height->getValue());
     mROIHistory.add(mOriginalRB);
 
     //Setup renderclient
@@ -32,30 +32,30 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     StringList o = mRC.getOwners();
     if(o.size())
     {
-		populateDropDown(o, mOwnersCB);
+		populateDropDown(o, OwnerCB);
     }
 
 	//Select owner
-    int index = mOwnersCB->Items->IndexOf(mOwnerE->Text);
+    int index = OwnerCB->Items->IndexOf(mOwnerE->Text);
 
     if(index > -1)
     {
-		mOwnersCB->ItemIndex = index;
-        mOwnersCB->OnChange(NULL);
+		OwnerCB->ItemIndex = index;
+        OwnerCB->OnChange(NULL);
 
         //Select last project
-        index = mProjectsCB->Items->IndexOf(mProjectE->Text);
+        index = ProjectCB->Items->IndexOf(mProjectE->Text);
         if(index > -1)
         {
-            mProjectsCB->ItemIndex = index;
-            mProjectsCB->OnChange(NULL);
+            ProjectCB->ItemIndex = index;
+            ProjectCB->OnChange(NULL);
 
             //Then select last stack
-            index = mStacksCB->Items->IndexOf(mStackNameE->Text);
+            index = StackCB->Items->IndexOf(mStackNameE->Text);
             if(index > -1)
             {
-                mStacksCB->ItemIndex = index;
-                mStacksCB->OnChange(NULL);
+                StackCB->ItemIndex = index;
+                StackCB->OnChange(NULL);
             }
         }
     }
@@ -104,10 +104,10 @@ bool TMainForm::setupAndReadIniParameters()
     mGeneralProperties.add((BaseProperty*)  &mStackNameE->getProperty()->setup(	        "STACK_NAME", 	                    "ALIGNEDSTACK_DEC12"));
 
     mGeneralProperties.add((BaseProperty*)  &mScaleE->getProperty()->setup(		        "SCALE", 			                0.02));
-    mGeneralProperties.add((BaseProperty*)  &mXCoordE->getProperty()->setup(	        "VIEW_X_COORD",    	                0));
-    mGeneralProperties.add((BaseProperty*)  &mYCoordE->getProperty()->setup(	        "VIEW_Y_COORD",    	                0));
-    mGeneralProperties.add((BaseProperty*)  &mWidthE->getProperty()->setup(		        "VIEW_WIDTH", 		                0));
-    mGeneralProperties.add((BaseProperty*)  &mHeightE->getProperty()->setup(	        "VIEW_HEIGHT", 		                0));
+    mGeneralProperties.add((BaseProperty*)  &XCoord->getProperty()->setup(	        	"VIEW_X_COORD",    	                0));
+    mGeneralProperties.add((BaseProperty*)  &YCoord->getProperty()->setup(	        	"VIEW_Y_COORD",    	                0));
+    mGeneralProperties.add((BaseProperty*)  &Width->getProperty()->setup(		        "VIEW_WIDTH", 		                0));
+    mGeneralProperties.add((BaseProperty*)  &Height->getProperty()->setup(	        	"VIEW_HEIGHT", 		                0));
     mGeneralProperties.add((BaseProperty*)  &MinIntensity->getProperty()->setup(	    "MIN_INTENSITY", 		            0));
     mGeneralProperties.add((BaseProperty*)  &MaxIntensity->getProperty()->setup(	    "MAX_INTENSITY", 		            65535));
 
@@ -129,10 +129,10 @@ bool TMainForm::setupAndReadIniParameters()
 	mProjectE->update();
     mStackNameE->update();
     mScaleE->update();
-    mXCoordE->update();
-    mYCoordE->update();
-    mWidthE->update();
-    mHeightE->update();
+    XCoord->update();
+    YCoord->update();
+    Width->update();
+    Height->update();
 	MinIntensity->update();
 	MaxIntensity->update();
 	mImageCacheFolderE->update();

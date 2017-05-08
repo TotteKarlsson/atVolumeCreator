@@ -69,14 +69,14 @@ __published:	// IDE-managed Components
 	TPanel *Panel2;
 	TButton *mCLearMemo;
 	TSplitter *Splitter2;
-	TPopupMenu *PopupMenu1;
+	TPopupMenu *ZsPopUpMenu;
 	TMenuItem *CopyValidZs1;
 	TButton *mZoomOutBtn;
 	TButton *mZoomInBtn;
-	TIntegerLabeledEdit *mWidthE;
-	TIntegerLabeledEdit *mHeightE;
-	TIntegerLabeledEdit *mXCoordE;
-	TIntegerLabeledEdit *mYCoordE;
+	TIntegerLabeledEdit *Width;
+	TIntegerLabeledEdit *Height;
+	TIntegerLabeledEdit *XCoord;
+	TIntegerLabeledEdit *YCoord;
 	TButton *mCloseBottomPanelBtn;
 	mtkIntEdit *mZoomFactor;
 	TButton *mShowBottomPanelBtn;
@@ -109,9 +109,9 @@ __published:	// IDE-managed Components
 	TLabel *Label1;
 	TLabel *Label2;
 	TLabel *Label3;
-	TComboBox *mOwnersCB;
-	TComboBox *mProjectsCB;
-	TComboBox *mStacksCB;
+	TComboBox *OwnerCB;
+	TComboBox *ProjectCB;
+	TComboBox *StackCB;
 	TGroupBox *TestSSHGB;
 	TButton *CMDButton;
 	TEdit *mCMD;
@@ -132,6 +132,11 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *VolumesScaleE;
 	TSTDStringLabeledEdit *VolumesFolder;
 	TSTDStringLabeledEdit *SubFolder1;
+	TGroupBox *GroupBox2;
+	TButton *OpenInNDVIZBtn;
+	TPopupMenu *ImagePopup;
+	TMenuItem *ParseNDVIZURL1;
+	TButton *OpenFromNDVIZBtn;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
@@ -161,12 +166,12 @@ __published:	// IDE-managed Components
 	void __fastcall CopyValidZs1Click(TObject *Sender);
 	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
 	void __fastcall mZoomBtnClick(TObject *Sender);
-	void __fastcall mOwnersCBChange(TObject *Sender);
-	void __fastcall mProjectsCBChange(TObject *Sender);
+	void __fastcall OwnerCBChange(TObject *Sender);
+	void __fastcall ProjectCBChange(TObject *Sender);
 	void __fastcall mDetachBtnClick(TObject *Sender);
 	void __fastcall mCloseBottomPanelBtnClick(TObject *Sender);
 	void __fastcall mShowBottomPanelBtnClick(TObject *Sender);
-	void __fastcall mStacksCBChange(TObject *Sender);
+	void __fastcall StackCBChange(TObject *Sender);
 	void __fastcall TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender);
 	void __fastcall CMDButtonClick(TObject *Sender);
 	void __fastcall RunClick(TObject *Sender);
@@ -175,9 +180,11 @@ __published:	// IDE-managed Components
 	void __fastcall TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall CreateCacheTimerTimer(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall OpenInNDVIZBtnClick(TObject *Sender);
 	void __fastcall IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall ParseNDVIZURL1Click(TObject *Sender);
+	void __fastcall CreateNDVIZURL1Click(TObject *Sender);
 
 	private:	// User declarations
 		void	    									UpdateZList();
@@ -219,6 +226,8 @@ __published:	// IDE-managed Components
       	TCanvas*										getCanvas();
 
 		FetchImagesThread								mCreateCacheThread;
+        string											createNDVIZURL();
+		void __fastcall 								onImage();
 
         //Remote jobs
 		string 											createRemoteCommand(const string& remoteScript, const string& stack);

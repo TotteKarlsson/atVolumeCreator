@@ -126,6 +126,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>atFetchImagesThread.h</DependentOn>
             <BuildOrder>7</BuildOrder>
         </CppCompile>
+        <CppCompile Include="atFetchImageThread.cpp">
+            <DependentOn>atFetchImageThread.h</DependentOn>
+            <BuildOrder>14</BuildOrder>
+        </CppCompile>
         <CppCompile Include="atImageForm.cpp">
             <Form>ImageForm</Form>
             <FormType>dfm</FormType>
@@ -139,6 +143,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="atRenderClient.cpp">
             <DependentOn>atRenderClient.h</DependentOn>
             <BuildOrder>3</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="atRenderClientUtils.cpp">
+            <DependentOn>atRenderClientUtils.h</DependentOn>
+            <BuildOrder>15</BuildOrder>
         </CppCompile>
         <CppCompile Include="atRenderProject.cpp">
             <DependentOn>atRenderProject.h</DependentOn>
