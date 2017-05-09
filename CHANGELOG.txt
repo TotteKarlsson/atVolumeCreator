@@ -1,4 +1,11 @@
-Release 0.5.3 (May 4)
+Release 0.5.3 (May 9)
+=======================
+* Re-added ability to select custom sections
+* Changed backend so image fetching is always done in a background thread
+* Added GetchImageThread unit and RenderClientUtils unit
+* Various refactoring
+
+Release 0.5.2 (May 4)
 =======================
 * New version - multi stack creation enabled
 * Added saving of create volume parameters
