@@ -64,7 +64,6 @@ __published:	// IDE-managed Components
 	TButton *mHistoryFFW;
 	TPanel *mLeftPanel;
 	TPaintBox *PaintBox1;
-	TListBox *mZs;
 	mtkIniFileC *mIniFileC;
 	TPanel *Panel2;
 	TButton *mCLearMemo;
@@ -137,16 +136,17 @@ __published:	// IDE-managed Components
 	TPopupMenu *ImagePopup;
 	TMenuItem *ParseNDVIZURL1;
 	TButton *OpenFromNDVIZBtn;
+	TCheckListBox *mZs;
+	TMenuItem *CheckAll1;
+	TMenuItem *UncheckAll1;
+	TMenuItem *Checkrange1;
+	TMenuItem *Exit1;
 	void __fastcall ClickZ(TObject *Sender);
-	void __fastcall mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCount);
-	void __fastcall IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCountMax);
-	void __fastcall IdHTTP1Status(TObject *ASender, const TIdStatus AStatus, const UnicodeString AStatusText);
 	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
 	void __fastcall mStretchCBClick(TObject *Sender);
@@ -185,9 +185,12 @@ __published:	// IDE-managed Components
 	void __fastcall FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ParseNDVIZURL1Click(TObject *Sender);
 	void __fastcall CreateNDVIZURL1Click(TObject *Sender);
+	void __fastcall CheckAll1Click(TObject *Sender);
+	void __fastcall UncheckAll1Click(TObject *Sender);
+	void __fastcall Checkrange1Click(TObject *Sender);
+	void __fastcall Exit1Click(TObject *Sender);
 
 	private:	// User declarations
-		void	    									UpdateZList();
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
         RenderClient									mRC;
         int												getCurrentZ();

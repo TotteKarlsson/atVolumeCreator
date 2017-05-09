@@ -38,7 +38,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 713
-    ActivePage = TabSheet1
+    ActivePage = TabSheet4
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16065,7 +16065,6 @@ object MainForm: TMainForm
           0700D67007008F8F070048AE0700000AD7A3FFFFFFFF80E17A54FFFFFFFF00CD
           CC4CFFFFFFFF009A9999FFFFFFFF80666626FFFFFFFFF0285C0FFFFFFFFF801B
           0D50FFFFFFFF00583954FFFFFFFF}
-        PopupMenu = ImagePopup
         Proportional = True
         Stretch = True
         Transparent = True
@@ -16203,40 +16202,23 @@ object MainForm: TMainForm
           end
           object Zs_GB: TGroupBox
             Left = 0
-            Top = 266
+            Top = 371
             Width = 315
-            Height = 300
+            Height = 195
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
-            object CacheGB: TGroupBox
-              Left = 2
-              Top = 193
-              Width = 311
-              Height = 105
-              Align = alBottom
-              Caption = 'Local Cache'
-              TabOrder = 0
-              object mFetchSelectedZsBtn: TButton
-                Left = 16
-                Top = 32
-                Width = 129
-                Height = 50
-                Caption = 'Generate Cache'
-                TabOrder = 0
-                OnClick = mFetchSelectedZsBtnClick
-              end
-            end
-            object mZs: TListBox
+            ExplicitLeft = -7
+            ExplicitTop = 549
+            object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 311
               Height = 178
               Align = alClient
               ItemHeight = 13
-              MultiSelect = True
               PopupMenu = ZsPopUpMenu
-              TabOrder = 1
+              TabOrder = 0
               OnClick = ClickZ
             end
           end
@@ -16265,6 +16247,26 @@ object MainForm: TMainForm
               Caption = 'Sigmoidal non-linearity contrast control'
               Enabled = False
               TabOrder = 1
+            end
+          end
+          object CacheGB: TGroupBox
+            Left = 0
+            Top = 266
+            Width = 315
+            Height = 105
+            Align = alTop
+            Caption = 'Local Cache'
+            TabOrder = 3
+            ExplicitLeft = 48
+            ExplicitTop = 141
+            object mFetchSelectedZsBtn: TButton
+              Left = 16
+              Top = 32
+              Width = 129
+              Height = 50
+              Caption = 'Generate Cache'
+              TabOrder = 0
+              OnClick = mFetchSelectedZsBtnClick
             end
           end
         end
@@ -16505,10 +16507,6 @@ object MainForm: TMainForm
     object TabSheet2: TTabSheet
       Caption = 'Current Project Settings'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object mStackNameE: TSTDStringLabeledEdit
         Left = 764
         Top = 83
@@ -16725,10 +16723,6 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
@@ -16878,10 +16872,6 @@ object MainForm: TMainForm
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16916,7 +16906,7 @@ object MainForm: TMainForm
         Top = 171
         Width = 478
         Height = 118
-        Caption = 'Render URL'
+        Caption = 'Render Service Settings'
         TabOrder = 1
         object mBaseUrlE: TSTDStringLabeledEdit
           Left = 13
@@ -17005,9 +16995,6 @@ object MainForm: TMainForm
     OnClick = mShowBottomPanelBtnClick
   end
   object IdHTTP1: TIdHTTP
-    OnStatus = IdHTTP1Status
-    OnWork = IdHTTP1Work
-    OnWorkBegin = IdHTTP1WorkBegin
     AllowCookies = True
     ProxyParams.BasicAuthentication = False
     ProxyParams.ProxyPort = 0
@@ -17040,6 +17027,18 @@ object MainForm: TMainForm
   object ZsPopUpMenu: TPopupMenu
     Left = 96
     Top = 480
+    object Checkrange1: TMenuItem
+      Caption = 'Select/Unselect Z'#39's'
+      OnClick = Checkrange1Click
+    end
+    object CheckAll1: TMenuItem
+      Caption = 'Check All'
+      OnClick = CheckAll1Click
+    end
+    object UncheckAll1: TMenuItem
+      Caption = 'Uncheck All'
+      OnClick = UncheckAll1Click
+    end
     object CopyValidZs1: TMenuItem
       Caption = 'Copy Numbers'
       OnClick = CopyValidZs1Click
@@ -17050,6 +17049,10 @@ object MainForm: TMainForm
     Top = 368
     object File1: TMenuItem
       Caption = 'File'
+      object Exit1: TMenuItem
+        Caption = 'Exit'
+        OnClick = Exit1Click
+      end
     end
     object Help1: TMenuItem
       Caption = 'Help'

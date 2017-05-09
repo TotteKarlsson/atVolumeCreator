@@ -190,6 +190,7 @@ TMemoryStream* RenderClient::getImage(int z)
         try
         {
 	    	mC->Get(getURLC(), mImageMemory);
+
             //Save to cache (in a thread)
             if(createFolder(getFilePath(getImageLocalPathAndFileName())))
             {

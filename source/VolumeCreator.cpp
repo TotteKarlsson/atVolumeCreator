@@ -10,9 +10,10 @@
 
 using namespace mtk;
 using std::string;
-USEFORM("TMainForm.cpp", MainForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
+USEFORM("TMainForm.cpp", MainForm);
 USEFORM("atImageForm.cpp", ImageForm);
+USEFORM("forms\TSelectZsForm.cpp", SelectZsForm);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -30,6 +31,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		TStyleManager::TrySetStyle("Amethyst Kamri");
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
+		Application->CreateForm(__classid(TSelectZsForm), &SelectZsForm);
 		Application->Run();
 	}
 	catch (Exception &exception)

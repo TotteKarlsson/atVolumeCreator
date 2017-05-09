@@ -10,7 +10,7 @@
 #include "mtkMathUtils.h"
 #include "atImageForm.h"
 #include "TMemoLogger.h"
-
+#include "TSelectZsForm.h"
 #define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define SigmoidalContrast(x) \
   (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
@@ -58,7 +58,6 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mImageForm(NULL),
     mRenderEnabled(false)
 {
-
     setupIniFile();
     setupAndReadIniParameters();
 
@@ -76,7 +75,6 @@ void __fastcall TMainForm::onImage()
     {
     	const char* pic = mRC.getImageLocalPathAndFileName().c_str();
 	    Image1->Picture->Graphic->LoadFromFile(pic);
-//        Image1->Picture->Graphic->LoadFromStream(imageMem);
         Image1->Invalidate();
 	    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
 		this->Image1->Cursor = crDefault;
@@ -98,47 +96,8 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
 	mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
-//	Image1->Picture->Graphic->Empty = true;
 	this->Image1->Cursor = crHourGlass;
     mRC.getImageInThread(z);
-//	try
-//    {
-//        try
-//        {
-//            Log(lDebug) << "Loading z = "<<z;
-//            Log(lDebug) << "URL = "<< mRC.getURL();
-//
-//            TMemoryStream* imageMem = mRC.getImage(z);
-//            if(imageMem)
-//            {
-//                Image1->Picture->Graphic->LoadFromStream(imageMem);
-//                Image1->Invalidate();
-//            }
-//
-//            Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
-//        }
-//        __except(EXCEPTION_EXECUTE_HANDLER)
-//        {
-//            Log(lError) << "There was a memory problem..";
-//        }
-//    }
-//    __finally
-//    {
-//    	mRC.clearImageMemory();
-//    }
-}
-
-void __fastcall TMainForm::mZMaxEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	if(Key == VK_RETURN)
-    {
-    	UpdateZList();
-    }
-}
-
-//---------------------------------------------------------------------------
-void  TMainForm::UpdateZList()
-{
 }
 
 void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -148,27 +107,6 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
         mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
 		ClickZ(Sender);
     }
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::IdHTTP1Work(TObject *ASender, TWorkMode AWorkMode,
-          __int64 AWorkCount)
-{
-//	Log(lInfo) << "Pos: " << AWorkCount;
-//	ProgressBar1->Position = AWorkCount;
-//	this->Update();
-}
-
-void __fastcall TMainForm::IdHTTP1WorkBegin(TObject *ASender, TWorkMode AWorkMode, __int64 AWorkCountMax)
-{
-//	ProgressBar1->Max = AWorkCountMax;
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::IdHTTP1Status(TObject *ASender, const TIdStatus AStatus,
-          const UnicodeString AStatusText)
-{
-	Log(lInfo) << "HTTPStatus: " << stdstr(AStatusText);
 }
 
 TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
@@ -443,7 +381,7 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 
 	Zs_GB->Caption = " Z Values (" + IntToStr((int) zs.count()) + ") ";
     //Populate list box
-	populateListBox(zs, mZs);
+	populateCheckListBox(zs, mZs);
 }
 
 //---------------------------------------------------------------------------
@@ -472,12 +410,13 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 {
 	//Figure out wich listbox called
 
-	TListBox* lb = dynamic_cast<TListBox*>(ZsPopUpMenu->PopupComponent);
+	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
 
     if(!lb)
     {
     	return;
     }
+
     stringstream zs;
     for(int i = 0; i < lb->Count; i++)
     {
@@ -787,16 +726,19 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
 	cmd << remoteScript;
 
     //First argument is number of sections
-    cmd<<" "<<mZs->Count;
+    cmd<<" "<<getNumberOfCheckedItems(mZs);
 
     //Second argument is section numbers
     cmd << " '";
 	for(int i = 0; i < mZs->Count; i++)
     {
-    	cmd << mZs->Items->Strings[i].ToInt();
-        if(i < mZs->Count -1)
+    	if(mZs->Checked[i] == true)
         {
-        	cmd << " ";
+            cmd << mZs->Items->Strings[i].ToInt();
+            if(i < mZs->Count -1)
+            {
+                cmd << " ";
+            }
         }
     }
     cmd <<"'";
@@ -1220,6 +1162,75 @@ string TMainForm::createNDVIZURL()
     URL = replaceSubstring("Z_VALUE", 			mtk::toString(getCurrentZ()), 	 			                URL);
     URL = replaceSubstring("ZOOM_FACTOR", 		mtk::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
 	return URL;
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CheckAll1Click(TObject *Sender)
+{
+	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
+
+    if(!lb)
+    {
+    	return;
+    }
+
+    for(int i = 0; i < lb->Count; i++)
+    {
+    	lb->Checked[i] = true;
+    }
+}
+
+
+void __fastcall TMainForm::UncheckAll1Click(TObject *Sender)
+{
+	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
+
+    if(!lb)
+    {
+    	return;
+    }
+
+    for(int i = 0; i < lb->Count; i++)
+    {
+    	lb->Checked[i] = false;
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Checkrange1Click(TObject *Sender)
+{
+	TSelectZsForm* sz = new TSelectZsForm(this);
+    sz->populate(mZs);
+    int mr = sz->ShowModal();
+
+    if(mr == mrOk)
+    {
+    	//Check/Uncheck items
+    	//First check all
+        for(int i = 0; i < mZs->Count; i++)
+	    {
+    		mZs->Checked[i] = true;
+	    }
+
+		StringList us(sz->getUnSelected());
+
+        //Then unselect the unselected ones
+        for(int i = 0; i < mZs->Count; i++)
+        {
+        	string val(stdstr(mZs->Items->Strings[i]));
+        	if(us.contains(val))
+            {
+				mZs->Checked[i] = false;
+            }
+        }
+    }
+    delete sz;
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Exit1Click(TObject *Sender)
+{
+	Close();
 }
 
 
