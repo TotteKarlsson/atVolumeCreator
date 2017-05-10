@@ -28,7 +28,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
         setupLogging();
-		TStyleManager::TrySetStyle("Amethyst Kamri");
+		TStyleManager::TrySetStyle("Auric");
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
 		Application->CreateForm(__classid(TSelectZsForm), &SelectZsForm);

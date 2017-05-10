@@ -45,17 +45,13 @@ class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
-	TSTDStringLabeledEdit *mStackNameE;
 	TMemo *infoMemo;
 	TIdHTTP *IdHTTP1;
 	TTimer *mShutDownTimer;
 	TPageControl *PageControl1;
 	TTabSheet *TabSheet1;
-	TTabSheet *TabSheet2;
 	TGroupBox *Zs_GB;
 	TFloatLabeledEdit *mScaleE;
-	TSTDStringLabeledEdit *mOwnerE;
-	TSTDStringLabeledEdit *mProjectE;
 	TSplitter *Splitter1;
 	TPanel *mBottomPanel;
 	TGroupBox *imageParasGB;
@@ -204,6 +200,10 @@ __published:	// IDE-managed Components
         IniFileProperties	      	                    mGeneralProperties;
         mtk::Property<int>	                            mBottomPanelHeight;
 		mtk::Property<mtk::LogLevel>	                mLogLevel;
+		mtk::Property<string>	 		                mCurrentProject;
+		mtk::Property<string>	 		                mCurrentOwner;
+		mtk::Property<string>	 		                mCurrentStack;
+
 
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();

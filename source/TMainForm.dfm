@@ -38,7 +38,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 713
-    ActivePage = TabSheet4
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16208,8 +16208,6 @@ object MainForm: TMainForm
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
-            ExplicitLeft = -7
-            ExplicitTop = 549
             object mZs: TCheckListBox
               Left = 2
               Top = 15
@@ -16257,8 +16255,6 @@ object MainForm: TMainForm
             Align = alTop
             Caption = 'Local Cache'
             TabOrder = 3
-            ExplicitLeft = 48
-            ExplicitTop = 141
             object mFetchSelectedZsBtn: TButton
               Left = 16
               Top = 32
@@ -16502,49 +16498,6 @@ object MainForm: TMainForm
             OnClick = OpenInNDVIZBtnClick
           end
         end
-      end
-    end
-    object TabSheet2: TTabSheet
-      Caption = 'Current Project Settings'
-      ImageIndex = 1
-      object mStackNameE: TSTDStringLabeledEdit
-        Left = 764
-        Top = 83
-        Width = 180
-        Height = 21
-        EditLabel.Width = 26
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Stack'
-        TabOrder = 2
-        Text = 'ALIGNEDSTACK_DEC12'
-        Visible = False
-        Value = 'ALIGNEDSTACK_DEC12'
-      end
-      object mOwnerE: TSTDStringLabeledEdit
-        Left = 617
-        Top = 83
-        Width = 120
-        Height = 21
-        EditLabel.Width = 32
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Owner'
-        TabOrder = 0
-        Text = 'Sharmishtaas'
-        Visible = False
-        Value = 'Sharmishtaas'
-      end
-      object mProjectE: TSTDStringLabeledEdit
-        Left = 617
-        Top = 37
-        Width = 327
-        Height = 21
-        EditLabel.Width = 34
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Project'
-        TabOrder = 1
-        Text = 'M270907_Scnn1aTg2Tdt_13'
-        Visible = False
-        Value = 'M270907_Scnn1aTg2Tdt_13'
       end
     end
     object TabSheet4: TTabSheet

@@ -56,7 +56,10 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 	mCreateCacheThread(),
     mRC(IdHTTP1),
     mImageForm(NULL),
-    mRenderEnabled(false)
+    mRenderEnabled(false),
+    mCurrentProject(""),
+    mCurrentOwner(""),
+    mCurrentStack("")
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -73,11 +76,19 @@ void __fastcall TMainForm::onImage()
 	TMemoryStream* imageMem = mRC.getImageMemory();
     if(imageMem)
     {
-    	const char* pic = mRC.getImageLocalPathAndFileName().c_str();
-	    Image1->Picture->Graphic->LoadFromFile(pic);
-        Image1->Invalidate();
-	    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
-		this->Image1->Cursor = crDefault;
+        if(fileExists(mRC.getImageLocalPathAndFileName()))
+        {
+           	const char* pic = mRC.getImageLocalPathAndFileName().c_str();
+	    	Image1->Picture->Graphic->LoadFromFile(pic);
+	        Image1->Invalidate();
+		    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+
+        }
+        else
+        {
+		    Log(lInfo) << "BAD FILE: " <<mRC.getImageLocalPathAndFileName();
+        }
+        this->Image1->Cursor = crDefault;
     }
 }
 
@@ -94,7 +105,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 
     //Fetch data using URL
 	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
-	mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
+	mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
 	this->Image1->Cursor = crHourGlass;
     mRC.getImageInThread(z);
@@ -338,8 +349,8 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
     else
     {
         int z = toInt(stdstr(mZs->Items->Strings[0]));
-        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),
-            mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue(), mImageCacheFolderE->getValue());
+        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),
+            mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue(), mImageCacheFolderE->getValue());
 
         //Create image URLs
         StringList urls;
@@ -374,7 +385,7 @@ void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 {
 	//Fetch valid zs for current project
-   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),	mCurrentStack.getValue());
     StringList zs = rs.getValidZs();
 
 	Log(lInfo) << "Fetched "<<zs.count()<<" valid z's";
@@ -394,7 +405,7 @@ void __fastcall TMainForm::mCLearMemoClick(TObject *Sender)
 void __fastcall TMainForm::mUpdateZsBtnClick(TObject *Sender)
 {
 	//Fetch valid zs for current project
-   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+   	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),	mCurrentStack.getValue());
     StringList zs = rs.getZs();
 
     if(zs.size() > 1)
@@ -432,7 +443,7 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::GetOptimalBoundsBtnClick(TObject *Sender)
 {
-	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mOwnerE->getValue(), mProjectE->getValue(),	mStackNameE->getValue());
+	RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),	mCurrentStack.getValue());
 
     vector<int> zs = rs.getValidZs();
     RenderBox box = rs.getOptimalXYBoxForZs(zs);
@@ -508,10 +519,10 @@ void __fastcall TMainForm::OwnerCBChange(TObject *Sender)
 	StackCB->Clear();
 
     string owner = stdstr(OwnerCB->Items->Strings[OwnerCB->ItemIndex]);
-    mOwnerE->setValue(owner);
+    mCurrentOwner.setValue(owner);
 
     //Populate projects
-    StringList p = mRC.getProjectsForOwner(mOwnerE->getValue());
+    StringList p = mRC.getProjectsForOwner(mCurrentOwner.getValue());
     if(p.size())
     {
 		populateDropDown(p, ProjectCB);
@@ -534,10 +545,10 @@ void __fastcall TMainForm::ProjectCBChange(TObject *Sender)
 	mRenderEnabled = false;
     string owner = stdstr(OwnerCB->Items->Strings[OwnerCB->ItemIndex]);
     string project = stdstr(ProjectCB->Items->Strings[ProjectCB->ItemIndex]);
-    mProjectE->setValue(project);
+    mCurrentProject.setValue(project);
 
     //Populate stacks
-    StringList s = mRC.getStacksForProject(owner, mProjectE->getValue());
+    StringList s = mRC.getStacksForProject(owner, mCurrentProject.getValue());
     if(s.size())
     {
 		populateDropDown(s, StackCB);
@@ -553,9 +564,9 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
     }
 
     string stack = stdstr(StackCB->Items->Strings[StackCB->ItemIndex]);
-	mStackNameE->setValue(stack);
+	mCurrentStack.setValue(stack);
 
-	mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
+	mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
 
    	mGetValidZsBtnClick(NULL);
 //    resetButtonClick(NULL);
@@ -753,10 +764,10 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
 	cmd <<" "<<stack;
 
 	//Sixth is owner
-    cmd <<" "<<stdstr(mOwnerE->Text);
+    cmd <<" "<<mCurrentOwner;
 
     //7th - project
-    cmd <<" "<<stdstr(mProjectE->Text);
+    cmd <<" "<<mCurrentProject;
 
     //8th - scale
 	cmd <<" "<<stdstr(VolumesScaleE->Text);
@@ -937,7 +948,7 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
 
     //Fetch data using URL
     mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
-    mRC.init(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), minInt, maxInt);
+    mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), minInt, maxInt);
 
     //First check if we already is having this data
     try

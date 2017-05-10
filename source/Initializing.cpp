@@ -25,7 +25,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 
     //Setup renderclient
     mRC.setBaseURL(mBaseUrlE->getValue());
-    mRC.getProject().setupForStack(mOwnerE->getValue(), mProjectE->getValue(), mStackNameE->getValue());
+    mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
 
 
     //Populate owners
@@ -36,7 +36,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     }
 
 	//Select owner
-    int index = OwnerCB->Items->IndexOf(mOwnerE->Text);
+    int index = OwnerCB->Items->IndexOf(mCurrentOwner.c_str());
 
     if(index > -1)
     {
@@ -44,14 +44,14 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
         OwnerCB->OnChange(NULL);
 
         //Select last project
-        index = ProjectCB->Items->IndexOf(mProjectE->Text);
+        index = ProjectCB->Items->IndexOf(mCurrentProject.c_str());
         if(index > -1)
         {
             ProjectCB->ItemIndex = index;
             ProjectCB->OnChange(NULL);
 
             //Then select last stack
-            index = StackCB->Items->IndexOf(mStackNameE->Text);
+            index = StackCB->Items->IndexOf(mCurrentStack.c_str());
             if(index > -1)
             {
                 StackCB->ItemIndex = index;
@@ -66,7 +66,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 	enableDisableGroupBox(PostProcessingGB, false);
 
     TabSheet5->TabVisible = false;
-    TabSheet2->TabVisible = false;
 
     //Setup path for ssh
 	TSSHFrame1->ScFileStorage->Path = vclstr(gAppDataLocation);
@@ -99,9 +98,9 @@ bool TMainForm::setupAndReadIniParameters()
 	mGeneralProperties.add((BaseProperty*)  &mLogLevel.setup( 	                    	"LOG_LEVEL",    	                lAny));
 
     mGeneralProperties.add((BaseProperty*)  &mBaseUrlE->getProperty()->setup(	        "BASE_URL", 	                    "http://ibs-forrestc-ux1.corp.alleninstitute.org:8081/render-ws/v1"));
-    mGeneralProperties.add((BaseProperty*)  &mOwnerE->getProperty()->setup(		        "OWNER", 		                    "Sharmishtaas"));
-    mGeneralProperties.add((BaseProperty*)  &mProjectE->getProperty()->setup(	        "PROJECT", 		                    "M270907_Scnn1aTg2Tdt_13"));
-    mGeneralProperties.add((BaseProperty*)  &mStackNameE->getProperty()->setup(	        "STACK_NAME", 	                    "ALIGNEDSTACK_DEC12"));
+    mGeneralProperties.add((BaseProperty*)  &mCurrentOwner.setup(		        		"OWNER", 		                    "Sharmishtaas"));
+    mGeneralProperties.add((BaseProperty*)  &mCurrentProject.setup(	    			    "PROJECT", 		                    "M270907_Scnn1aTg2Tdt_13"));
+    mGeneralProperties.add((BaseProperty*)  &mCurrentStack.setup(	        			"STACK_NAME", 	                    "ALIGNEDSTACK_DEC12"));
 
     mGeneralProperties.add((BaseProperty*)  &mScaleE->getProperty()->setup(		        "SCALE", 			                0.02));
     mGeneralProperties.add((BaseProperty*)  &XCoord->getProperty()->setup(	        	"VIEW_X_COORD",    	                0));
@@ -125,9 +124,6 @@ bool TMainForm::setupAndReadIniParameters()
 
 	//Update UI
     mBaseUrlE->update();
-	mOwnerE->update();
-	mProjectE->update();
-    mStackNameE->update();
     mScaleE->update();
     XCoord->update();
     YCoord->update();
