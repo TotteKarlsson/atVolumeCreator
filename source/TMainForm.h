@@ -120,8 +120,6 @@ __published:	// IDE-managed Components
 	TCheckBox *IMContrastControl;
 	TCheckListBox *StacksForProjectCB;
 	TGroupBox *MultiStackCreationGB;
-	TPanel *Panel1;
-	TSTDStringLabeledEdit *FilterStacksEdit;
 	TPanel *Panel3;
 	TPropertyCheckBox *BoundsCB;
 	TFloatLabeledEdit *VolumesScaleE;
@@ -137,6 +135,13 @@ __published:	// IDE-managed Components
 	TMenuItem *UncheckAll1;
 	TMenuItem *Checkrange1;
 	TMenuItem *Exit1;
+	TGroupBox *GroupBox3;
+	TPropertyCheckBox *AcqFilterCB;
+	TPropertyCheckBox *FlatFieldFilterCB;
+	TPropertyCheckBox *StitchedFilterCB;
+	TPropertyCheckBox *RegisteredFilterCB;
+	TPropertyCheckBox *RoughAlignedFilterCB;
+	TPropertyCheckBox *FineAlignedFilterCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -178,13 +183,13 @@ __published:	// IDE-managed Components
 	void __fastcall CreateCacheTimerTimer(TObject *Sender);
 	void __fastcall OpenInNDVIZBtnClick(TObject *Sender);
 	void __fastcall IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ParseNDVIZURL1Click(TObject *Sender);
 	void __fastcall CreateNDVIZURL1Click(TObject *Sender);
 	void __fastcall CheckAll1Click(TObject *Sender);
 	void __fastcall UncheckAll1Click(TObject *Sender);
 	void __fastcall Checkrange1Click(TObject *Sender);
 	void __fastcall Exit1Click(TObject *Sender);
+	void __fastcall StackFilterCBClick(TObject *Sender);
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);

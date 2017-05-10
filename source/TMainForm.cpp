@@ -548,7 +548,7 @@ void __fastcall TMainForm::ProjectCBChange(TObject *Sender)
     mCurrentProject.setValue(project);
 
     //Populate stacks
-    StringList s = mRC.getStacksForProject(owner, mCurrentProject.getValue());
+    StringList s = mRC.getStacksForProject(owner, mCurrentProject);
     if(s.size())
     {
 		populateDropDown(s, StackCB);
@@ -591,7 +591,6 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
 	enableDisableGroupBox(Zs_GB, true);
 	mRenderEnabled = true;
 }
-
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
@@ -979,12 +978,6 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::FilterStacksEditKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	String filter = FilterStacksEdit->Text;
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::ParseNDVIZURL1Click(TObject *Sender)
 {
 	Log(lInfo) << "Parsing clip board data";
@@ -1242,6 +1235,79 @@ void __fastcall TMainForm::Checkrange1Click(TObject *Sender)
 void __fastcall TMainForm::Exit1Click(TObject *Sender)
 {
 	Close();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::StackFilterCBClick(TObject *Sender)
+{
+	StacksForProjectCB->Clear();
+    StringList s = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
+
+    if(AcqFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Acq", s[i]) || contains("Median", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
+
+    if(FlatFieldFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Flat", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
+
+    if(StitchedFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Stitched", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
+
+    if(RegisteredFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Registered", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
+
+    if(RoughAlignedFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Rough", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
+
+    if(FineAlignedFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+            if(contains("Fine", s[i]))
+            {
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+            }
+        }
+    }
 }
 
 

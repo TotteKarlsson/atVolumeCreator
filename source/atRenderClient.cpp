@@ -141,7 +141,7 @@ StringList RenderClient::getProjectsForOwner(const string& o)
     }
     else
     {
-        Log(lError) << "Failed fetching owners";
+        Log(lError) << "Failed fetching projects";
     }
 
     projects.sort();
@@ -470,7 +470,7 @@ RenderBox RenderClient::parseBoundsResponse(const string& _s)
     return bounds;
 }
 
-StringList RenderClient::getStacksForProject(const string& owner, const string& p)
+StringList RenderClient::getStacksForProject(const string& owner, const string& project)
 {
     stringstream sUrl;
     sUrl << mBaseURL;
@@ -494,7 +494,7 @@ StringList RenderClient::getStacksForProject(const string& owner, const string& 
         for(int i = 0; i < t1.count(); i++)
         {
         	string line = t1[i];
-            if(contains(p, t1[i]))
+            if(contains(project, t1[i]))
             {
             	StringList l(t1[i], ',');
                 if(l.count() == 3)

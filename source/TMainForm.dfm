@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Volume Creator'
-  ClientHeight = 871
+  ClientHeight = 862
   ClientWidth = 1150
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,7 +24,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 713
+    Top = 704
     Width = 1150
     Height = 3
     Cursor = crVSplit
@@ -37,17 +37,19 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1150
-    Height = 713
-    ActivePage = TabSheet1
+    Height = 704
+    ActivePage = TabSheet4
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 713
     object TabSheet1: TTabSheet
       Caption = 'General'
+      ExplicitHeight = 685
       object PaintBox1: TPaintBox
         Left = 321
         Top = 113
         Width = 821
-        Height = 572
+        Height = 563
         Align = alClient
         Color = clBtnFace
         ParentColor = False
@@ -60,7 +62,7 @@ object MainForm: TMainForm
         Left = 321
         Top = 113
         Width = 821
-        Height = 572
+        Height = 563
         Align = alClient
         AutoSize = True
         Picture.Data = {
@@ -16080,18 +16082,20 @@ object MainForm: TMainForm
         Left = 0
         Top = 113
         Width = 321
-        Height = 572
+        Height = 563
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 572
         object ScrollBox1: TScrollBox
           Left = 1
           Top = 1
           Width = 319
-          Height = 570
+          Height = 561
           Align = alClient
           DoubleBuffered = True
           ParentDoubleBuffered = False
           TabOrder = 0
+          ExplicitHeight = 570
           object imageParasGB: TGroupBox
             Left = 0
             Top = 0
@@ -16204,20 +16208,22 @@ object MainForm: TMainForm
             Left = 0
             Top = 371
             Width = 315
-            Height = 195
+            Height = 186
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitHeight = 195
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 311
-              Height = 178
+              Height = 169
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 178
             end
           end
           object PostProcessingGB: TGroupBox
@@ -16503,73 +16509,25 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
+      ExplicitHeight = 685
       object StackGenerationGB: TGroupBox
         Left = 0
         Top = 70
         Width = 1142
-        Height = 615
-        Align = alClient
-        Caption = 'Stack Output'
+        Height = 123
+        Align = alTop
+        Caption = 'Stack Output Settings'
         TabOrder = 0
-        object MultiStackCreationGB: TGroupBox
-          Left = 2
-          Top = 129
-          Width = 1138
-          Height = 484
-          Align = alClient
-          Caption = 'Stacks'
-          TabOrder = 0
-          object StacksForProjectCB: TCheckListBox
-            AlignWithMargins = True
-            Left = 17
-            Top = 76
-            Width = 201
-            Height = 403
-            Margins.Left = 15
-            Align = alLeft
-            ItemHeight = 13
-            TabOrder = 0
-          end
-          object Run: TButton
-            Left = 262
-            Top = 73
-            Width = 131
-            Height = 103
-            Caption = 'Run'
-            TabOrder = 1
-            OnClick = RunClick
-          end
-          object Panel1: TPanel
-            Left = 2
-            Top = 15
-            Width = 1134
-            Height = 58
-            Align = alTop
-            BevelOuter = bvNone
-            TabOrder = 2
-            object FilterStacksEdit: TSTDStringLabeledEdit
-              Left = 16
-              Top = 20
-              Width = 121
-              Height = 21
-              EditLabel.Width = 24
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Filter'
-              TabOrder = 0
-              OnKeyDown = FilterStacksEditKeyDown
-            end
-          end
-        end
         object Panel3: TPanel
           Left = 2
           Top = 15
           Width = 1138
-          Height = 114
+          Height = 98
           Align = alTop
           BevelOuter = bvNone
-          TabOrder = 1
+          TabOrder = 0
           object BoundsCB: TPropertyCheckBox
-            Left = 356
+            Left = 307
             Top = 28
             Width = 97
             Height = 17
@@ -16581,7 +16539,7 @@ object MainForm: TMainForm
             Value = True
           end
           object VolumesScaleE: TFloatLabeledEdit
-            Left = 252
+            Left = 212
             Top = 26
             Width = 81
             Height = 21
@@ -16672,15 +16630,108 @@ object MainForm: TMainForm
           Text = 'ls'
         end
       end
+      object MultiStackCreationGB: TGroupBox
+        Left = 0
+        Top = 193
+        Width = 1142
+        Height = 483
+        Align = alClient
+        Caption = 'Stacks'
+        TabOrder = 3
+        ExplicitTop = 194
+        ExplicitHeight = 492
+        object StacksForProjectCB: TCheckListBox
+          AlignWithMargins = True
+          Left = 13
+          Top = 24
+          Width = 239
+          Height = 439
+          Margins.Left = 15
+          ItemHeight = 13
+          TabOrder = 0
+        end
+        object Run: TButton
+          Left = 262
+          Top = 226
+          Width = 131
+          Height = 103
+          Caption = 'Run'
+          TabOrder = 1
+          OnClick = RunClick
+        end
+        object GroupBox3: TGroupBox
+          Left = 258
+          Top = 24
+          Width = 551
+          Height = 97
+          Caption = 'Filters'
+          TabOrder = 2
+          object AcqFilterCB: TPropertyCheckBox
+            Left = 15
+            Top = 24
+            Width = 90
+            Height = 17
+            Caption = 'Acquisition'
+            TabOrder = 0
+            OnClick = StackFilterCBClick
+          end
+          object FlatFieldFilterCB: TPropertyCheckBox
+            Left = 103
+            Top = 24
+            Width = 108
+            Height = 17
+            Caption = 'Flatfield Corrected'
+            TabOrder = 1
+            OnClick = StackFilterCBClick
+          end
+          object StitchedFilterCB: TPropertyCheckBox
+            Left = 229
+            Top = 24
+            Width = 57
+            Height = 17
+            Caption = 'Stitched'
+            TabOrder = 2
+            OnClick = StackFilterCBClick
+          end
+          object RegisteredFilterCB: TPropertyCheckBox
+            Left = 15
+            Top = 64
+            Width = 97
+            Height = 17
+            Caption = 'Registered'
+            TabOrder = 3
+            OnClick = StackFilterCBClick
+          end
+          object RoughAlignedFilterCB: TPropertyCheckBox
+            Left = 103
+            Top = 64
+            Width = 97
+            Height = 17
+            Caption = 'Rough Aligned 1'
+            TabOrder = 4
+            OnClick = StackFilterCBClick
+          end
+          object FineAlignedFilterCB: TPropertyCheckBox
+            Left = 229
+            Top = 64
+            Width = 80
+            Height = 17
+            Caption = 'Fine Aligned'
+            TabOrder = 5
+            OnClick = StackFilterCBClick
+          end
+        end
+      end
     end
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
+      ExplicitHeight = 685
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
         Width = 1142
-        Height = 685
+        Height = 676
         Align = alClient
         Lines.Strings = (
           '#! /bin/bash'
@@ -16820,11 +16871,13 @@ object MainForm: TMainForm
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
+        ExplicitHeight = 685
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitHeight = 685
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16882,11 +16935,12 @@ object MainForm: TMainForm
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 716
+    Top = 707
     Width = 1150
     Height = 136
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 716
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -16938,7 +16992,7 @@ object MainForm: TMainForm
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 852
+    Top = 843
     Width = 1150
     Height = 19
     Align = alBottom
@@ -16946,6 +17000,7 @@ object MainForm: TMainForm
     TabOrder = 2
     Visible = False
     OnClick = mShowBottomPanelBtnClick
+    ExplicitTop = 852
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
