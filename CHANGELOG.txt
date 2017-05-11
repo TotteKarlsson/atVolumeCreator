@@ -1,3 +1,10 @@
+Release 0.5.4 (May 11)
+=======================
+* Added 3 themes files
+* Added logic to switch runtime application theme
+* Added ability to filter stacks
+* Replaced (hidden) UI project controls with internal properties
+
 Release 0.5.3 (May 9)
 =======================
 * Re-added ability to select custom sections
