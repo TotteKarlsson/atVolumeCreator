@@ -142,6 +142,8 @@ __published:	// IDE-managed Components
 	TPropertyCheckBox *RegisteredFilterCB;
 	TPropertyCheckBox *RoughAlignedFilterCB;
 	TPropertyCheckBox *FineAlignedFilterCB;
+	TMenuItem *Options1;
+	TMenuItem *ThemesMenu;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -190,6 +192,8 @@ __published:	// IDE-managed Components
 	void __fastcall Checkrange1Click(TObject *Sender);
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall StackFilterCBClick(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
+	void __fastcall ThemesMenuClick(TObject *Sender);
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
@@ -200,7 +204,8 @@ __published:	// IDE-managed Components
 
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
-
+		bool          									mIsStyleMenuPopulated;
+        void        __fastcall                          populateStyleMenu();
         TApplicationProperties                          mAppProperties;
         IniFileProperties	      	                    mGeneralProperties;
         mtk::Property<int>	                            mBottomPanelHeight;

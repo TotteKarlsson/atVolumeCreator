@@ -20,6 +20,7 @@ object MainForm: TMainForm
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter2: TSplitter
@@ -38,13 +39,11 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 704
-    ActivePage = TabSheet4
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 713
     object TabSheet1: TTabSheet
       Caption = 'General'
-      ExplicitHeight = 685
       object PaintBox1: TPaintBox
         Left = 321
         Top = 113
@@ -16085,7 +16084,6 @@ object MainForm: TMainForm
         Height = 563
         Align = alLeft
         TabOrder = 0
-        ExplicitHeight = 572
         object ScrollBox1: TScrollBox
           Left = 1
           Top = 1
@@ -16095,7 +16093,6 @@ object MainForm: TMainForm
           DoubleBuffered = True
           ParentDoubleBuffered = False
           TabOrder = 0
-          ExplicitHeight = 570
           object imageParasGB: TGroupBox
             Left = 0
             Top = 0
@@ -16212,7 +16209,6 @@ object MainForm: TMainForm
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
-            ExplicitHeight = 195
             object mZs: TCheckListBox
               Left = 2
               Top = 15
@@ -16223,7 +16219,6 @@ object MainForm: TMainForm
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
-              ExplicitHeight = 178
             end
           end
           object PostProcessingGB: TGroupBox
@@ -16509,7 +16504,6 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
-      ExplicitHeight = 685
       object StackGenerationGB: TGroupBox
         Left = 0
         Top = 70
@@ -16638,8 +16632,6 @@ object MainForm: TMainForm
         Align = alClient
         Caption = 'Stacks'
         TabOrder = 3
-        ExplicitTop = 194
-        ExplicitHeight = 492
         object StacksForProjectCB: TCheckListBox
           AlignWithMargins = True
           Left = 13
@@ -16726,7 +16718,6 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
-      ExplicitHeight = 685
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
@@ -16871,13 +16862,11 @@ object MainForm: TMainForm
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
-        ExplicitHeight = 685
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
-      ExplicitHeight = 685
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16940,7 +16929,6 @@ object MainForm: TMainForm
     Height = 136
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 716
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -17000,7 +16988,6 @@ object MainForm: TMainForm
     TabOrder = 2
     Visible = False
     OnClick = mShowBottomPanelBtnClick
-    ExplicitTop = 852
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
@@ -17053,13 +17040,18 @@ object MainForm: TMainForm
     end
   end
   object MainMenu1: TMainMenu
-    Left = 840
-    Top = 368
+    Left = 360
     object File1: TMenuItem
       Caption = 'File'
       object Exit1: TMenuItem
         Caption = 'Exit'
         OnClick = Exit1Click
+      end
+    end
+    object Options1: TMenuItem
+      Caption = 'Options'
+      object ThemesMenu: TMenuItem
+        Caption = 'Appearance'
       end
     end
     object Help1: TMenuItem

@@ -59,7 +59,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mRenderEnabled(false),
     mCurrentProject(""),
     mCurrentOwner(""),
-    mCurrentStack("")
+    mCurrentStack(""),
+    mIsStyleMenuPopulated(false)
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -1309,5 +1310,17 @@ void __fastcall TMainForm::StackFilterCBClick(TObject *Sender)
         }
     }
 }
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FormShow(TObject *Sender)
+{
+    if(mIsStyleMenuPopulated == false)
+    {
+        populateStyleMenu();
+        mIsStyleMenuPopulated = true;
+	}
+}
+
+
 
 
