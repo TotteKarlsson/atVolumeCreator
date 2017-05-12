@@ -63,7 +63,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 
 	enableDisableGroupBox(TestSSHGB, 		false);
 	enableDisableGroupBox(StackGenerationGB,false);
-	enableDisableGroupBox(PostProcessingGB, false);
+//	enableDisableGroupBox(PostProcessingGB, false);
 
     TabSheet5->TabVisible = false;
 
@@ -115,7 +115,6 @@ bool TMainForm::setupAndReadIniParameters()
     //Stack Generation
 	mGeneralProperties.add((BaseProperty*)  &VolumesFolder->getProperty()->setup(		"VOLUMES_ROOT_FOLDER",  	  		"/nas1/temp"));
 	mGeneralProperties.add((BaseProperty*)  &SubFolder1->getProperty()->setup(			"VOLUMES_SUB_FOLDER_1",  	  		"temp"));
-//	mGeneralProperties.add((BaseProperty*)  &SubFolder2->getProperty()->setup(			"VOLUMES_SUB_FOLDER_2",  	  		"temp"));
 	mGeneralProperties.add((BaseProperty*)  &VolumesScaleE->getProperty()->setup(	   	"VOLUMES_SCALE",  	 		 		0.01));
 
 
@@ -134,7 +133,6 @@ bool TMainForm::setupAndReadIniParameters()
 	mImageCacheFolderE->update();
     VolumesFolder->update();
     SubFolder1->update();
-//    SubFolder2->update();
     VolumesScaleE->update();
 	mBottomPanel->Height = mBottomPanelHeight;
     return true;

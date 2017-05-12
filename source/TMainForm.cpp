@@ -5,29 +5,11 @@
 #include "mtkLogger.h"
 #include <vector>
 #include "atRenderClient.h"
-#include "MagickWand/MagickWand.h"
 #include "mtkExeFile.h"
 #include "mtkMathUtils.h"
 #include "atImageForm.h"
 #include "TMemoLogger.h"
 #include "TSelectZsForm.h"
-#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
-#define SigmoidalContrast(x) \
-  (QuantumRange*(1.0/(1+exp(10.0*(0.5-QuantumScale*x)))-0.0066928509)*1.0092503)
-#define ThrowWandException(wand) \
-{ \
-  char \
-    *description; \
- \
-  ExceptionType \
-    severity; \
- \
-  description=MagickGetException(wand,&severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
-}
-
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -64,30 +46,88 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 {
     setupIniFile();
     setupAndReadIniParameters();
-
     mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
 }
 
+#define ThrowWandException(wand) \
+{ \
+  char \
+    *description; \
+ \
+  ExceptionType \
+    severity; \
+ \
+  description=MagickGetException(wand,&severity); \
+  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+  description=(char *) MagickRelinquishMemory(description); \
+  exit(-1); \
+}
+
+//This is called from a thread and need to be synchronized with the UI main thread
 void __fastcall TMainForm::onImage()
 {
-	//This is called from a thread and need to be synchronized with the UI main thread
 	TMemoryStream* imageMem = mRC.getImageMemory();
     if(imageMem)
     {
         if(fileExists(mRC.getImageLocalPathAndFileName()))
         {
-           	const char* pic = mRC.getImageLocalPathAndFileName().c_str();
-	    	Image1->Picture->Graphic->LoadFromFile(pic);
+           	string pic = mRC.getImageLocalPathAndFileName().c_str();
+
+			if(IMContrastControl->Checked || FlipImageCB->Checked)
+            {
+            	//Read imageMagick image from file
+                MagickWand*image_wand;
+                MagickWandGenesis();
+                image_wand = NewMagickWand();
+                MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
+
+                if (status == MagickFalse)
+                {
+                    ThrowWandException(image_wand);
+                }
+
+           		if(IMContrastControl->Checked)
+                {
+                	applyContrastControl(image_wand);
+                }
+
+           		if(FlipImageCB->Checked)
+                {
+					flipImage(image_wand);
+                }
+
+                string newFName(createProcessedImageFileName(pic));
+
+
+                /*    Write the image then destroy it.    */
+                string procImageFName(createProcessedImageFileName(pic));
+                status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
+                if (status == MagickFalse)
+                {
+                	ThrowWandException(image_wand);
+                }
+
+            	// Release Wand handle
+            	DestroyMagickWand(image_wand);
+
+
+		    	Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
+            }
+            else
+            {
+
+	    		Image1->Picture->Graphic->LoadFromFile(pic.c_str());
+            }
 	        Image1->Invalidate();
 		    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
 
         }
         else
         {
-		    Log(lInfo) << "BAD FILE: " <<mRC.getImageLocalPathAndFileName();
+		    Log(lInfo) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
         }
         this->Image1->Cursor = crDefault;
     }
@@ -147,12 +187,6 @@ double TMainForm::getImageStretchFactor()
     }
 }
 
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mStretchCBClick(TObject *Sender)
-{
-//	Image1->Stretch = mStretchCB->Checked;
-}
-
 TCanvas* TMainForm::getCanvas()
 {
 	return PaintBox1->Canvas;
@@ -170,7 +204,6 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 	if(Button == TMouseButton::mbRight)
     {
     	//Open popup
-
         return;
     }
 
@@ -216,7 +249,6 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 
 	Drawing = false;
 
-
     //For selection
 	mBottomRightSelCorner = this->Image1->ScreenToClient(Mouse->CursorPos);
 
@@ -242,6 +274,9 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     mROIHistory.add(mCurrentRB);
 
     updateScale();
+
+    //Undo any flipping
+    FlipImageCB->Checked = false;
 	ClickZ(Sender);
 }
 
@@ -368,21 +403,6 @@ void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
-{
-	//Browse for folder
-	string res = browseForFolder(mImageCacheFolderE->getValue());
-    if(folderExists(res))
-    {
-		mImageCacheFolderE->setValue(res);
-    }
-    else
-    {
-    	Log(lWarning) << "Cache folder was not set..";
-    }
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 {
 	//Fetch valid zs for current project
@@ -394,12 +414,6 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 	Zs_GB->Caption = " Z Values (" + IntToStr((int) zs.count()) + ") ";
     //Populate list box
 	populateCheckListBox(zs, mZs);
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mCLearMemoClick(TObject *Sender)
-{
-	infoMemo->Clear();
 }
 
 //---------------------------------------------------------------------------
@@ -415,30 +429,6 @@ void __fastcall TMainForm::mUpdateZsBtnClick(TObject *Sender)
 	    Log(lInfo) << "Valid Z's: "<<zs[0];
     	Log(lInfo) << "Missing Z's: "<<zs[1];
     }
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
-{
-	//Figure out wich listbox called
-
-	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
-
-    if(!lb)
-    {
-    	return;
-    }
-
-    stringstream zs;
-    for(int i = 0; i < lb->Count; i++)
-    {
-    	zs << stdstr(lb->Items->Strings[i]);
-        if(i < (lb->Count -1))
-        {
-        	zs <<",";
-        }
-    }
-	sendToClipBoard(zs.str());
 }
 
 //---------------------------------------------------------------------------
@@ -605,220 +595,6 @@ void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
 	mImageForm->Show();
 }
 
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
-{
-	mBottomPanel->Visible = false;
-    mShowBottomPanelBtn->Visible = true;
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
-{
-	mBottomPanel->Visible = true;
-    mShowBottomPanelBtn->Visible = false;
-    Splitter2->Top = mBottomPanel->Top - 1;
-}
-
-
-void __fastcall TMainForm::TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender)
-{
-	//Parse messages from the server
-    string line(stdstr(TSSHFrame1->ScSSHShell1->ReadString()));
-//	if(contains("$",line) || contains("echo",line) || contains("[main]", line))
-//    {
-//
-//    }
-//    else
-    {
- 		Log(lInfo) << line;
-    }
-}
-
-void __fastcall TMainForm::CMDButtonClick(TObject *Sender)
-{
-	stringstream cmd;
-    cmd << stdstr(mCMD->Text) << endl;
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-}
-
-string escape(const string& before)
-{
-    string escaped(before);
-    //Pretty bisarre syntax.. see http://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings
-    escaped = replaceSubstring("'", "'\"'\"'", escaped);
-    return "'" + escaped + "'";
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::RunClick(TObject *Sender)
-{
-	//Create remote jobs by script
-    string scriptName("runner.sh");
-
-    //Create empty, runnable script on server
-	string remoteScriptName = createEmptyScriptFileOnServer(scriptName);
-
-	//Populate remote script
-	if(!populateRemoteScript(remoteScriptName))
-    {
-    	Log(lError) << "Failed to populate remote script.. bailing";
-    	return;
-    }
-
-    //Create command lines (jobs)
-   	vector<string> commands;
-    StringList stacks = getCheckedItems(StacksForProjectCB);
-	for(int i = 0; i < stacks.size() ; i++)
-    {
-		commands.push_back(createRemoteCommand(remoteScriptName, stacks[i]));
-        Log(lDebug) << "Command "<<i<<" :"<<commands[i];
-    }
-
-	for(int i = 0; i < commands.size(); i++)
-    {
-    	runJob(commands[i]);
-    }
-}
-
-string TMainForm::createEmptyScriptFileOnServer(const string& scriptName)
-{
-    stringstream cmd;
-
-	//First create remote folders
-    string folders(joinPath(stdstr(VolumesFolder->Text), stdstr(SubFolder1->Text), '/'));
-    cmd << "mkdir -p "<<folders;
-
-    string remoteScript(joinPath(folders, scriptName, '/'));
-
-	cmd << " && touch "<< remoteScript << endl;
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-	cmd.str("");
-
-    //Make executable
-	cmd << "chmod +x "<< remoteScript << endl;
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-	return remoteScript;
-}
-
-bool TMainForm::populateRemoteScript(const string& remoteScriptName)
-{
-    stringstream cmd;
-    StringList lines(getStrings(BashScriptMemo));
-    if(lines.size() <= 1)
-    {
-    	Log(lError) << "Can't populate remote script. Script Memo is Empty??";
-        return false;
-    }
-
-	cmd << "echo \"\" > " <<remoteScriptName << endl;
-    //Copy content of memo
-    for(int i = 0 ; i < lines.size(); i++)
-    {
-		//Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
-		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScriptName << endl;
-    }
-
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-    cmd.str("");
-    return true;
-}
-
-void TMainForm::runJob(const string& job)
-{
-    TSSHFrame1->ScSSHShell1->WriteString(vclstr(job));
-}
-
-string TMainForm::createRemoteCommand(const string& remoteScript, const string& stack)
-{
-	stringstream cmd;
-
-	//Create commandline for remote bash script
-	cmd << remoteScript;
-
-    //First argument is number of sections
-    cmd<<" "<<getNumberOfCheckedItems(mZs);
-
-    //Second argument is section numbers
-    cmd << " '";
-	for(int i = 0; i < mZs->Count; i++)
-    {
-    	if(mZs->Checked[i] == true)
-        {
-            cmd << mZs->Items->Strings[i].ToInt();
-            if(i < mZs->Count -1)
-            {
-                cmd << " ";
-            }
-        }
-    }
-    cmd <<"'";
-
-    //Third argument is root outputfolder
-    cmd <<" "<<stdstr(VolumesFolder->Text);
-
-    //Fourth arg is custom outputfolder
-	cmd <<" "<<stdstr(SubFolder1->Text);
-
-    //Fifth arg is custom outputfolder
-	cmd <<" "<<stack;
-
-	//Sixth is owner
-    cmd <<" "<<mCurrentOwner;
-
-    //7th - project
-    cmd <<" "<<mCurrentProject;
-
-    //8th - scale
-	cmd <<" "<<stdstr(VolumesScaleE->Text);
-
-	//9th - static bounds?
-    cmd <<" "<<mtk::toString(BoundsCB->Checked);
-
-    if(BoundsCB->Checked)
-    {
-    	//Pass bounds, xmin, xmax, ymin,ymax
-        cmd <<" '"
-        	<<XCoord->getValue()<<","
-        	<<XCoord->getValue() + Width->getValue()<<","
-            <<YCoord->getValue()<<","
-            <<YCoord->getValue() + Height->getValue()<<"'";
-    }
-
-    cmd << " &" ;
-    cmd << endl;
-
-//    //Now execute..
-//    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-	return cmd.str();
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::TSSHFrame1ScSSHClientAfterConnect(TObject *Sender)
-{
-	enableDisableGroupBox(StackGenerationGB, true);
-	enableDisableGroupBox(TestSSHGB, true);
-
-  	TSSHFrame1->ScSSHClientAfterConnect(Sender);
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender)
-{
-	TSSHFrame1->ScSSHClientAfterDisconnect(Sender);
-	enableDisableGroupBox(StackGenerationGB, false);
-	enableDisableGroupBox(TestSSHGB, false);
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	if(Key == VK_ESCAPE)
-    {
-        Close();
-    }
-}
-
 void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
@@ -832,101 +608,6 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
     }
 }
 
-void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
-{
-	TButton* b = dynamic_cast<TButton*>(Sender);
-
-    if(b == OpenInNDVIZBtn)
-    {
-	    string   url(createNDVIZURL());
-		ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
-		return;
-    }
-
-    if(b == OpenFromNDVIZBtn)
-    {
-		ParseNDVIZURL1Click(NULL);
-		return;
-    }
-
-    MagickBooleanType status;
-    PixelInfo pixel;
-    MagickWand *contrast_wand, *image_wand;
-    PixelIterator *contrast_iterator, *iterator;
-    PixelWand **contrast_pixels, **pixels;
-    register ssize_t x;
-    size_t width;
-    ssize_t y;
-
-    MagickWandGenesis();
-    image_wand=NewMagickWand();
-    string currImage = mRC.getImageLocalPathAndFileName();
-
-    status=MagickReadImage(image_wand, currImage.c_str());
-    if (status == MagickFalse)
-    {
-    	ThrowWandException(image_wand);
-    }
-
-    contrast_wand = CloneMagickWand(image_wand);
-
-    /*
-    Sigmoidal non-linearity contrast control.
-    */
-    iterator=NewPixelIterator(image_wand);
-    contrast_iterator=NewPixelIterator(contrast_wand);
-    if ((iterator == (PixelIterator *) NULL) || (contrast_iterator == (PixelIterator *) NULL))
-    {
-    	ThrowWandException(image_wand);
-    }
-
-    for (y=0; y < (ssize_t) MagickGetImageHeight(image_wand); y++)
-    {
-	    pixels=PixelGetNextIteratorRow(iterator,&width);
-    	contrast_pixels=PixelGetNextIteratorRow(contrast_iterator,&width);
-    	if ((pixels == (PixelWand **) NULL) || (contrast_pixels == (PixelWand **) NULL))
-        {
-      		break;
-        }
-
-        for (x=0; x < (ssize_t) width; x++)
-        {
-        	PixelGetMagickColor(pixels[x],&pixel);
-          	pixel.red=SigmoidalContrast(pixel.red);
-          	pixel.green=SigmoidalContrast(pixel.green);
-          	pixel.blue=SigmoidalContrast(pixel.blue);
-          	pixel.index=SigmoidalContrast(pixel.index);
-        	//      PixelSetMagickColor(contrast_pixels[x],&pixel);
-          	PixelSetPixelColor(contrast_pixels[x],&pixel);
-        }
-
-    	(void) PixelSyncIterator(contrast_iterator);
-    }
-
-    if (y < (ssize_t) MagickGetImageHeight(image_wand))
-    {
-        ThrowWandException(image_wand);
-    }
-
-    contrast_iterator=DestroyPixelIterator(contrast_iterator);
-    iterator=DestroyPixelIterator(iterator);
-    image_wand=DestroyMagickWand(image_wand);
-
-    /*
-    Write the image then destroy it.
-    */
-    status = MagickWriteImages(contrast_wand,currImage.c_str(),MagickTrue);
-    if (status == MagickFalse)
-    {
-    	ThrowWandException(image_wand);
-    }
-
-    contrast_wand = DestroyMagickWand(contrast_wand);
-    MagickWandTerminus();
-
-    //Reload
-    ClickZ(Sender);
-}
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -979,197 +660,6 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::ParseNDVIZURL1Click(TObject *Sender)
-{
-	Log(lInfo) << "Parsing clip board data";
-	string cb = getClipBoardText();
-    Log(lInfo) <<"ClipBoard: "<<cb;
-    StringList url(cb, '{');
-    //Structure of ndviz URL
-	//http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!
-    //{
-    //	'layers':
-    //	{
-    //		'ACQGephyrin':
-	//		{
-    //			'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/Forrest/H16_03_005_HSV_HEF1AG65_R2An15dTom/ACQGephyrin'_'max':0.15259
-    //		}
-    //	}
-    //_'navigation':
-    //	{
-    //		'pose':
-    //		{
-    //			'position':
-    //			{
-    //				'voxelSize':[1_1_1]_'voxelCoordinates':[4341.58935546875_680.30517578125_2]
-    //			}
-    //		}
-    //	_'zoomFactor':1.8876945060824133
-    //	}
-    //}
-
-    if(url.size() < 5)
-    {
-	   	Log(lError) <<"Failed to parse render URL.";
-        return;
-    }
-
-    // '
-    //	type
-    //'
-    //:
-    //'
-    //image
-    //'
-    //_
-    //'
-    //source
-    //'
-    //:
-    //'
-    //render://http://ibs-forrestc-ux1.corp.alleninstitute.org/Forrest/H16_03_005_HSV_HEF1AG65_R2An15dTom/ACQGephyrin
-    //
-    //'
-    //_
-    //'
-    //max
-    //'
-    //:0.15259}}_
-    //'
-    //navigation
-    //':
-	//Now extract line with 'render'
-    //Extract line with render URL
-    string rurl1 = url.getLineContaining("render");
-    if(!rurl1.size())
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-
-	Log(lInfo) <<rurl1;
-
-    //Cut string on '\''
-    StringList url_items(rurl1, '\'');
-
-	Log(lInfo) <<url_items.getLineContaining("render");
-	StringList pass3(url_items.getLineContaining("render"), '/');
-
-    Log(lInfo) << "Pass3" << pass3;
-	//Element 5,6 and 7 are owner, project and stack
-    if(url_items.size() < 8)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-    string owner(pass3[5]);
-    string project(pass3[6]);
-    string stack(pass3[7]);
-
-    Log(lInfo) <<"Owner: "<<owner;
-    Log(lInfo) <<"Project: "<<project;
-    Log(lInfo) <<"Stack: "<<stack;
-
-	//Now get z, x,y and zoom factor
-    //				'voxelSize':[1_1_1]_'voxelCoordinates':[4341.58935546875_680.30517578125_2]
-    string rurl2 = url.getLineContaining("voxel");
-    if(rurl2.size() == 0)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-
-    StringList pass4(rurl2, '[');
-    Log(lDebug) << pass4;
-    if(pass4.size() < 3)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-    string nrs(pass4[2]);
-    Log(lDebug) << nrs;
-    StringList pass5(nrs, '_');
-	Log(lDebug) << pass5;
-    double x = toDouble(pass5[0]);
-    double y = toDouble(pass5[1]);
-    int z = toInt(pass5[2]);
-    Log(lDebug) << "x = "<<x <<", y = "<<y<<", z = "<<z;
-    //Zoomfactor
-    StringList pass6(pass5[3], ':');
-    Log(lDebug) << pass6;
-    double zf = toDouble(pass6[1]);
-    Log(lDebug) << "ZoomFactor: "<<zf;
-
-    //Assume we got proper numbers, populate application
-    int i = OwnerCB->Items->IndexOf(owner.c_str());
-    if(i < 0)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-
-	OwnerCB->ItemIndex = i;
-    OwnerCB->OnChange(NULL);
-    i = ProjectCB->Items->IndexOf(project.c_str());
-    if(i < 0)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-
-	ProjectCB->ItemIndex = i;
-    ProjectCB->OnChange(NULL);
-
-    i = StackCB->Items->IndexOf(stack.c_str());
-    if(i < 0)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-
-	StackCB->ItemIndex = i;
-    StackCB->OnChange(NULL);
-
-    XCoord->setValue(x);
-    YCoord->setValue(y);
-
-    i = mZs->Items->IndexOf(mtk::toString(z).c_str());
-    if(i < 0)
-    {
-    	Log(lError) <<"Failed to parse render URL";
-        return;
-    }
-	mZs->ItemIndex = i;
-    mZs->Selected[i] = true;
-    mZs->OnClick(NULL);
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::CreateNDVIZURL1Click(TObject *Sender)
-{
-    string url(createNDVIZURL());
-    Log(lInfo) << url;
-}
-
-string TMainForm::createNDVIZURL()
-{
-	string URL("http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!{'layers':{'STACK':{'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/OWNER/PROJECT/STACK'_'max':MAX_INTENSITY}}_'navigation':{'pose':{'position':{'voxelSize':[1_1_1]_'voxelCoordinates':[X_CENTER_Y_CENTER_Z_VALUE]}}_'zoomFactor':ZOOM_FACTOR}}");
-    Log(lInfo) << URL;
-
-    double xCenter = XCoord->getValue() + Width->getValue()/2.;
-	double yCenter = YCoord->getValue() + Height->getValue()/2.;
-    URL = replaceSubstring("STACK", 	        stdstr(StackCB->Text), 	                                URL);
-    URL = replaceSubstring("OWNER", 	        stdstr(OwnerCB->Text), 	                                URL);
-    URL = replaceSubstring("PROJECT", 	        stdstr(ProjectCB->Text), 	                                URL);
-    URL = replaceSubstring("MAX_INTENSITY", 	mtk::toString(2.0 * (MaxIntensity->getValue()/65535.0)), 	URL);
-    URL = replaceSubstring("X_CENTER", 			mtk::toString(xCenter), 					                URL);
-    URL = replaceSubstring("Y_CENTER", 			mtk::toString(yCenter), 					                URL);
-    URL = replaceSubstring("Z_VALUE", 			mtk::toString(getCurrentZ()), 	 			                URL);
-    URL = replaceSubstring("ZOOM_FACTOR", 		mtk::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
-	return URL;
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::CheckAll1Click(TObject *Sender)
 {
 	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
@@ -1184,7 +674,6 @@ void __fastcall TMainForm::CheckAll1Click(TObject *Sender)
     	lb->Checked[i] = true;
     }
 }
-
 
 void __fastcall TMainForm::UncheckAll1Click(TObject *Sender)
 {
@@ -1230,12 +719,6 @@ void __fastcall TMainForm::Checkrange1Click(TObject *Sender)
         }
     }
     delete sz;
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::Exit1Click(TObject *Sender)
-{
-	Close();
 }
 
 //---------------------------------------------------------------------------
@@ -1321,6 +804,19 @@ void __fastcall TMainForm::FormShow(TObject *Sender)
 	}
 }
 
+string createProcessedImageFileName(const string& pic)
+{
+	string fName(getFileNameNoExtension(pic));
+	string fPath(getFilePath(pic));
+    string fExt(getFileExtension(pic));
+    string newName(joinPath(fPath, fName + "_processed") + "." + fExt);
+    return newName;
+}
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ClickImageProcCB(TObject *Sender)
+{
+	ClickZ(NULL);
+}
 
 

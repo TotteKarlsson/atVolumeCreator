@@ -16228,24 +16228,24 @@ object MainForm: TMainForm
             Height = 105
             Align = alTop
             Caption = 'Post Processing'
-            Enabled = False
             TabOrder = 2
-            object ApplyPostProcCB: TCheckBox
-              Left = 14
-              Top = 24
-              Width = 97
-              Height = 17
-              Caption = 'Apply'
-              TabOrder = 0
-            end
             object IMContrastControl: TCheckBox
-              Left = 87
+              Left = 17
               Top = 47
               Width = 207
               Height = 17
               Caption = 'Sigmoidal non-linearity contrast control'
-              Enabled = False
+              TabOrder = 0
+              OnClick = ClickImageProcCB
+            end
+            object FlipImageCB: TCheckBox
+              Left = 17
+              Top = 24
+              Width = 207
+              Height = 17
+              Caption = 'Flip Image'
               TabOrder = 1
+              OnClick = ClickImageProcCB
             end
           end
           object CacheGB: TGroupBox

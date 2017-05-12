@@ -32,7 +32,7 @@
 #include "mtkIntEdit.h"
 #include "TSSHFrame.h"
 #include "TImageControlsFrame.h"
-
+#include "MagickWand/MagickWand.h"
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -40,7 +40,7 @@ using mtk::IniFileProperties;
 using mtk::TRegistryProperties;
 extern string gApplicationRegistryRoot;
 void brightnessContrast(TImage *imageSelected);
-
+string createProcessedImageFileName(const string& fname);
 class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
@@ -116,7 +116,6 @@ __published:	// IDE-managed Components
 	TScrollBox *ScrollBox1;
 	TGroupBox *CacheGB;
 	TGroupBox *PostProcessingGB;
-	TCheckBox *ApplyPostProcCB;
 	TCheckBox *IMContrastControl;
 	TCheckListBox *StacksForProjectCB;
 	TGroupBox *MultiStackCreationGB;
@@ -144,19 +143,16 @@ __published:	// IDE-managed Components
 	TPropertyCheckBox *FineAlignedFilterCB;
 	TMenuItem *Options1;
 	TMenuItem *ThemesMenu;
+	TCheckBox *FlipImageCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X,
-          int Y);
-	void __fastcall mStretchCBClick(TObject *Sender);
-	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
-          int X, int Y);
-	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
-          int X, int Y);
+	void __fastcall Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
+	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift, int X, int Y);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall resetButtonClick(TObject *Sender);
 	void __fastcall historyBtnClick(TObject *Sender);
@@ -194,6 +190,7 @@ __published:	// IDE-managed Components
 	void __fastcall StackFilterCBClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ThemesMenuClick(TObject *Sender);
+	void __fastcall ClickImageProcCB(TObject *Sender);
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
@@ -205,7 +202,7 @@ __published:	// IDE-managed Components
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
 		bool          									mIsStyleMenuPopulated;
-        void        __fastcall                          populateStyleMenu();
+        void __fastcall                          		populateStyleMenu();
         TApplicationProperties                          mAppProperties;
         IniFileProperties	      	                    mGeneralProperties;
         mtk::Property<int>	                            mBottomPanelHeight;
@@ -213,8 +210,6 @@ __published:	// IDE-managed Components
 		mtk::Property<string>	 		                mCurrentProject;
 		mtk::Property<string>	 		                mCurrentOwner;
 		mtk::Property<string>	 		                mCurrentStack;
-
-
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
 		double 											getImageStretchFactor();
@@ -247,9 +242,11 @@ __published:	// IDE-managed Components
 		string 											createEmptyScriptFileOnServer(const string& stack);
 		bool                							populateRemoteScript(const string& script);
         void 											runJob(const string& job);
+        void											applyContrastControl(MagickWand *image_wand);
+		void 											flipImage(MagickWand *image_wand);
 
-public:		// User declarations
-	__fastcall TMainForm(TComponent* Owner);
+public:
+	__fastcall 											TMainForm(TComponent* Owner);
 };
 
 extern PACKAGE TMainForm *MainForm;
