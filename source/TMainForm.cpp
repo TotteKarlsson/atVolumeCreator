@@ -76,7 +76,7 @@ void __fastcall TMainForm::onImage()
         {
            	string pic = mRC.getImageLocalPathAndFileName().c_str();
 
-			if(IMContrastControl->Checked || FlipImageCB->Checked)
+			if(IMContrastControl->Checked || FlipImageCB->Checked || ColorRG->ItemIndex > 0)
             {
             	//Read imageMagick image from file
                 MagickWand*image_wand;
@@ -97,6 +97,11 @@ void __fastcall TMainForm::onImage()
            		if(FlipImageCB->Checked)
                 {
 					flipImage(image_wand);
+                }
+
+           		if(ColorRG->ItemIndex > 0)
+                {
+					colorImage(image_wand, ColorRG->ItemIndex);
                 }
 
                 string newFName(createProcessedImageFileName(pic));
@@ -819,4 +824,12 @@ void __fastcall TMainForm::ClickImageProcCB(TObject *Sender)
 	ClickZ(NULL);
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ColorRGClick(TObject *Sender)
+{
+	if(ColorRG->ItemIndex != -1)
+    {
+		ClickZ(NULL);
+    }
+}
 

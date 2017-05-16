@@ -16203,29 +16203,32 @@ object MainForm: TMainForm
           end
           object Zs_GB: TGroupBox
             Left = 0
-            Top = 371
+            Top = 366
             Width = 315
-            Height = 186
+            Height = 191
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitTop = 371
+            ExplicitHeight = 186
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 311
-              Height = 169
+              Height = 174
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 169
             end
           end
           object PostProcessingGB: TGroupBox
             Left = 0
             Top = 161
             Width = 315
-            Height = 105
+            Height = 128
             Align = alTop
             Caption = 'Post Processing'
             TabOrder = 2
@@ -16247,18 +16250,36 @@ object MainForm: TMainForm
               TabOrder = 1
               OnClick = ClickImageProcCB
             end
+            object ColorRG: TRadioGroup
+              Left = 14
+              Top = 70
+              Width = 281
+              Height = 43
+              Caption = 'Color'
+              Columns = 5
+              ItemIndex = 0
+              Items.Strings = (
+                'None'
+                'Red '
+                'Green'
+                'Blue'
+                'Magenta')
+              TabOrder = 2
+              OnClick = ColorRGClick
+            end
           end
           object CacheGB: TGroupBox
             Left = 0
-            Top = 266
+            Top = 289
             Width = 315
-            Height = 105
+            Height = 77
             Align = alTop
             Caption = 'Local Cache'
             TabOrder = 3
+            ExplicitTop = 266
             object mFetchSelectedZsBtn: TButton
               Left = 16
-              Top = 32
+              Top = 21
               Width = 129
               Height = 50
               Caption = 'Generate Cache'

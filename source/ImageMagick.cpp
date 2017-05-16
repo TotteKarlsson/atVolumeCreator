@@ -79,16 +79,38 @@ void TMainForm::applyContrastControl(MagickWand *image_wand)
 
     contrast_iterator=DestroyPixelIterator(contrast_iterator);
     iterator=DestroyPixelIterator(iterator);
+}
 
-//    /*    Write the image then destroy it.    */
-//    string procImageFName(createProcessedImageFileName(currImage));
-//    status = MagickWriteImages(contrast_wand, procImageFName.c_str(), MagickTrue);
-//    if (status == MagickFalse)
-//    {
-//    	ThrowWandException(image_wand);
-//    }
+//---------------------------------------------------------------------------
+void TMainForm::colorImage(MagickWand *image_wand, int colorIndex)
+{
+  	PixelWand *colorize = NewPixelWand();
+  	PixelWand *opacity = NewPixelWand();
+   	char* op = "#255";
+    switch(colorIndex)
+    {
 
-//    contrast_wand = DestroyMagickWand(contrast_wand);
-//    MagickWandTerminus();
+     	case 1:
+	  		PixelSetColor(colorize, "red");
+		  	PixelSetColor(opacity, op);
+		break;
 
+        case 2:
+	  		PixelSetColor(colorize, "green");
+		  	PixelSetColor(opacity, op);
+        break;
+
+        case 3:
+	  		PixelSetColor(colorize, "blue");
+		  	PixelSetColor(opacity, op);
+        break;
+
+        case 4:
+	  		PixelSetColor(colorize, "magenta");
+		  	PixelSetColor(opacity, op);
+        break;
+    }
+
+
+  	MagickColorizeImage(image_wand, colorize, opacity);
 }

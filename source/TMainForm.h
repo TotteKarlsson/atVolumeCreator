@@ -144,6 +144,7 @@ __published:	// IDE-managed Components
 	TMenuItem *Options1;
 	TMenuItem *ThemesMenu;
 	TCheckBox *FlipImageCB;
+	TRadioGroup *ColorRG;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -191,6 +192,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ThemesMenuClick(TObject *Sender);
 	void __fastcall ClickImageProcCB(TObject *Sender);
+	void __fastcall ColorRGClick(TObject *Sender);
+
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
@@ -244,6 +247,7 @@ __published:	// IDE-managed Components
         void 											runJob(const string& job);
         void											applyContrastControl(MagickWand *image_wand);
 		void 											flipImage(MagickWand *image_wand);
+		void 											colorImage(MagickWand *image_wand, int colorIndex);
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);
