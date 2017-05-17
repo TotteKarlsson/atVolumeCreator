@@ -50,7 +50,7 @@ object MainForm: TMainForm
         Width = 821
         Height = 563
         Align = alClient
-        Color = clBtnFace
+        Color = clRed
         ParentColor = False
         ExplicitLeft = 278
         ExplicitTop = -1
@@ -16209,8 +16209,6 @@ object MainForm: TMainForm
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
-            ExplicitTop = 371
-            ExplicitHeight = 186
             object mZs: TCheckListBox
               Left = 2
               Top = 15
@@ -16221,7 +16219,6 @@ object MainForm: TMainForm
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
-              ExplicitHeight = 169
             end
           end
           object PostProcessingGB: TGroupBox
@@ -16276,7 +16273,6 @@ object MainForm: TMainForm
             Align = alTop
             Caption = 'Local Cache'
             TabOrder = 3
-            ExplicitTop = 266
             object mFetchSelectedZsBtn: TButton
               Left = 16
               Top = 21

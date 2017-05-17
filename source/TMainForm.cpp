@@ -117,8 +117,6 @@ void __fastcall TMainForm::onImage()
 
             	// Release Wand handle
             	DestroyMagickWand(image_wand);
-
-
 		    	Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
             }
             else
@@ -705,21 +703,21 @@ void __fastcall TMainForm::Checkrange1Click(TObject *Sender)
     if(mr == mrOk)
     {
     	//Check/Uncheck items
-    	//First check all
+    	//First uncheck all
         for(int i = 0; i < mZs->Count; i++)
 	    {
-    		mZs->Checked[i] = true;
+    		mZs->Checked[i] = false;
 	    }
 
-		StringList us(sz->getUnSelected());
+		StringList us(sz->getSelected());
 
-        //Then unselect the unselected ones
+        //Then select the selected ones
         for(int i = 0; i < mZs->Count; i++)
         {
         	string val(stdstr(mZs->Items->Strings[i]));
         	if(us.contains(val))
             {
-				mZs->Checked[i] = false;
+				mZs->Checked[i] = true;
             }
         }
     }

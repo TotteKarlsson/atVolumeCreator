@@ -1,6 +1,7 @@
 object SelectZsForm: TSelectZsForm
   Left = 0
   Top = 0
+  ActiveControl = ZDownSampleE
   Caption = 'Select Z'#39's'
   ClientHeight = 328
   ClientWidth = 538
@@ -13,6 +14,7 @@ object SelectZsForm: TSelectZsForm
   KeyPreview = True
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -22,10 +24,6 @@ object SelectZsForm: TSelectZsForm
     Height = 265
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 168
-    ExplicitTop = 120
-    ExplicitWidth = 553
-    ExplicitHeight = 257
     object Splitter1: TSplitter
       Left = 209
       Top = 1
@@ -41,14 +39,21 @@ object SelectZsForm: TSelectZsForm
       Height = 263
       Align = alLeft
       TabOrder = 0
-      ExplicitLeft = 159
+      ExplicitLeft = 255
       ExplicitTop = -4
       DesignSize = (
         88
         263)
+      object Label1: TLabel
+        Left = 71
+        Top = 35
+        Width = 5
+        Height = 13
+        Caption = 'z'
+      end
       object MoveToUnselectLBBtn: TButton
         Left = 6
-        Top = 92
+        Top = 147
         Width = 75
         Height = 50
         Anchors = [akTop, akRight]
@@ -59,7 +64,7 @@ object SelectZsForm: TSelectZsForm
       end
       object MoveToSelectedLBBtn: TButton
         Left = 6
-        Top = 148
+        Top = 203
         Width = 75
         Height = 50
         Anchors = [akTop, akRight]
@@ -67,6 +72,20 @@ object SelectZsForm: TSelectZsForm
         Enabled = False
         TabOrder = 1
         OnClick = MoveItems
+      end
+      object ZDownSampleE: TIntegerLabeledEdit
+        Left = 6
+        Top = 32
+        Width = 59
+        Height = 21
+        EditLabel.Width = 60
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Select every'
+        NumbersOnly = True
+        TabOrder = 2
+        Text = '1'
+        OnKeyDown = ZDownSampleEKeyDown
+        Value = 1
       end
     end
     object GroupBox1: TGroupBox
@@ -87,10 +106,6 @@ object SelectZsForm: TSelectZsForm
         MultiSelect = True
         TabOrder = 0
         OnClick = ItemsClick
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 160
-        ExplicitHeight = 309
       end
     end
     object GroupBox2: TGroupBox
@@ -101,10 +116,6 @@ object SelectZsForm: TSelectZsForm
       Align = alClient
       Caption = 'Unselected'
       TabOrder = 2
-      ExplicitLeft = 286
-      ExplicitTop = 80
-      ExplicitWidth = 185
-      ExplicitHeight = 105
       object UnSelectedItems: TListBox
         Left = 2
         Top = 15
@@ -115,10 +126,6 @@ object SelectZsForm: TSelectZsForm
         MultiSelect = True
         TabOrder = 0
         OnClick = ItemsClick
-        ExplicitLeft = 465
-        ExplicitTop = 1
-        ExplicitWidth = 135
-        ExplicitHeight = 309
       end
     end
   end
@@ -129,11 +136,29 @@ object SelectZsForm: TSelectZsForm
     Height = 63
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 504
-    ExplicitWidth = 825
     DesignSize = (
       538
       63)
+    object NrOfZsLlbl: TIntLabel
+      Left = 92
+      Top = 24
+      Width = 6
+      Height = 13
+      Caption = '1'
+      Value = 1
+      TheFont.Charset = DEFAULT_CHARSET
+      TheFont.Color = clWindowText
+      TheFont.Height = -11
+      TheFont.Name = 'Tahoma'
+      TheFont.Style = []
+    end
+    object Label2: TLabel
+      Left = 16
+      Top = 24
+      Width = 70
+      Height = 13
+      Caption = 'Total Nr of z'#39's:'
+    end
     object Button2: TButton
       Left = 453
       Top = 6
@@ -143,7 +168,6 @@ object SelectZsForm: TSelectZsForm
       Caption = 'OK'
       ModalResult = 1
       TabOrder = 0
-      ExplicitLeft = 331
     end
     object Button3: TButton
       Left = 357
@@ -154,7 +178,6 @@ object SelectZsForm: TSelectZsForm
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 235
     end
   end
 end

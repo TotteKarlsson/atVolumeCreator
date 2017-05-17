@@ -166,6 +166,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="forms\Brightness.cpp">
             <BuildOrder>13</BuildOrder>
         </CppCompile>
+        <CppCompile Include="forms\TAboutVolumeCreatorForm.cpp">
+            <BuildOrder>21</BuildOrder>
+        </CppCompile>
         <CppCompile Include="forms\TSelectZsForm.cpp">
             <Form>SelectZsForm</Form>
             <FormType>dfm</FormType>
@@ -212,9 +215,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </CppCompile>
         <FormResources Include="forms\TSelectZsForm.dfm"/>
         <FormResources Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.dfm"/>
+        <FormResources Include="TImageControlsFrame.dfm"/>
         <FormResources Include="TMainForm.dfm"/>
         <FormResources Include="atImageForm.dfm"/>
-        <FormResources Include="TImageControlsFrame.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

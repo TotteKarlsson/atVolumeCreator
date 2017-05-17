@@ -14,9 +14,9 @@ using namespace mtk;
 using std::string;
 USEFORM("forms\TSelectZsForm.cpp", SelectZsForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
+USEFORM("TImageControlsFrame.cpp", ImageControlsFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
 USEFORM("atImageForm.cpp", ImageForm);
-USEFORM("TImageControlsFrame.cpp", ImageControlsFrame); /* TFrame: File Type */
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";

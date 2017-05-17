@@ -1,3 +1,13 @@
+Release 0.5.5 (May 17)
+=======================
+* Fixed bug when image has negative boundaries
+* Added experimental colorizing functions
+* Added experimental post processing functions (contrast control)
+* Added ability to downsample z values (on the Select/Unselect z's form)
+* Added buttons to "interact" with NDVIZ
+* Added simple stacks filter on Stack creation page
+* Added about form showing the ChangeLog
+
 Release 0.5.4 (May 11)
 =======================
 * Added 3 themes files

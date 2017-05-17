@@ -3,6 +3,8 @@
 #include "TSelectZsForm.h"
 #include "mtkVCLUtils.h"
 #pragma package(smart_init)
+#pragma link "TIntegerLabeledEdit"
+#pragma link "TIntLabel"
 #pragma resource "*.dfm"
 
 using namespace mtk;
@@ -15,8 +17,13 @@ __fastcall TSelectZsForm::TSelectZsForm(TComponent* Owner)
 
 void TSelectZsForm::populate(TCheckListBox* s)
 {
+	mAllZ.clear();
+	NrOfZsLlbl->setValue(s->Count);
+
 	for(int i = 0; i < s->Count; i++)
     {
+    	mAllZ.push_back(s->Items->Strings[i].ToInt());
+
         if(s->Checked[i])
         {
         	SelectedItems->Items->Add(s->Items->Strings[i]);
@@ -101,3 +108,53 @@ StringList TSelectZsForm::getUnSelected()
     }
 	return us;
 }
+
+StringList TSelectZsForm::getSelected()
+{
+	StringList us;
+    for(int i = 0; i < SelectedItems->Count; i++)
+    {
+    	string item = stdstr(SelectedItems->Items->Strings[i]);
+        us.append(item);
+    }
+	return us;
+}
+
+void __fastcall TSelectZsForm::ZDownSampleEKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+	SelectedItems->Clear();
+    UnSelectedItems->Clear();
+
+	if(Key != VK_RETURN)
+    {
+    	return;
+    }
+
+    int selIndex = 0;
+    for(int i = 0; i < mAllZ.size(); i++)
+    {
+    	if(selIndex == i && selIndex < mAllZ.size() )
+        {
+            int selected = mAllZ[selIndex];
+            SelectedItems->AddItem(selected, NULL);
+            selIndex += ZDownSampleE->getValue();
+        }
+        else
+        {
+            UnSelectedItems->AddItem(i, NULL);
+        }
+    }
+}
+
+
+//---------------------------------------------------------------------------
+void __fastcall TSelectZsForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    if(Key == VK_ESCAPE)
+    {
+        Close();
+    }
+}
+
+

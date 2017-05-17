@@ -6,12 +6,13 @@
 #include "atRenderClient.h"
 #include "atROIHistory.h"
 #include "mtkRestartApplicationUtils.h"
+#include "TAboutVolumeCreatorForm.h"
+//---------------------------------------------------------------------------
 
 using namespace mtk;
 extern string gAppName;
 extern string gApplicationStyle;
 extern string gRestartMutexName;
-
 
 void __fastcall TMainForm::logMsg()
 {
@@ -22,7 +23,9 @@ void __fastcall TMainForm::logMsg()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::About1Click(TObject *Sender)
 {
-	MessageDlg("About Volume Creator", mtWarning, TMsgDlgButtons() << mbOK, 0);
+	TAboutVolumeCreator* a = new TAboutVolumeCreator(this);
+	a->ShowModal();
+    delete a;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)

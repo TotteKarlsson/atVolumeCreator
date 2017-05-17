@@ -41,3 +41,5 @@ void RenderBox::zoom(double f)
     mWidth 	= newWidth;
     mHeight = newHeight;
 }
+
+
