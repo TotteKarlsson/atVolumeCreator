@@ -38,7 +38,7 @@
         <ILINK_LibraryPath>forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>forms\;P:\libs\atapi\source\vcl\frames\;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
-        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib;vclimg.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <_TCHARMapping>wchar_t</_TCHARMapping>
@@ -86,10 +86,10 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_Release>4</VerInfo_Release>
+        <VerInfo_Release>5</VerInfo_Release>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <LinkPackageStatics>sbridge170.lib</LinkPackageStatics>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.4.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>5</VerInfo_MinorVer>
         <PostBuildEvent><![CDATA[xcopy $(OUTPUTDIR)VolumeCreator.exe $(APP_RELEASES)\VolumeCreator /y
@@ -115,7 +115,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <ILINK_LibraryPath>$(DEBUG_BUILD)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>$(DEBUG_BUILD)\include;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include\MagickCore;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include;$(IncludePath)</IncludePath>
         <Debugger_DebugSourcePath>P:\libs\dsl\VCL\Common\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi</LinkPackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>

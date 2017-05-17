@@ -25,7 +25,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 704
+    Top = 685
     Width = 1150
     Height = 3
     Cursor = crVSplit
@@ -38,17 +38,19 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1150
-    Height = 704
+    Height = 685
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 704
     object TabSheet1: TTabSheet
       Caption = 'General'
+      ExplicitHeight = 676
       object PaintBox1: TPaintBox
         Left = 321
         Top = 113
         Width = 821
-        Height = 563
+        Height = 544
         Align = alClient
         Color = clRed
         ParentColor = False
@@ -61,7 +63,7 @@ object MainForm: TMainForm
         Left = 321
         Top = 113
         Width = 821
-        Height = 563
+        Height = 544
         Align = alClient
         AutoSize = True
         Picture.Data = {
@@ -16081,18 +16083,20 @@ object MainForm: TMainForm
         Left = 0
         Top = 113
         Width = 321
-        Height = 563
+        Height = 544
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 563
         object ScrollBox1: TScrollBox
           Left = 1
           Top = 1
           Width = 319
-          Height = 561
+          Height = 542
           Align = alClient
           DoubleBuffered = True
           ParentDoubleBuffered = False
           TabOrder = 0
+          ExplicitHeight = 561
           object imageParasGB: TGroupBox
             Left = 0
             Top = 0
@@ -16205,20 +16209,22 @@ object MainForm: TMainForm
             Left = 0
             Top = 366
             Width = 315
-            Height = 191
+            Height = 172
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitHeight = 191
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 311
-              Height = 174
+              Height = 155
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 174
             end
           end
           object PostProcessingGB: TGroupBox
@@ -16521,6 +16527,7 @@ object MainForm: TMainForm
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
+      ExplicitHeight = 676
       object StackGenerationGB: TGroupBox
         Left = 0
         Top = 70
@@ -16645,10 +16652,11 @@ object MainForm: TMainForm
         Left = 0
         Top = 193
         Width = 1142
-        Height = 483
+        Height = 464
         Align = alClient
         Caption = 'Stacks'
         TabOrder = 3
+        ExplicitHeight = 483
         object StacksForProjectCB: TCheckListBox
           AlignWithMargins = True
           Left = 13
@@ -16735,6 +16743,10 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
@@ -16884,6 +16896,10 @@ object MainForm: TMainForm
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16941,11 +16957,12 @@ object MainForm: TMainForm
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 707
+    Top = 688
     Width = 1150
     Height = 136
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 707
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -16997,7 +17014,7 @@ object MainForm: TMainForm
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 843
+    Top = 824
     Width = 1150
     Height = 19
     Align = alBottom
@@ -17005,6 +17022,17 @@ object MainForm: TMainForm
     TabOrder = 2
     Visible = False
     OnClick = mShowBottomPanelBtnClick
+    ExplicitTop = 843
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 843
+    Width = 1150
+    Height = 19
+    Panels = <>
+    ExplicitLeft = 272
+    ExplicitTop = 856
+    ExplicitWidth = 0
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True

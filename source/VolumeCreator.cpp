@@ -56,7 +56,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
         appMutex = ::CreateMutexA(NULL, FALSE, gApplicationMutexName.c_str());
         if( ERROR_ALREADY_EXISTS == GetLastError() )
         {
-            // Program already running somewhere
+            // The Program is already running somewhere
+            MessageDlg("It seems VolumeCreator is already running!\nOnly one instance can be running at any one time..", mtWarning, TMsgDlgButtons() << mbOK, 0);
             ::EnumWindows(FindOtherWindow, NULL);
 
             if(gOtherAppWindow != NULL)

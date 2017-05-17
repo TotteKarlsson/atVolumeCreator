@@ -145,6 +145,7 @@ __published:	// IDE-managed Components
 	TMenuItem *ThemesMenu;
 	TCheckBox *FlipImageCB;
 	TRadioGroup *ColorRG;
+	TStatusBar *StatusBar1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
