@@ -417,6 +417,7 @@ void __fastcall TMainForm::mGetValidZsBtnClick(TObject *Sender)
 	Zs_GB->Caption = " Z Values (" + IntToStr((int) zs.count()) + ") ";
     //Populate list box
 	populateCheckListBox(zs, mZs);
+    mZs->CheckAll(cbChecked);
 }
 
 //---------------------------------------------------------------------------
