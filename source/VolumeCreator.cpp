@@ -12,11 +12,9 @@
 using namespace mtk;
 
 using std::string;
-USEFORM("forms\TSelectZsForm.cpp", SelectZsForm);
+USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
-USEFORM("TImageControlsFrame.cpp", ImageControlsFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
-USEFORM("atImageForm.cpp", ImageForm);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -24,9 +22,7 @@ extern string       gAppDataLocation            = joinPath(getSpecialFolder(CSID
 extern string 		gApplicationRegistryRoot  	= "\\Software\\Allen Institute\\VolumeCreator\\0.5.0";
 extern string       gApplicationStyle           = "Auric";
 extern string       gApplicationMutexName       = "VolumeCreatorMutex";
-
 static HWND         gOtherAppWindow             = NULL;
-
 extern string       gRestartMutexName           = "VolumeCreatorRestartMutex";
 
 void setupLogging();
@@ -83,7 +79,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
-		Application->CreateForm(__classid(TSelectZsForm), &SelectZsForm);
 		Application->Run();
 	}
 	catch (Exception &exception)

@@ -35,8 +35,11 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <ILINK_LibraryPath>forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <IncludePath>forms\;P:\libs\atapi\source\vcl\frames\;$(IncludePath)</IncludePath>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>None</Manifest_File>
+        <ILINK_LibraryPath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <IncludePath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;Frames;Core;Forms;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
         <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib;vclimg.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
@@ -86,10 +89,10 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Release>5</VerInfo_Release>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <LinkPackageStatics>sbridge170.lib</LinkPackageStatics>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>5</VerInfo_MinorVer>
         <PostBuildEvent><![CDATA[xcopy $(OUTPUTDIR)VolumeCreator.exe $(APP_RELEASES)\VolumeCreator /y
@@ -111,7 +114,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <FinalOutputDir>$(DEBUG_BUILD)\bin</FinalOutputDir>
         <Defines>POCO_STATIC;CURL_STATICLIB;$(Defines)</Defines>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
         <ILINK_LibraryPath>$(DEBUG_BUILD)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>$(DEBUG_BUILD)\include;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include\MagickCore;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include;$(IncludePath)</IncludePath>
         <Debugger_DebugSourcePath>P:\libs\dsl\VCL\Common\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
@@ -126,58 +128,51 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <BuildOrder>6</BuildOrder>
             <IgnorePath>true</IgnorePath>
         </LibFiles>
-        <CppCompile Include="atFetchImagesThread.cpp">
-            <DependentOn>atFetchImagesThread.h</DependentOn>
-            <BuildOrder>7</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atFetchImageThread.cpp">
-            <DependentOn>atFetchImageThread.h</DependentOn>
-            <BuildOrder>14</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atImageForm.cpp">
-            <Form>ImageForm</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>atImageForm.h</DependentOn>
-            <BuildOrder>8</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atRenderBox.cpp">
-            <DependentOn>atRenderBox.h</DependentOn>
-            <BuildOrder>9</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atRenderClient.cpp">
-            <DependentOn>atRenderClient.h</DependentOn>
-            <BuildOrder>3</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atRenderClientUtils.cpp">
-            <DependentOn>atRenderClientUtils.h</DependentOn>
-            <BuildOrder>15</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atRenderProject.cpp">
-            <DependentOn>atRenderProject.h</DependentOn>
-            <BuildOrder>10</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="atROIHistory.cpp">
-            <DependentOn>atROIHistory.h</DependentOn>
-            <BuildOrder>5</BuildOrder>
-        </CppCompile>
         <CppCompile Include="ClosingDown.cpp">
             <BuildOrder>19</BuildOrder>
         </CppCompile>
-        <CppCompile Include="forms\Brightness.cpp">
+        <CppCompile Include="Core\atFetchImagesThread.cpp">
+            <DependentOn>Core\atFetchImagesThread.h</DependentOn>
+            <BuildOrder>12</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atFetchImageThread.cpp">
+            <DependentOn>Core\atFetchImageThread.h</DependentOn>
             <BuildOrder>13</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atImageProcessingFunctions.cpp">
+            <DependentOn>Core\atImageProcessingFunctions.h</DependentOn>
+            <BuildOrder>14</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atRenderBox.cpp">
+            <DependentOn>Core\atRenderBox.h</DependentOn>
+            <BuildOrder>15</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atRenderClient.cpp">
+            <DependentOn>Core\atRenderClient.h</DependentOn>
+            <BuildOrder>16</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atRenderClientUtils.cpp">
+            <DependentOn>Core\atRenderClientUtils.h</DependentOn>
+            <BuildOrder>17</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atRenderProject.cpp">
+            <DependentOn>Core\atRenderProject.h</DependentOn>
+            <BuildOrder>18</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atROIHistory.cpp">
+            <DependentOn>Core\atROIHistory.h</DependentOn>
+            <BuildOrder>19</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\ImageMagick.cpp">
+            <BuildOrder>20</BuildOrder>
         </CppCompile>
         <CppCompile Include="forms\TAboutVolumeCreatorForm.cpp">
             <BuildOrder>21</BuildOrder>
         </CppCompile>
-        <CppCompile Include="forms\TSelectZsForm.cpp">
+        <CppCompile Include="Forms\TSelectZsForm.cpp">
             <Form>SelectZsForm</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>forms\TSelectZsForm.h</DependentOn>
-            <BuildOrder>16</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="ImageMagick.cpp">
-            <DependentOn>ImageMagick.h</DependentOn>
-            <BuildOrder>20</BuildOrder>
+            <DependentOn>Forms\TSelectZsForm.h</DependentOn>
+            <BuildOrder>21</BuildOrder>
         </CppCompile>
         <CppCompile Include="Initializing.cpp">
             <DependentOn>Initializing.h</DependentOn>
@@ -188,12 +183,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </CppCompile>
         <CppCompile Include="ScriptCreation.cpp">
             <BuildOrder>18</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="TImageControlsFrame.cpp">
-            <Form>ImageControlsFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-            <DependentOn>TImageControlsFrame.h</DependentOn>
-            <BuildOrder>17</BuildOrder>
         </CppCompile>
         <CppCompile Include="TMainForm.cpp">
             <Form>MainForm</Form>
@@ -213,11 +202,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>P:\libs\atapi\source\vcl\frames\TSSHFrame.h</DependentOn>
             <BuildOrder>11</BuildOrder>
         </CppCompile>
-        <FormResources Include="forms\TSelectZsForm.dfm"/>
+        <FormResources Include="Forms\TSelectZsForm.dfm"/>
         <FormResources Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.dfm"/>
-        <FormResources Include="TImageControlsFrame.dfm"/>
         <FormResources Include="TMainForm.dfm"/>
-        <FormResources Include="atImageForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -279,6 +266,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
                 </ProjectProperties>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="P:\build\xe3_ide\BPL\ArrayBotPackage.bpl">ArrayBotPackage</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k170.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp170.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>

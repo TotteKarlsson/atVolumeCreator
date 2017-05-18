@@ -142,6 +142,8 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
 {
 	mBottomPanel->Visible = false;
+    mShowBottomPanelBtn->Top = StatusBar1->Top - 1;
+    Splitter2->Visible = false;
     mShowBottomPanelBtn->Visible = true;
 }
 
@@ -149,8 +151,10 @@ void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
 void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
 {
 	mBottomPanel->Visible = true;
+    Splitter2->Visible = true;
     mShowBottomPanelBtn->Visible = false;
     Splitter2->Top = mBottomPanel->Top - 1;
+    StatusBar1->Top = mBottomPanel->Top + mBottomPanel->Height + 1;
 }
 
 //---------------------------------------------------------------------------

@@ -135,17 +135,13 @@ __published:	// IDE-managed Components
 	TMenuItem *Checkrange1;
 	TMenuItem *Exit1;
 	TGroupBox *GroupBox3;
-	TPropertyCheckBox *AcqFilterCB;
-	TPropertyCheckBox *FlatFieldFilterCB;
-	TPropertyCheckBox *StitchedFilterCB;
-	TPropertyCheckBox *RegisteredFilterCB;
-	TPropertyCheckBox *RoughAlignedFilterCB;
-	TPropertyCheckBox *FineAlignedFilterCB;
 	TMenuItem *Options1;
 	TMenuItem *ThemesMenu;
 	TCheckBox *FlipImageCB;
 	TRadioGroup *ColorRG;
 	TStatusBar *StatusBar1;
+	TPropertyCheckBox *CustomFilterCB;
+	TEdit *CustomFilterE;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -194,13 +190,15 @@ __published:	// IDE-managed Components
 	void __fastcall ThemesMenuClick(TObject *Sender);
 	void __fastcall ClickImageProcCB(TObject *Sender);
 	void __fastcall ColorRGClick(TObject *Sender);
+	void __fastcall CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
         RenderClient									mRC;
         int												getCurrentZ();
-		TImageForm*										mImageForm;
+//		TImageForm*										mImageForm;
 		bool        									mRenderEnabled;
 
         void __fastcall                                 logMsg();
@@ -252,6 +250,7 @@ __published:	// IDE-managed Components
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);
+	__fastcall 											~TMainForm();
 };
 
 extern PACKAGE TMainForm *MainForm;

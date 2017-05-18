@@ -9,6 +9,9 @@
         <Projects Include="P:\libs\dsl\Common\Math\mtkMath.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="P:\libs\dsl\Common\IPC\mtkIPC.cbproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="P:\libs\dsl\VCL\Common\VCLCommon.cbproj">
             <Dependencies/>
         </Projects>
@@ -16,6 +19,15 @@
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\dsl\VCL\Forms\DuneForms.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\atapi\source\atCore.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\atapi\source\database\atDatabase.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\atapi\source\vcl\atVCLCore.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="VolumeCreator.cbproj">
@@ -50,6 +62,15 @@
     <Target Name="mtkMath:Make">
         <MSBuild Projects="P:\libs\dsl\Common\Math\mtkMath.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="mtkIPC">
+        <MSBuild Projects="P:\libs\dsl\Common\IPC\mtkIPC.cbproj"/>
+    </Target>
+    <Target Name="mtkIPC:Clean">
+        <MSBuild Projects="P:\libs\dsl\Common\IPC\mtkIPC.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="mtkIPC:Make">
+        <MSBuild Projects="P:\libs\dsl\Common\IPC\mtkIPC.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="VCLCommon">
         <MSBuild Projects="P:\libs\dsl\VCL\Common\VCLCommon.cbproj"/>
     </Target>
@@ -77,6 +98,33 @@
     <Target Name="DuneForms:Make">
         <MSBuild Projects="P:\libs\dsl\VCL\Forms\DuneForms.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="atCore">
+        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj"/>
+    </Target>
+    <Target Name="atCore:Clean">
+        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="atCore:Make">
+        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="atDatabase">
+        <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj"/>
+    </Target>
+    <Target Name="atDatabase:Clean">
+        <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="atDatabase:Make">
+        <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="atVCLCore">
+        <MSBuild Projects="P:\libs\atapi\source\vcl\atVCLCore.cbproj"/>
+    </Target>
+    <Target Name="atVCLCore:Clean">
+        <MSBuild Projects="P:\libs\atapi\source\vcl\atVCLCore.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="atVCLCore:Make">
+        <MSBuild Projects="P:\libs\atapi\source\vcl\atVCLCore.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="VolumeCreator">
         <MSBuild Projects="VolumeCreator.cbproj"/>
     </Target>
@@ -96,13 +144,13 @@
         <MSBuild Projects="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="mtkCommon;mtkMath;VCLCommon;DuneComponents;DuneForms;VolumeCreator;ImageProcessing"/>
+        <CallTarget Targets="mtkCommon;mtkMath;mtkIPC;VCLCommon;DuneComponents;DuneForms;atCore;atDatabase;atVCLCore;VolumeCreator;ImageProcessing"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
+        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;mtkIPC:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;atCore:Clean;atDatabase:Clean;atVCLCore:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;VolumeCreator:Make;ImageProcessing:Make"/>
+        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;mtkIPC:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;atCore:Make;atDatabase:Make;atVCLCore:Make;VolumeCreator:Make;ImageProcessing:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

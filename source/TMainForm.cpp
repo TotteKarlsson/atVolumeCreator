@@ -37,7 +37,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
-    mImageForm(NULL),
+//    mImageForm(NULL),
     mRenderEnabled(false),
     mCurrentProject(""),
     mCurrentOwner(""),
@@ -50,6 +50,11 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
+}
+
+__fastcall TMainForm::~TMainForm()
+{
+
 }
 
 #define ThrowWandException(wand) \
@@ -121,10 +126,14 @@ void __fastcall TMainForm::onImage()
             }
             else
             {
-
-	    		Image1->Picture->Graphic->LoadFromFile(pic.c_str());
+            	//Create a temporary stream
+                TMemoryStream* stream = new TMemoryStream();
+                stream->LoadFromFile(pic.c_str());
+                stream->Position = 0;
+	    		Image1->Picture->Graphic->LoadFromStream(stream);
+                delete stream;
             }
-	        Image1->Invalidate();
+	        Image1->Repaint();
 		    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
 
         }
@@ -204,9 +213,23 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
     	return;
     }
 
+	double stretchFactor = getImageStretchFactor();
 	if(Button == TMouseButton::mbRight)
     {
+        return;
+    }
+
+	if(Button == TMouseButton::mbMiddle)
+    {
     	//Open popup
+       	Screen->Cursor = crSize;
+    	//Open popup
+		mTopLeftSelCorner = Mouse->CursorPos;
+		mTopLeftSelCorner = this->Image1->ScreenToClient(mTopLeftSelCorner);
+
+		//Convert to world image coords (minus offset)
+	    mTopLeftSelCorner = controlToImage(mTopLeftSelCorner, mScaleE->getValue(), stretchFactor);
+//        Image1->Align = alNone;
         return;
     }
 
@@ -220,7 +243,6 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 	mTopLeftSelCorner = this->Image1->ScreenToClient(mTopLeftSelCorner);
 
 	//Convert to world image coords (minus offset)
-    double stretchFactor = getImageStretchFactor();
     mTopLeftSelCorner = controlToImage(mTopLeftSelCorner, mScaleE->getValue(), stretchFactor);
 }
 
@@ -239,14 +261,38 @@ void __fastcall TMainForm::Image1MouseMove(TObject *Sender, TShiftState Shift, i
 	  	mX->setValue(p.X);
 		mY->setValue(p.Y);
     }
+
+	if(GetAsyncKeyState(VK_MBUTTON) < 0)
+    {
+    	//Move the picture
+//        Image1->Top = Image1->Top + 1;
+    }
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
+    double stretchFactor = getImageStretchFactor();
+	if(Button == TMouseButton::mbMiddle)
+    {
+	  	Screen->Cursor = crDefault;
+    }
+
 	if(!Drawing ||  (Button == TMouseButton::mbRight))
     {
+  //      Image1->Align = alClient;
+    	TPoint p2;
+		p2 = Mouse->CursorPos;
+		p2 = this->Image1->ScreenToClient(p2);
+	    p2 = controlToImage(p2, mScaleE->getValue(), stretchFactor);
+
+		//Convert to world image coords (minus offset)
+		XCoord->setValue(XCoord->getValue() + (mTopLeftSelCorner.X - p2.X));
+		YCoord->setValue(YCoord->getValue() + (mTopLeftSelCorner.Y - p2.Y));
+
+		mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
+       	ClickZ(Sender);
     	return;
     }
 
@@ -256,11 +302,10 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 	mBottomRightSelCorner = this->Image1->ScreenToClient(Mouse->CursorPos);
 
 	//Convert to world image coords (minus offset)
-    double stretchFactor = getImageStretchFactor();
     mBottomRightSelCorner = controlToImage(mBottomRightSelCorner, mScaleE->getValue(), stretchFactor);
 
 	//Check if selection indicate a 'reset'
-	if(mBottomRightSelCorner.X - mTopLeftSelCorner.X <= 0 || mBottomRightSelCorner.Y - mTopLeftSelCorner.Y <=0)
+	if(mBottomRightSelCorner.X - mTopLeftSelCorner.X <= 0 || mBottomRightSelCorner.Y - mTopLeftSelCorner.Y <= 0)
     {
     	resetButtonClick(NULL);
 		return;
@@ -592,11 +637,11 @@ void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
 {
 	//Open image form
 //    if(!mImageForm)
-    {
-    	mImageForm = new TImageForm(gApplicationRegistryRoot, "ImageForm", this);
-
-    }
-	mImageForm->Show();
+//    {
+//    	mImageForm = new TImageForm(gApplicationRegistryRoot, "ImageForm", this);
+//
+//    }
+//	mImageForm->Show();
 }
 
 void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
@@ -612,10 +657,8 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
     }
 }
 
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-
 {
 	if(Key != VK_RETURN)
     {
@@ -731,71 +774,24 @@ void __fastcall TMainForm::StackFilterCBClick(TObject *Sender)
 	StacksForProjectCB->Clear();
     StringList s = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
 
-    if(AcqFilterCB->Checked)
+	if(CustomFilterCB->Checked)
     {
         for(int i = 0; i < s.count(); i++)
         {
-            if(contains("Acq", s[i]) || contains("Median", s[i]))
+            if(contains(stdstr(CustomFilterE->Text), s[i]))
             {
                 StacksForProjectCB->AddItem(s[i].c_str(), NULL);
             }
+        }
+    }
+    else
+    {
+        for(int i = 0; i < s.count(); i++)
+        {
+        	StacksForProjectCB->AddItem(s[i].c_str(), NULL);
         }
     }
 
-    if(FlatFieldFilterCB->Checked)
-    {
-        for(int i = 0; i < s.count(); i++)
-        {
-            if(contains("Flat", s[i]))
-            {
-                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-            }
-        }
-    }
-
-    if(StitchedFilterCB->Checked)
-    {
-        for(int i = 0; i < s.count(); i++)
-        {
-            if(contains("Stitched", s[i]))
-            {
-                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-            }
-        }
-    }
-
-    if(RegisteredFilterCB->Checked)
-    {
-        for(int i = 0; i < s.count(); i++)
-        {
-            if(contains("Registered", s[i]))
-            {
-                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-            }
-        }
-    }
-
-    if(RoughAlignedFilterCB->Checked)
-    {
-        for(int i = 0; i < s.count(); i++)
-        {
-            if(contains("Rough", s[i]))
-            {
-                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-            }
-        }
-    }
-
-    if(FineAlignedFilterCB->Checked)
-    {
-        for(int i = 0; i < s.count(); i++)
-        {
-            if(contains("Fine", s[i]))
-            {
-                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-            }
-        }
-    }
 }
 
 //---------------------------------------------------------------------------
@@ -831,4 +827,24 @@ void __fastcall TMainForm::ColorRGClick(TObject *Sender)
 		ClickZ(NULL);
     }
 }
+
+void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if(Key == VK_RETURN)
+    {
+        StacksForProjectCB->Clear();
+        StringList s = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
+        if(CustomFilterCB->Checked)
+        {
+            for(int i = 0; i < s.count(); i++)
+            {
+                if(contains(stdstr(CustomFilterE->Text), s[i]))
+                {
+                    StacksForProjectCB->AddItem(s[i].c_str(), NULL);
+                }
+            }
+        }
+    }
+}
+
 

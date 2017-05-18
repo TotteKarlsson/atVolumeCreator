@@ -27,7 +27,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     mRC.setBaseURL(mBaseUrlE->getValue());
     mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
 
-
     //Populate owners
     StringList o = mRC.getOwners();
     if(o.size())
@@ -59,7 +58,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
             }
         }
     }
-
 
 	enableDisableGroupBox(TestSSHGB, 		false);
 	enableDisableGroupBox(StackGenerationGB,false);
@@ -134,7 +132,8 @@ bool TMainForm::setupAndReadIniParameters()
     VolumesFolder->update();
     SubFolder1->update();
     VolumesScaleE->update();
-	mBottomPanel->Height = mBottomPanelHeight;
+
+//	mBottomPanel->Height = mBottomPanelHeight;
     return true;
 }
 
