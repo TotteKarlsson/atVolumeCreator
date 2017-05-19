@@ -5,12 +5,13 @@
 using namespace std;
 
 
-RenderBox::RenderBox(double x, double y, double width, double height)
+RenderBox::RenderBox(double x, double y, double width, double height, double scale)
 :
 	mX1(x),
 	mY1(y),
 	mWidth(width),
-	mHeight(height)
+	mHeight(height),
+    mScale(scale)
 {}
 
 //f is from -100 to +100

@@ -8,11 +8,12 @@ using std::deque;
 class ROIHistory
 {
 	public:
-    								ROIHistory(){}
+    								ROIHistory();
     								~ROIHistory(){}
 		void						clear();
 
 		void						add(RenderBox& rb);
+		void						insert(RenderBox& rb);
 
 		RenderBox*					current();
 		RenderBox*					first();

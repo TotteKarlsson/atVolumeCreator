@@ -9,7 +9,7 @@ using std::abs;
 class RenderBox
 {
 	public:
-	    								RenderBox(double x = 0, double y = 0, double width = 0, double height = 0);
+	    								RenderBox(double x = 0, double y = 0, double width = 0, double height = 0, double scale = 1);
 
 		void							setX1(double x){mX1 = x;}
         double							getX1(){return mX1;}
@@ -21,15 +21,18 @@ class RenderBox
 
 		void							setY1(double y){mY1 = y;}
         double							getY1(){return mY1;}
+
 		void							setY2(double y){mHeight = abs(mY1 - y);}
         double							getY2(){return mY1 + mHeight;}
+
 		void							setHeight(double h){mHeight = h;}
         double							getHeight(){return mHeight;}
-
 
         void							setZ(double z){mZ = z;}
         double							getZ(){return mZ;}
 
+        void							setScale(double s){mScale = s;}
+        double							getScale(){return mScale;}
 
         void 							zoom(double persent);
 
@@ -39,6 +42,7 @@ class RenderBox
     	double                          mY1;
 	    double                          mWidth;
     	double                          mHeight;
+        double							mScale;
 
 };
 

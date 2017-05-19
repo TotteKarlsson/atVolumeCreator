@@ -16382,7 +16382,6 @@ object MainForm: TMainForm
             Anchors = [akTop, akRight]
             Caption = '<'
             TabOrder = 0
-            Visible = False
             OnClick = historyBtnClick
           end
           object mHistoryFFW: TButton
@@ -16393,7 +16392,6 @@ object MainForm: TMainForm
             Anchors = [akTop, akRight]
             Caption = '>'
             TabOrder = 1
-            Visible = False
             OnClick = historyBtnClick
           end
           object mZoomFactor: mtkIntEdit

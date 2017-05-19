@@ -168,7 +168,7 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
 {
 	if(Key == VK_RETURN)
     {
-        mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
+        mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
 		ClickZ(Sender);
     }
 }
@@ -291,7 +291,7 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 		XCoord->setValue(XCoord->getValue() + (mTopLeftSelCorner.X - p2.X));
 		YCoord->setValue(YCoord->getValue() + (mTopLeftSelCorner.Y - p2.Y));
 
-		mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
+		mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
        	ClickZ(Sender);
     	return;
     }
@@ -317,11 +317,11 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     Width->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
     Height->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
 
-    //Add to render history
-    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
-    mROIHistory.add(mCurrentRB);
-
     updateScale();
+
+    //Add to render history
+    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
+    mROIHistory.insert(mCurrentRB);
 
     //Undo any flipping
     FlipImageCB->Checked = false;
@@ -367,8 +367,8 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
     {
 	    mScaleE->setValue(0.05);
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
+        mCurrentRB.setScale(mScaleE->getValue());
         render(&mCurrentRB);
-        mROIHistory.clear();
         mROIHistory.add(mCurrentRB);
     }
     catch(...)
@@ -384,6 +384,7 @@ void TMainForm::render(RenderBox* box)
         YCoord->setValue(mCurrentRB.getY1());
         Width->setValue(mCurrentRB.getWidth());
         Height->setValue(mCurrentRB.getHeight());
+        mScaleE->setValue(mCurrentRB.getScale());
     }
 
 	ClickZ(NULL);
@@ -400,7 +401,7 @@ void __fastcall TMainForm::historyBtnClick(TObject *Sender)
             render(rb);
         }
     }
-    else if(b== mHistoryBackBtn)
+    else if(b == mHistoryBackBtn)
     {
         RenderBox* rb = mROIHistory.previous();
         if(rb)
@@ -425,7 +426,6 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
 {
-
 	if(mCreateCacheThread.isRunning())
     {
 		mCreateCacheThread.stop();
@@ -632,18 +632,6 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
 	mRenderEnabled = true;
 }
 
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mDetachBtnClick(TObject *Sender)
-{
-	//Open image form
-//    if(!mImageForm)
-//    {
-//    	mImageForm = new TImageForm(gApplicationRegistryRoot, "ImageForm", this);
-//
-//    }
-//	mImageForm->Show();
-}
-
 void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
@@ -791,7 +779,6 @@ void __fastcall TMainForm::StackFilterCBClick(TObject *Sender)
         	StacksForProjectCB->AddItem(s[i].c_str(), NULL);
         }
     }
-
 }
 
 //---------------------------------------------------------------------------
@@ -830,18 +817,20 @@ void __fastcall TMainForm::ColorRGClick(TObject *Sender)
 
 void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
-	if(Key == VK_RETURN)
+	if(Key != VK_RETURN)
     {
-        StacksForProjectCB->Clear();
-        StringList s = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
-        if(CustomFilterCB->Checked)
+    	return;
+    }
+
+    StacksForProjectCB->Clear();
+    StringList s = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
+    if(CustomFilterCB->Checked)
+    {
+        for(int i = 0; i < s.count(); i++)
         {
-            for(int i = 0; i < s.count(); i++)
+            if(contains(stdstr(CustomFilterE->Text), s[i]))
             {
-                if(contains(stdstr(CustomFilterE->Text), s[i]))
-                {
-                    StacksForProjectCB->AddItem(s[i].c_str(), NULL);
-                }
+                StacksForProjectCB->AddItem(s[i].c_str(), NULL);
             }
         }
     }

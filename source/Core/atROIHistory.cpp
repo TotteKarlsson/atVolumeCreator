@@ -2,6 +2,10 @@
 #include "atROIHistory.h"
 //---------------------------------------------------------------------------
 
+ROIHistory::ROIHistory()
+{
+    mCurrent = mHistory.begin();
+}
 
 void ROIHistory::clear()
 {
@@ -13,6 +17,22 @@ void ROIHistory::add(RenderBox& rb)
 	mHistory.push_back(rb);
     mCurrent = mHistory.end();
     mCurrent--;
+}
+
+void ROIHistory::insert(RenderBox& rb)
+{
+	//
+	if(mCurrent != (mHistory.end() - 1))
+    {
+		mCurrent = mHistory.insert(mCurrent, rb);
+        mHistory.erase(mCurrent + 1, mHistory.end());
+    }
+    else
+    {
+		mHistory.push_back(rb);
+    	mCurrent = mHistory.end();
+	    mCurrent--;
+    }
 }
 
 RenderBox* ROIHistory::current()

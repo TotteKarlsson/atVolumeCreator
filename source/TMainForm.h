@@ -33,6 +33,7 @@
 #include "TSSHFrame.h"
 #include "TImageControlsFrame.h"
 #include "MagickWand/MagickWand.h"
+#include <Vcl.Buttons.hpp>
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -165,7 +166,6 @@ __published:	// IDE-managed Components
 	void __fastcall mZoomBtnClick(TObject *Sender);
 	void __fastcall OwnerCBChange(TObject *Sender);
 	void __fastcall ProjectCBChange(TObject *Sender);
-	void __fastcall mDetachBtnClick(TObject *Sender);
 	void __fastcall mCloseBottomPanelBtnClick(TObject *Sender);
 	void __fastcall mShowBottomPanelBtnClick(TObject *Sender);
 	void __fastcall StackCBChange(TObject *Sender);
@@ -230,8 +230,8 @@ __published:	// IDE-managed Components
 
         //Render areas history
 	    ROIHistory										mROIHistory;
-        RenderBox										mOriginalRB;
-		RenderBox										mLastRB;
+//        RenderBox										mOriginalRB;
+//		RenderBox										mLastRB;
 		RenderBox										mCurrentRB;
       	TCanvas*										getCanvas();
 

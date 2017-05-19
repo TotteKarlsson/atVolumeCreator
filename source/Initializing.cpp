@@ -21,7 +21,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
     mCurrentRB.setY1(YCoord->getValue());
     mCurrentRB.setWidth(Width->getValue());
     mCurrentRB.setHeight(Height->getValue());
-    mROIHistory.add(mOriginalRB);
 
     //Setup renderclient
     mRC.setBaseURL(mBaseUrlE->getValue());
@@ -61,7 +60,6 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 
 	enableDisableGroupBox(TestSSHGB, 		false);
 	enableDisableGroupBox(StackGenerationGB,false);
-//	enableDisableGroupBox(PostProcessingGB, false);
 
     TabSheet5->TabVisible = false;
 

@@ -89,6 +89,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <VerInfo_Keys>CompanyName=Allen Institute for Brain Science;FileDescription=;FileVersion=0.5.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=0.5.5;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Release>5</VerInfo_Release>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
@@ -131,6 +132,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="ClosingDown.cpp">
             <BuildOrder>19</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Core\atApplicationSupportFunctions.cpp">
+            <DependentOn>Core\atApplicationSupportFunctions.h</DependentOn>
+            <BuildOrder>20</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Core\atFetchImagesThread.cpp">
             <DependentOn>Core\atFetchImagesThread.h</DependentOn>
             <BuildOrder>12</BuildOrder>
@@ -163,9 +168,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>Core\atROIHistory.h</DependentOn>
             <BuildOrder>19</BuildOrder>
         </CppCompile>
-        <CppCompile Include="Core\ImageMagick.cpp">
-            <BuildOrder>20</BuildOrder>
-        </CppCompile>
         <CppCompile Include="forms\TAboutVolumeCreatorForm.cpp">
             <BuildOrder>21</BuildOrder>
         </CppCompile>
@@ -173,6 +175,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>SelectZsForm</Form>
             <DependentOn>Forms\TSelectZsForm.h</DependentOn>
             <BuildOrder>21</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="ImageMagick.cpp">
+            <BuildOrder>19</BuildOrder>
         </CppCompile>
         <CppCompile Include="Initializing.cpp">
             <DependentOn>Initializing.h</DependentOn>
@@ -193,9 +198,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="VolumeCreator.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
-        <PCHCompile Include="VolumeCreatorPCH1.h">
-            <BuildOrder>1</BuildOrder>
-        </PCHCompile>
         <CppCompile Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp">
             <Form>SSHFrame</Form>
             <DesignClass>TFrame</DesignClass>
@@ -266,7 +268,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
                 </ProjectProperties>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="P:\build\xe3_ide\BPL\ArrayBotPackage.bpl">ArrayBotPackage</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k170.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp170.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>
