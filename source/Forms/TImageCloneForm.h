@@ -1,5 +1,5 @@
-#ifndef atImageFormH
-#define atImageFormH
+#ifndef TImageCloneFormH
+#define TImageCloneFormH
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -10,7 +10,7 @@
 #include "TRegistryForm.h"
 //---------------------------------------------------------------------------
 
-class TImageForm : public TRegistryForm
+class TImageCloneForm : public TRegistryForm
 {
 __published:	// IDE-managed Components
 	TPaintBox *PaintBox1;
@@ -18,9 +18,9 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
 public:		// User declarations
-	__fastcall TImageForm(const string& regRoot, const string& fName, TComponent* Owner);
+	__fastcall TImageCloneForm(const string& regRoot, const string& fName, TComponent* Owner);
 };
 
 
-extern PACKAGE TImageForm *ImageForm;
+extern PACKAGE TImageCloneForm *ImageCloneForm;
 #endif

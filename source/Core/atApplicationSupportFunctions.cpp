@@ -13,6 +13,16 @@ extern string gApplicationStyle;
 extern string gApplicationRegistryRoot;
 extern string gAppName;
 extern HWND	  gOtherAppWindow;
+
+TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
+{
+	TPoint pt;
+    pt.X = (p.X / scale) / stretchFactor;
+    pt.Y = (p.Y / scale) / stretchFactor;
+	return pt;
+}
+
+
 //---------------------------------------------------------------------------
 void setupLogging()
 {

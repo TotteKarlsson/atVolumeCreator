@@ -1,7 +1,7 @@
-object ImageForm: TImageForm
+object ImageCloneForm: TImageCloneForm
   Left = 0
   Top = 0
-  Caption = 'ImageForm'
+  Caption = 'ImageCloneForm'
   ClientHeight = 719
   ClientWidth = 792
   Color = clBtnFace

@@ -171,6 +171,11 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="forms\TAboutVolumeCreatorForm.cpp">
             <BuildOrder>21</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Forms\TImageCloneForm.cpp">
+            <Form>ImageCloneForm</Form>
+            <DependentOn>Forms\TImageCloneForm.h</DependentOn>
+            <BuildOrder>20</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Forms\TSelectZsForm.cpp">
             <Form>SelectZsForm</Form>
             <DependentOn>Forms\TSelectZsForm.h</DependentOn>
@@ -207,6 +212,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <FormResources Include="Forms\TSelectZsForm.dfm"/>
         <FormResources Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.dfm"/>
         <FormResources Include="TMainForm.dfm"/>
+        <FormResources Include="Forms\TImageCloneForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

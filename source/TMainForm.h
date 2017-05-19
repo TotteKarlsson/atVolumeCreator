@@ -143,6 +143,7 @@ __published:	// IDE-managed Components
 	TStatusBar *StatusBar1;
 	TPropertyCheckBox *CustomFilterCB;
 	TEdit *CustomFilterE;
+	TMenuItem *OpenaClone1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);

@@ -16066,6 +16066,7 @@ object MainForm: TMainForm
           0700D67007008F8F070048AE0700000AD7A3FFFFFFFF80E17A54FFFFFFFF00CD
           CC4CFFFFFFFF009A9999FFFFFFFF80666626FFFFFFFFF0285C0FFFFFFFFF801B
           0D50FFFFFFFF00583954FFFFFFFF}
+        PopupMenu = ImagePopup
         Proportional = True
         Stretch = True
         Transparent = True
@@ -17061,6 +17062,9 @@ object MainForm: TMainForm
     object ParseNDVIZURL1: TMenuItem
       Caption = 'Parse NDVIZ URL'
       OnClick = ParseNDVIZURL1Click
+    end
+    object OpenaClone1: TMenuItem
+      Caption = 'Open a Clone'
     end
   end
 end

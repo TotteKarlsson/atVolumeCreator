@@ -10,6 +10,8 @@
 #include "atImageForm.h"
 #include "TMemoLogger.h"
 #include "TSelectZsForm.h"
+#include "TImageCloneForm.h"
+#include "atApplicationSupportFunctions.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -23,6 +25,7 @@
 #pragma link "TImageControlsFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
+
 using namespace mtk;
 using namespace std;
 extern string gLogFileName;
@@ -173,14 +176,6 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
     }
 }
 
-TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
-{
-	TPoint pt;
-    pt.X = (p.X / scale) / stretchFactor;
-    pt.Y = (p.Y / scale) / stretchFactor;
-	return pt;
-}
-
 double TMainForm::getImageStretchFactor()
 {
 	if((mScaleE->getValue() * Height->getValue() * Width->getValue()) == 0)
@@ -213,12 +208,12 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
     	return;
     }
 
-	double stretchFactor = getImageStretchFactor();
 	if(Button == TMouseButton::mbRight)
     {
         return;
     }
 
+	double stretchFactor = getImageStretchFactor();
 	if(Button == TMouseButton::mbMiddle)
     {
     	//Open popup
@@ -277,11 +272,6 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 	if(Button == TMouseButton::mbMiddle)
     {
 	  	Screen->Cursor = crDefault;
-    }
-
-	if(!Drawing ||  (Button == TMouseButton::mbRight))
-    {
-  //      Image1->Align = alClient;
     	TPoint p2;
 		p2 = Mouse->CursorPos;
 		p2 = this->Image1->ScreenToClient(p2);
@@ -293,6 +283,10 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 
 		mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
        	ClickZ(Sender);
+    }
+
+	if(!Drawing ||  (Button == TMouseButton::mbRight))
+    {
     	return;
     }
 
@@ -835,5 +829,6 @@ void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShi
         }
     }
 }
+
 
 
