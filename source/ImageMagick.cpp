@@ -23,12 +23,12 @@ using namespace std;
   exit(-1); \
 }
 
-void TMainForm::flipImage(MagickWand *image_wand)
+void TMainForm::flipImage(MagickWand *image_wand,int deg)
 {
     MagickBooleanType status;
     PixelWand *background = NewPixelWand();
     PixelSetColor(background,"#111111");
-    status = MagickRotateImage(image_wand, background,90);
+    status = MagickRotateImage(image_wand, background, deg);
     DestroyPixelWand(background);
 }
 

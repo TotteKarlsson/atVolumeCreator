@@ -3,7 +3,7 @@
 #include "TMainForm.h"
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
-
+#include "TImageForm.h"
 using namespace mtk;
 
 //---------------------------------------------------------------------------
@@ -37,6 +37,12 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 	Log(lInfo) << "In FormClose";
 	mIniFileC->clear();
 	Log(lInfo) << "In main forms destructor";
+
+	if(gImageForm)
+    {
+		gImageForm->mPrepareForDeletion = true;
+    	gImageForm->Close();
+    }
 
 	//Save project history
 	mBottomPanelHeight          	= mBottomPanel->Height;

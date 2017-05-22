@@ -16,7 +16,7 @@ using std::string;
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
-USEFORM("Forms\TImageCloneForm.cpp", ImageCloneForm);
+USEFORM("Forms\TImageForm.cpp", ImageForm);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -76,7 +76,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
-		Application->CreateForm(__classid(TImageCloneForm), &ImageCloneForm);
 		Application->Run();
 	}
 	catch (Exception &exception)

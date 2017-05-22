@@ -7,10 +7,9 @@
 #include "atRenderClient.h"
 #include "mtkExeFile.h"
 #include "mtkMathUtils.h"
-#include "atImageForm.h"
 #include "TMemoLogger.h"
 #include "TSelectZsForm.h"
-#include "TImageCloneForm.h"
+#include "TImageForm.h"
 #include "atApplicationSupportFunctions.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -28,10 +27,9 @@ TMainForm *MainForm;
 
 using namespace mtk;
 using namespace std;
-extern string gLogFileName;
-
 TImage *CurrImage;
 extern string gAppDataLocation;
+extern string gLogFileName;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner),
@@ -40,12 +38,12 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
-//    mImageForm(NULL),
     mRenderEnabled(false),
     mCurrentProject(""),
     mCurrentOwner(""),
     mCurrentStack(""),
-    mIsStyleMenuPopulated(false)
+    mIsStyleMenuPopulated(false),
+	gImageForm(NULL)
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -53,11 +51,12 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
+
 }
 
 __fastcall TMainForm::~TMainForm()
 {
-
+	delete gImageForm;
 }
 
 #define ThrowWandException(wand) \
@@ -78,74 +77,87 @@ __fastcall TMainForm::~TMainForm()
 void __fastcall TMainForm::onImage()
 {
 	TMemoryStream* imageMem = mRC.getImageMemory();
-    if(imageMem)
+    if(!imageMem)
     {
-        if(fileExists(mRC.getImageLocalPathAndFileName()))
-        {
-           	string pic = mRC.getImageLocalPathAndFileName().c_str();
-
-			if(IMContrastControl->Checked || FlipImageCB->Checked || ColorRG->ItemIndex > 0)
-            {
-            	//Read imageMagick image from file
-                MagickWand*image_wand;
-                MagickWandGenesis();
-                image_wand = NewMagickWand();
-                MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
-
-                if (status == MagickFalse)
-                {
-                    ThrowWandException(image_wand);
-                }
-
-           		if(IMContrastControl->Checked)
-                {
-                	applyContrastControl(image_wand);
-                }
-
-           		if(FlipImageCB->Checked)
-                {
-					flipImage(image_wand);
-                }
-
-           		if(ColorRG->ItemIndex > 0)
-                {
-					colorImage(image_wand, ColorRG->ItemIndex);
-                }
-
-                string newFName(createProcessedImageFileName(pic));
-
-
-                /*    Write the image then destroy it.    */
-                string procImageFName(createProcessedImageFileName(pic));
-                status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
-                if (status == MagickFalse)
-                {
-                	ThrowWandException(image_wand);
-                }
-
-            	// Release Wand handle
-            	DestroyMagickWand(image_wand);
-		    	Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
-            }
-            else
-            {
-            	//Create a temporary stream
-                TMemoryStream* stream = new TMemoryStream();
-                stream->LoadFromFile(pic.c_str());
-                stream->Position = 0;
-	    		Image1->Picture->Graphic->LoadFromStream(stream);
-                delete stream;
-            }
-	        Image1->Repaint();
-		    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
-
-        }
-        else
-        {
-		    Log(lInfo) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
-        }
-        this->Image1->Cursor = crDefault;
+    	return;
     }
+
+    if(!fileExists(mRC.getImageLocalPathAndFileName()))
+    {
+        Log(lInfo) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
+        return;
+    }
+
+    string pic = mRC.getImageLocalPathAndFileName().c_str();
+
+    if(IMContrastControl->Checked || FlipImageRightCB->Checked|| FlipImageLeftCB->Checked || ColorRG->ItemIndex > 0)
+    {
+        //Read imageMagick image from file
+        MagickWand*image_wand;
+        MagickWandGenesis();
+        image_wand = NewMagickWand();
+        MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
+
+        if (status == MagickFalse)
+        {
+            ThrowWandException(image_wand);
+        }
+
+        if(IMContrastControl->Checked)
+        {
+            applyContrastControl(image_wand);
+        }
+
+        if(FlipImageRightCB->Checked)
+        {
+            flipImage(image_wand, 90);
+        }
+
+        if(FlipImageLeftCB->Checked)
+        {
+            flipImage(image_wand, -90);
+        }
+
+        if(ColorRG->ItemIndex > 0)
+        {
+            colorImage(image_wand, ColorRG->ItemIndex);
+        }
+
+        string newFName(createProcessedImageFileName(pic));
+
+
+        /*    Write the image then destroy it.    */
+        string procImageFName(createProcessedImageFileName(pic));
+        status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
+        if (status == MagickFalse)
+        {
+            ThrowWandException(image_wand);
+        }
+
+        // Release Wand handle
+        DestroyMagickWand(image_wand);
+        Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
+        mCurrentImageFile = newFName;
+    }
+    else
+    {
+        //Create a temporary stream
+        TMemoryStream* stream = new TMemoryStream();
+        stream->LoadFromFile(pic.c_str());
+        stream->Position = 0;
+        Image1->Picture->Graphic->LoadFromStream(stream);
+        delete stream;
+        mCurrentImageFile = pic;
+    }
+
+    if(gImageForm && gImageForm->Visible)
+    {
+    	gImageForm->load(mCurrentImageFile);
+    }
+
+    Image1->Repaint();
+    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+    this->Image1->Cursor = crDefault;
 }
 
 //---------------------------------------------------------------------------
@@ -164,6 +176,8 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 	mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
 	this->Image1->Cursor = crHourGlass;
+
+    //Image pops up in onImage callback
     mRC.getImageInThread(z);
 }
 
@@ -318,7 +332,8 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     mROIHistory.insert(mCurrentRB);
 
     //Undo any flipping
-    FlipImageCB->Checked = false;
+    FlipImageRightCB->Checked = false;
+    FlipImageLeftCB->Checked = false;
 	ClickZ(Sender);
 }
 
@@ -830,5 +845,15 @@ void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShi
     }
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OpenaClone1Click(TObject *Sender)
+{
+	if(!gImageForm)
+    {
+    	gImageForm = new TImageForm(gApplicationRegistryRoot, "", this);
+    }
+
+	gImageForm->Show();
+}
 
 

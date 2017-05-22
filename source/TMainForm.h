@@ -138,12 +138,13 @@ __published:	// IDE-managed Components
 	TGroupBox *GroupBox3;
 	TMenuItem *Options1;
 	TMenuItem *ThemesMenu;
-	TCheckBox *FlipImageCB;
+	TCheckBox *FlipImageRightCB;
 	TRadioGroup *ColorRG;
 	TStatusBar *StatusBar1;
 	TPropertyCheckBox *CustomFilterCB;
 	TEdit *CustomFilterE;
 	TMenuItem *OpenaClone1;
+	TCheckBox *FlipImageLeftCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -192,6 +193,7 @@ __published:	// IDE-managed Components
 	void __fastcall ClickImageProcCB(TObject *Sender);
 	void __fastcall ColorRGClick(TObject *Sender);
 	void __fastcall CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall OpenaClone1Click(TObject *Sender);
 
 
 
@@ -246,8 +248,11 @@ __published:	// IDE-managed Components
 		bool                							populateRemoteScript(const string& script);
         void 											runJob(const string& job);
         void											applyContrastControl(MagickWand *image_wand);
-		void 											flipImage(MagickWand *image_wand);
+		void 											flipImage(MagickWand *image_wand, int deg);
 		void 											colorImage(MagickWand *image_wand, int colorIndex);
+
+	    TImageForm*										gImageForm;
+        string 											mCurrentImageFile;
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);

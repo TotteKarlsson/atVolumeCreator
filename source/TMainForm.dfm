@@ -16239,12 +16239,12 @@ object MainForm: TMainForm
               TabOrder = 0
               OnClick = ClickImageProcCB
             end
-            object FlipImageCB: TCheckBox
-              Left = 17
+            object FlipImageRightCB: TCheckBox
+              Left = 128
               Top = 24
-              Width = 207
+              Width = 96
               Height = 17
-              Caption = 'Flip Image'
+              Caption = 'Flip Image Right'
               TabOrder = 1
               OnClick = ClickImageProcCB
             end
@@ -16264,6 +16264,15 @@ object MainForm: TMainForm
                 'Magenta')
               TabOrder = 2
               OnClick = ColorRGClick
+            end
+            object FlipImageLeftCB: TCheckBox
+              Left = 17
+              Top = 24
+              Width = 96
+              Height = 17
+              Caption = 'Flip Image Left'
+              TabOrder = 3
+              OnClick = ClickImageProcCB
             end
           end
           object CacheGB: TGroupBox
@@ -17065,6 +17074,7 @@ object MainForm: TMainForm
     end
     object OpenaClone1: TMenuItem
       Caption = 'Open a Clone'
+      OnClick = OpenaClone1Click
     end
   end
 end
