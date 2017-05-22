@@ -1,3 +1,11 @@
+Release 0.5.6 (May 22)
+=======================
+* Added flip right (and left)
+* Adding a Cloned Image Form
+* Re-added tracking of zoom history
+* Added ability to pan image (by using mouse middle button)
+* Added custom filtering of stacks on stack generation page
+
 Release 0.5.5 (May 17)
 =======================
 * Changed so that z's are checked as their default state
