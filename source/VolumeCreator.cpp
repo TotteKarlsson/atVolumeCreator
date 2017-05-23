@@ -14,9 +14,10 @@ using namespace mtk;
 
 using std::string;
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
+USEFORM("Forms\TOverlayedImage.cpp", OverlayedImage);
+USEFORM("Forms\TImageForm.cpp", ImageForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
-USEFORM("Forms\TImageForm.cpp", ImageForm);
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -76,6 +77,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
+		Application->CreateForm(__classid(TOverlayedImage), &OverlayedImage);
 		Application->Run();
 	}
 	catch (Exception &exception)

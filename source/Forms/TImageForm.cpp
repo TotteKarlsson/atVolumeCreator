@@ -30,6 +30,7 @@ bool TImageForm::load(const string& fName)
     Image1->Picture->Graphic->LoadFromStream(stream);
     Image1->Repaint();
     delete stream;
+    return true;
 }
 
 //---------------------------------------------------------------------------

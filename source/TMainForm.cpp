@@ -11,6 +11,7 @@
 #include "TSelectZsForm.h"
 #include "TImageForm.h"
 #include "atApplicationSupportFunctions.h"
+#include "TOverlayedImage.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -179,6 +180,12 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 
     //Image pops up in onImage callback
     mRC.getImageInThread(z);
+
+    if(Sender != NULL)
+    {
+		mROIHistory.clear();
+    	mROIHistory.add(mCurrentRB);
+    }
 }
 
 void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -334,7 +341,7 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     //Undo any flipping
     FlipImageRightCB->Checked = false;
     FlipImageLeftCB->Checked = false;
-	ClickZ(Sender);
+	ClickZ(NULL);
 }
 
 //---------------------------------------------------------------------------
@@ -374,6 +381,7 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
     //Get saved renderbox for current slice
 	try
     {
+	    mROIHistory.clear();
 	    mScaleE->setValue(0.05);
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
         mCurrentRB.setScale(mScaleE->getValue());
@@ -854,6 +862,14 @@ void __fastcall TMainForm::OpenaClone1Click(TObject *Sender)
     }
 
 	gImageForm->Show();
+}
+
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::AddOverlayedImage1Click(TObject *Sender)
+{
+	TOverlayedImage* f = new TOverlayedImage(NULL);
+    f->Show();
 }
 
 

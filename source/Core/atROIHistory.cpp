@@ -21,7 +21,6 @@ void ROIHistory::add(RenderBox& rb)
 
 void ROIHistory::insert(RenderBox& rb)
 {
-	//
 	if(mCurrent != (mHistory.end() - 1))
     {
 		mCurrent = mHistory.insert(mCurrent, rb);

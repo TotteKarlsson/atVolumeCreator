@@ -34,6 +34,7 @@
 #include "TImageControlsFrame.h"
 #include "MagickWand/MagickWand.h"
 #include <Vcl.Buttons.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -145,6 +146,9 @@ __published:	// IDE-managed Components
 	TEdit *CustomFilterE;
 	TMenuItem *OpenaClone1;
 	TCheckBox *FlipImageLeftCB;
+	THeaderControl *HeaderControl1;
+	TPanel *Panel1;
+	TMenuItem *AddOverlayedImage1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -194,6 +198,7 @@ __published:	// IDE-managed Components
 	void __fastcall ColorRGClick(TObject *Sender);
 	void __fastcall CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall OpenaClone1Click(TObject *Sender);
+	void __fastcall AddOverlayedImage1Click(TObject *Sender);
 
 
 
