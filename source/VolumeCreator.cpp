@@ -72,7 +72,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
         if(gApplicationStyle != "Windows")
 	    {
-        	TStyleManager::TrySetStyle(gApplicationStyle.c_str());
+        	TStyleManager::TrySetStyle("Auric");
+		TStyleManager::TrySetStyle(gApplicationStyle.c_str());
     	}
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
