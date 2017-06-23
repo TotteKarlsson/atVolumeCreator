@@ -223,6 +223,8 @@ __published:	// IDE-managed Components
 		mtk::Property<string>	 		                mCurrentProject;
 		mtk::Property<string>	 		                mCurrentOwner;
 		mtk::Property<string>	 		                mCurrentStack;
+
+        IniFileProperties	      	                    mServerProperties;
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
 		double 											getImageStretchFactor();

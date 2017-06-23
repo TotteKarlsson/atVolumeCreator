@@ -52,7 +52,6 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
-
 }
 
 __fastcall TMainForm::~TMainForm()

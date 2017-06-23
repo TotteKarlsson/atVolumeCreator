@@ -81,6 +81,7 @@ void TMainForm::setupIniFile()
 
 	//For convenience and for option form, populate appProperties container
 	mAppProperties.append(&mGeneralProperties);
+	mAppProperties.append(&mServerProperties);
 }
 
 bool TMainForm::setupAndReadIniParameters()
@@ -131,7 +132,23 @@ bool TMainForm::setupAndReadIniParameters()
     SubFolder1->update();
     VolumesScaleE->update();
 
-//	mBottomPanel->Height = mBottomPanelHeight;
+	//Remote server properties
+	mServerProperties.setIniFile(mIniFileC->getIniFile());
+    mServerProperties.setSection("REMOTE_SERVER");
+    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHHost->getProperty()->setup("REMOTE_HOST", 	                  	"atbigdawg"));
+    mServerProperties.add((BaseProperty*)  &TSSHFrame1->seSSHPort->getProperty()->setup("REMOTE_PORT", 	                  	22));
+    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHUserName->getProperty()->setup("REMOTE_USER_NAME", 	       	"albert"));
+    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHPassword->getProperty()->setup("REMOTE_USER_PASSWORD",        	"123"));
+
+
+	mServerProperties.read();
+
+	TSSHFrame1->edSSHHost->update();
+    TSSHFrame1->seSSHPort->update();
+    TSSHFrame1->edSSHUserName->update();
+    TSSHFrame1->edSSHPassword->update();
+
+	mBottomPanel->Height = mBottomPanelHeight;
     return true;
 }
 

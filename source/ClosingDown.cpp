@@ -48,6 +48,7 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 	mBottomPanelHeight          	= mBottomPanel->Height;
 
 	mGeneralProperties.write();
+	mServerProperties.write();
 
 	//Write to file
 	mIniFileC->save();
