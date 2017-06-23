@@ -151,6 +151,9 @@ __published:	// IDE-managed Components
 	TMenuItem *AddOverlayedImage1;
 	TPropertyCheckBox *CreateTIFFStackCB;
 	TPropertyCheckBox *DeleteTempTiffsCB;
+	TIntegerLabeledEdit *ZBatchSizeE;
+	TIntegerLabeledEdit *MaxNumberOfRemoteJobsE;
+	TIntegerLabeledEdit *NicenessE;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);

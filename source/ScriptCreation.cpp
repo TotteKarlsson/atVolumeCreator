@@ -172,7 +172,16 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     	cmd <<" false";
     }
 
-	//11th - static bounds?
+    //11th - Z batch size
+    cmd <<" "<<ZBatchSizeE->getValue();
+
+    //12th - Max jobs size
+	cmd <<" "<<MaxNumberOfRemoteJobsE->getValue();
+
+    //13th - Job niceness
+	cmd <<" "<<NicenessE->getValue();
+
+	//14th - static bounds?
     cmd <<" "<<mtk::toString(BoundsCB->Checked);
 
     if(BoundsCB->Checked)

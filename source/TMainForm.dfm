@@ -1,6 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
+  ActiveControl = BashScriptMemo
   AlphaBlendValue = 100
   Caption = 'Volume Creator'
   ClientHeight = 820
@@ -40,7 +41,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 643
-    ActivePage = TabSheet1
+    ActivePage = TabSheet5
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -70,7 +71,6 @@ object MainForm: TMainForm
             Align = alTop
             Caption = 'Image Parameters'
             TabOrder = 0
-            ExplicitWidth = 315
             object mScaleE: TFloatLabeledEdit
               Left = 16
               Top = 34
@@ -179,7 +179,6 @@ object MainForm: TMainForm
             Align = alTop
             Caption = 'Post Processing'
             TabOrder = 1
-            ExplicitWidth = 315
             object IMContrastControl: TCheckBox
               Left = 17
               Top = 47
@@ -233,7 +232,6 @@ object MainForm: TMainForm
             Align = alTop
             Caption = 'Local Cache'
             TabOrder = 2
-            ExplicitWidth = 315
             object mFetchSelectedZsBtn: TButton
               Left = 16
               Top = 21
@@ -253,7 +251,6 @@ object MainForm: TMainForm
           Align = alRight
           Caption = 'Sections'
           TabOrder = 1
-          ExplicitHeight = 470
           object mZs: TCheckListBox
             Left = 2
             Top = 15
@@ -264,8 +261,6 @@ object MainForm: TMainForm
             PopupMenu = ZsPopUpMenu
             TabOrder = 0
             OnClick = ClickZ
-            ExplicitWidth = 197
-            ExplicitHeight = 83
           end
         end
       end
@@ -506,9 +501,6 @@ object MainForm: TMainForm
         Height = 502
         Align = alClient
         TabOrder = 2
-        ExplicitLeft = 321
-        ExplicitWidth = 821
-        ExplicitHeight = 472
         object PaintBox1: TPaintBox
           Left = 1
           Top = 1
@@ -16555,15 +16547,12 @@ object MainForm: TMainForm
               Text = 'Misc'
               Width = 50
             end>
-          ExplicitTop = 454
-          ExplicitWidth = 819
         end
       end
     end
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
-      ExplicitHeight = 585
       object StackGenerationGB: TGroupBox
         Left = 0
         Top = 70
@@ -16647,13 +16636,56 @@ object MainForm: TMainForm
             TabOrder = 5
           end
           object Run: TButton
-            Left = 497
-            Top = 16
+            Left = 809
+            Top = 8
             Width = 119
             Height = 78
             Caption = 'Run'
             TabOrder = 6
             OnClick = RunClick
+          end
+          object TGroupBox
+            Left = 497
+            Top = -3
+            Width = 280
+            Height = 102
+            Caption = 'Server Job Creation'
+            TabOrder = 7
+            object ZBatchSizeE: TIntegerLabeledEdit
+              Left = 16
+              Top = 32
+              Width = 105
+              Height = 21
+              EditLabel.Width = 58
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Z Batch Size'
+              TabOrder = 0
+              Text = '10'
+              Value = 10
+            end
+            object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
+              Left = 16
+              Top = 72
+              Width = 105
+              Height = 21
+              EditLabel.Width = 104
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Number of jobs (max)'
+              TabOrder = 1
+              Text = '10'
+              Value = 10
+            end
+            object NicenessE: TIntegerLabeledEdit
+              Left = 144
+              Top = 32
+              Width = 97
+              Height = 21
+              EditLabel.Width = 99
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Niceness (-20 -> 19)'
+              TabOrder = 2
+              Text = '0'
+            end
           end
         end
       end
@@ -16726,7 +16758,6 @@ object MainForm: TMainForm
         Caption = 'Select Stacks'
         Constraints.MinHeight = 350
         TabOrder = 3
-        ExplicitHeight = 392
         object StacksForProjectCB: TCheckListBox
           AlignWithMargins = True
           Left = 17
@@ -16737,7 +16768,6 @@ object MainForm: TMainForm
           Align = alLeft
           ItemHeight = 13
           TabOrder = 0
-          ExplicitHeight = 369
         end
         object GroupBox3: TGroupBox
           Left = 354
@@ -16770,7 +16800,6 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
-      ExplicitHeight = 585
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
@@ -16790,7 +16819,10 @@ object MainForm: TMainForm
           'scale=${args[7]}'
           'create_tiff_stack=${args[8]}'
           'delete_individual_tiffs=${args[9]}'
-          'use_bounds=${args[10]}'
+          'z_batch_size=${args[10]}'
+          'max_number_of_jobs=${args[11]}'
+          'job_niceness=${args[12]}'
+          'use_bounds=${args[13]}'
           'fmt='#39'tiff'#39
           'filter='#39'false'#39
           'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
@@ -16811,10 +16843,13 @@ object MainForm: TMainForm
           
             'echo "Delete individual TIFFs: "$delete_individual_tiffs >> $inf' +
             'o'
+          'echo "Z Batch Size: "$z_batch_size >> $info'
+          'echo "Max number of jobs: "$max_number_of_jobs >> $info'
+          'echo "Job niceness: "$job_niceness >> $info'
           ''
           'echo "Zs: "$sections_str >> $info'
           'if [ "$use_bounds"  == "true" ]; then'
-          '    bounds=${args[11]}'
+          '    bounds=${args[14]}'
           '    echo "Using bounds:" $bounds >> $info'
           'fi'
           ''
@@ -16842,12 +16877,10 @@ object MainForm: TMainForm
             '#Create job inputs =============================================' +
             '='
           'echo "Parsing z'#39's"'
-          'batch_size=5'
-          ''
           'read -r -a sections <<<"$sections_str"'
-          'for ((i=0; i<${#sections[@]}; i+=batch_size)); do'
-          '  current_pieces=( "${sections[@]:i:batch_size}" )'
-          '  output+=( "${current_pieces[*]}" )'
+          'for ((i=0; i<${#sections[@]}; i+=z_batch_size)); do'
+          '  current_pieces=( "${sections[@]:i:z_batch_size}" )'
+          '  z_batch+=( "${current_pieces[*]}" )'
           '  #echo $i'
           '  if (( $i > $nrOfSections ))'
           '  then'
@@ -16855,29 +16888,26 @@ object MainForm: TMainForm
           '  fi'
           'done'
           ''
-          'maxJobs=12'
+          'echo "Starting jobs"'
           'jobs=0'
-          ''
-          'echo "Running jobs"'
-          ''
-          'for ((i=0; i<${#output[@]}; i+=1)); do'
+          'for ((i=0; i<${#z_batch[@]}; i+=1)); do'
           '    jobs=$jobs+1'
           '    echo "Starting job# $i"'
-          '    echo ${output[$i]}'
+          '    echo ${z_batch[$i]}'
           
             '    #java_args="  -cp $classpath $jc --stack $stack --rootDirect' +
             'ory $rootOutPutFolder --customOutputFolder $customFolder --chann' +
             'elName $stack --scale $scale --owner $owner                 --do' +
             'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
-            'format $fmt --project $proj ${output[$i]}"'
+            'format $fmt --project $proj ${z_batch[$i]}"'
           
             '    java_args="  -cp $classpath $jc --stack $stack --rootDirecto' +
             'ry $rootOutPutFolder --customOutputFolder $customFolder --channe' +
             'lName $stack --scale $scale --owner $owner --bounds $bounds --do' +
             'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
-            'format $fmt --project $proj ${output[$i]}"'
-          '    eval java $java_args &'
-          '    if (( $jobs >= $maxJobs ))'
+            'format $fmt --project $proj ${z_batch[$i]}"'
+          '    eval nice -n $job_niceness java $java_args &'
+          '    if (( $jobs >= $max_number_of_jobs ))'
           '    then'
           '      echo "Waiting for jobs to finish..."'
           '      wait'
@@ -16885,7 +16915,7 @@ object MainForm: TMainForm
           '    fi'
           'done'
           ''
-          '#Wait for the java jobs to finish..'
+          '#Wait for the jobs to finish..'
           'FAIL=0'
           'for job in `jobs -p`'
           'do'
@@ -16932,13 +16962,11 @@ object MainForm: TMainForm
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
-        ExplicitHeight = 585
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
-      ExplicitHeight = 585
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -17001,7 +17029,6 @@ object MainForm: TMainForm
     Height = 136
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 635
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -17057,7 +17084,6 @@ object MainForm: TMainForm
     Width = 1150
     Height = 19
     Panels = <>
-    ExplicitTop = 771
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
@@ -17069,7 +17095,6 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     OnClick = mShowBottomPanelBtnClick
-    ExplicitTop = 613
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
