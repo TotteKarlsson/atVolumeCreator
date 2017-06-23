@@ -12,13 +12,13 @@ void __fastcall TMainForm::TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender)
 {
 	//Parse messages from the server
     string line(stdstr(TSSHFrame1->ScSSHShell1->ReadString()));
-//	if(contains("$",line) || contains("echo",line) || contains("[main]", line))
-//    {
-//
-//    }
-//    else
+	if(contains("mxplutx",line))
     {
- 		Log(lInfo) << line;
+		Log(lInfo) << "Finished one stack...";
+    }
+    else
+    {
+ 		Log(lDebug) << line;
     }
 }
 

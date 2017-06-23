@@ -16849,7 +16849,9 @@ object MainForm: TMainForm
           'echo "Max number of jobs: "$max_number_of_jobs >> $info'
           'echo "Job niceness: "$job_niceness >> $info'
           'echo "Zs: "$sections_str >> $info'
-          'echo "Using bounds:" $bounds >> $info'
+          'if [ "$use_bounds"  == "true" ]; then'
+          '   echo "Using bounds:" $bounds >> $info'
+          'fi'
           ''
           
             '#JAVA CLIENT SETTINGS ==========================================' +
@@ -16959,7 +16961,7 @@ object MainForm: TMainForm
           'else'
           'echo "FAIL! ($FAIL)"'
           'fi'
-          ''
+          'echo "mxplutx"'
           'echo "This job ended on: "`date` >> $info')
         ReadOnly = True
         ScrollBars = ssBoth
