@@ -1,3 +1,15 @@
+Release 0.5.7 (June 23)
+=======================
+* Fixed use static bounds checkbox and generation of stacks using layer bounds
+* Added ability to set z batch size and number of jobs size
+* Added ability to set priority of remote jobs, using nice parameter
+* Fixed some frontpage UI issues
+* Added saving/retrieving of remote server connection data
+* Added ability to select creation of TIFF Stack
+* Added ability to remove individual TIFFS, in case a stack is created
+* Added some new styles
+* Added an overlay image form
+
 Release 0.5.6 (May 22)
 =======================
 * Added flip right (and left)
