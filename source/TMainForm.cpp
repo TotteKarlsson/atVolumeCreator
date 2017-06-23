@@ -878,3 +878,4 @@ void __fastcall TMainForm::CreateTIFFStackCBClick(TObject *Sender)
 }
 
 
+

@@ -16680,6 +16680,7 @@ object MainForm: TMainForm
               Top = 32
               Width = 97
               Height = 21
+              Hint = '-20 is highest priority and 19 is lowest priority'
               EditLabel.Width = 99
               EditLabel.Height = 13
               EditLabel.Caption = 'Niceness (-20 -> 19)'
@@ -16823,6 +16824,7 @@ object MainForm: TMainForm
           'max_number_of_jobs=${args[11]}'
           'job_niceness=${args[12]}'
           'use_bounds=${args[13]}'
+          'bounds=${args[14]}'
           'fmt='#39'tiff'#39
           'filter='#39'false'#39
           'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
@@ -16846,12 +16848,8 @@ object MainForm: TMainForm
           'echo "Z Batch Size: "$z_batch_size >> $info'
           'echo "Max number of jobs: "$max_number_of_jobs >> $info'
           'echo "Job niceness: "$job_niceness >> $info'
-          ''
           'echo "Zs: "$sections_str >> $info'
-          'if [ "$use_bounds"  == "true" ]; then'
-          '    bounds=${args[14]}'
-          '    echo "Using bounds:" $bounds >> $info'
-          'fi'
+          'echo "Using bounds:" $bounds >> $info'
           ''
           
             '#JAVA CLIENT SETTINGS ==========================================' +
@@ -16894,18 +16892,22 @@ object MainForm: TMainForm
           '    jobs=$jobs+1'
           '    echo "Starting job# $i"'
           '    echo ${z_batch[$i]}'
+          ''
+          '    if [ "$use_bounds"  == "false" ]; then'
           
-            '    #java_args="  -cp $classpath $jc --stack $stack --rootDirect' +
-            'ory $rootOutPutFolder --customOutputFolder $customFolder --chann' +
-            'elName $stack --scale $scale --owner $owner                 --do' +
-            'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
-            'format $fmt --project $proj ${z_batch[$i]}"'
+            '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
+            'ectory $rootOutPutFolder --customOutputFolder $customFolder --ch' +
+            'annelName $stack --scale $scale --owner $owner                 -' +
+            '-doFilter false --fillWithNoise false --baseDataUrl $baseDataURL' +
+            ' --format $fmt --project $proj ${z_batch[$i]}"'
+          '    else'
           
-            '    java_args="  -cp $classpath $jc --stack $stack --rootDirecto' +
-            'ry $rootOutPutFolder --customOutputFolder $customFolder --channe' +
-            'lName $stack --scale $scale --owner $owner --bounds $bounds --do' +
-            'Filter false --fillWithNoise false --baseDataUrl $baseDataURL --' +
-            'format $fmt --project $proj ${z_batch[$i]}"'
+            '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
+            'ectory $rootOutPutFolder --customOutputFolder $customFolder --ch' +
+            'annelName $stack --scale $scale --owner $owner --bounds $bounds ' +
+            '--doFilter false --fillWithNoise false --baseDataUrl $baseDataUR' +
+            'L --format $fmt --project $proj ${z_batch[$i]}"'
+          '    fi'
           '    eval nice -n $job_niceness java $java_args &'
           '    if (( $jobs >= $max_number_of_jobs ))'
           '    then'
