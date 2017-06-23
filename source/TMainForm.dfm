@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 0
   AlphaBlendValue = 100
   Caption = 'Volume Creator'
-  ClientHeight = 862
+  ClientHeight = 790
   ClientWidth = 1150
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -26,7 +26,7 @@ object MainForm: TMainForm
   TextHeight = 13
   object Splitter2: TSplitter
     Left = 0
-    Top = 704
+    Top = 632
     Width = 1150
     Height = 3
     Cursor = crVSplit
@@ -39,28 +39,32 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 1150
-    Height = 685
-    ActivePage = TabSheet1
+    Height = 613
+    ActivePage = TabSheet5
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 685
     object TabSheet1: TTabSheet
       Caption = 'General'
+      ExplicitHeight = 657
       object mLeftPanel: TPanel
         Left = 0
         Top = 113
         Width = 321
-        Height = 544
+        Height = 472
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 544
         object ScrollBox1: TScrollBox
           Left = 1
           Top = 1
           Width = 319
-          Height = 542
+          Height = 470
           Align = alClient
           DoubleBuffered = True
           ParentDoubleBuffered = False
           TabOrder = 0
+          ExplicitHeight = 542
           object imageParasGB: TGroupBox
             Left = 0
             Top = 0
@@ -173,20 +177,22 @@ object MainForm: TMainForm
             Left = 0
             Top = 366
             Width = 315
-            Height = 172
+            Height = 100
             Align = alClient
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitHeight = 172
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 311
-              Height = 155
+              Height = 83
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 155
             end
           end
           object PostProcessingGB: TGroupBox
@@ -496,14 +502,15 @@ object MainForm: TMainForm
         Left = 321
         Top = 113
         Width = 821
-        Height = 544
+        Height = 472
         Align = alClient
         TabOrder = 2
+        ExplicitHeight = 544
         object PaintBox1: TPaintBox
           Left = 1
           Top = 1
           Width = 819
-          Height = 525
+          Height = 453
           Align = alClient
           Color = clRed
           ParentColor = False
@@ -516,7 +523,7 @@ object MainForm: TMainForm
           Left = 1
           Top = 1
           Width = 819
-          Height = 525
+          Height = 453
           Align = alClient
           AutoSize = True
           Picture.Data = {
@@ -16535,7 +16542,7 @@ object MainForm: TMainForm
         end
         object HeaderControl1: THeaderControl
           Left = 1
-          Top = 526
+          Top = 454
           Width = 819
           Height = 17
           Align = alBottom
@@ -16545,12 +16552,14 @@ object MainForm: TMainForm
               Text = 'Misc'
               Width = 50
             end>
+          ExplicitTop = 526
         end
       end
     end
     object TabSheet4: TTabSheet
       Caption = 'Stack Creation'
       ImageIndex = 3
+      ExplicitHeight = 657
       object StackGenerationGB: TGroupBox
         Left = 0
         Top = 70
@@ -16568,7 +16577,7 @@ object MainForm: TMainForm
           BevelOuter = bvNone
           TabOrder = 0
           object BoundsCB: TPropertyCheckBox
-            Left = 307
+            Left = 279
             Top = 28
             Width = 97
             Height = 17
@@ -16582,7 +16591,7 @@ object MainForm: TMainForm
           object VolumesScaleE: TFloatLabeledEdit
             Left = 212
             Top = 26
-            Width = 81
+            Width = 45
             Height = 21
             EditLabel.Width = 25
             EditLabel.Height = 13
@@ -16614,6 +16623,33 @@ object MainForm: TMainForm
             TabOrder = 3
             Text = 'Test'
             Value = 'Test'
+          end
+          object CreateTIFFStackCB: TPropertyCheckBox
+            Left = 279
+            Top = 51
+            Width = 212
+            Height = 17
+            Caption = 'Create TIFFSTACK (max size is ~ 4GB)'
+            TabOrder = 4
+            OnClick = CreateTIFFStackCBClick
+          end
+          object DeleteTempTiffsCB: TPropertyCheckBox
+            Left = 299
+            Top = 74
+            Width = 146
+            Height = 17
+            Caption = 'Delete temporary TIFFS'
+            Enabled = False
+            TabOrder = 5
+          end
+          object Run: TButton
+            Left = 497
+            Top = 16
+            Width = 119
+            Height = 78
+            Caption = 'Run'
+            TabOrder = 6
+            OnClick = RunClick
           end
         end
       end
@@ -16675,29 +16711,23 @@ object MainForm: TMainForm
         Left = 0
         Top = 193
         Width = 1142
-        Height = 464
+        Height = 392
         Align = alClient
-        Caption = 'Stacks'
+        Caption = 'Select Stacks'
+        Constraints.MinHeight = 350
         TabOrder = 3
+        ExplicitHeight = 464
         object StacksForProjectCB: TCheckListBox
           AlignWithMargins = True
           Left = 17
           Top = 18
           Width = 335
-          Height = 441
+          Height = 369
           Margins.Left = 15
           Align = alLeft
           ItemHeight = 13
           TabOrder = 0
-        end
-        object Run: TButton
-          Left = 354
-          Top = 358
-          Width = 131
-          Height = 103
-          Caption = 'Run'
-          TabOrder = 1
-          OnClick = RunClick
+          ExplicitHeight = 441
         end
         object GroupBox3: TGroupBox
           Left = 354
@@ -16705,7 +16735,7 @@ object MainForm: TMainForm
           Width = 223
           Height = 97
           Caption = 'Filters'
-          TabOrder = 2
+          TabOrder = 1
           object CustomFilterCB: TPropertyCheckBox
             Left = 13
             Top = 24
@@ -16730,15 +16760,15 @@ object MainForm: TMainForm
     object TabSheet5: TTabSheet
       Caption = 'Stack Script'
       ImageIndex = 4
+      ExplicitHeight = 657
       object BashScriptMemo: TMemo
         Left = 0
         Top = 0
         Width = 1142
-        Height = 657
+        Height = 585
         Align = alClient
         Lines.Strings = (
           '#! /bin/bash'
-          ''
           'args=("$@")'
           'nrOfSections=${args[0]}'
           'sections_str=${args[1]}'
@@ -16748,7 +16778,9 @@ object MainForm: TMainForm
           'owner=${args[5]}'
           'proj=${args[6]}'
           'scale=${args[7]}'
-          'use_bounds=${args[8]}'
+          'create_tiff_stack=${args[8]}'
+          'delete_individual_tiffs=${args[9]}'
+          'use_bounds=${args[10]}'
           'fmt='#39'tiff'#39
           'filter='#39'false'#39
           'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
@@ -16765,10 +16797,14 @@ object MainForm: TMainForm
           'echo "BaseDataURL: "$baseDataURL >> $info'
           'echo "Using static bounds: "$use_bounds >> $info'
           'echo "Number of Z'#39's: "$nrOfSections >> $info'
+          'echo "Create final tiffstack: "$create_tiff_stack >> $info'
+          
+            'echo "Delete individual TIFFs: "$delete_individual_tiffs >> $inf' +
+            'o'
           ''
           'echo "Zs: "$sections_str >> $info'
           'if [ "$use_bounds"  == "true" ]; then'
-          '    bounds=${args[9]}'
+          '    bounds=${args[11]}'
           '    echo "Using bounds:" $bounds >> $info'
           'fi'
           ''
@@ -16847,19 +16883,31 @@ object MainForm: TMainForm
           '    wait $job || let "FAIL+=1"'
           'done'
           ''
-          '#Create a tiff stack here'
+          'if [ "$create_tiff_stack"  == "true" ]; then'
+          '  #Create a tiff stack here'
           
-            'stackFileName=$rootOutPutFolder/$customFolder/$stack"_stack.tiff' +
-            '"'
-          'echo "Creating stack file: "$stackFileName >> $info'
+            '  stackFileName=$rootOutPutFolder/$customFolder/$stack"_stack.ti' +
+            'ff"'
+          '  echo "Creating stack file: "$stackFileName >> $info'
           ''
-          '#Empty outpurfile'
-          '> $stackFileName'
+          '  #Empty outpurfile'
+          '  > $stackFileName'
           ''
-          'for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
+          '  for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
           #9'echo $file >> $info'
           #9'tiffcp -a $file $stackFileName'
-          'done'
+          '  done'
+          ''
+          '  if [ "$delete_individual_tiffs"  == "true" ]; then'
+          
+            '        for file in $rootOutPutFolder/$customFolder/$stack/*.tif' +
+            'f; do'
+          '                echo "Removing file: $file" >> $info'
+          '                rm $file'
+          '          done'
+          '  fi'
+          'fi'
+          ''
           ''
           'if [ "$FAIL" == "0" ];'
           'then'
@@ -16874,11 +16922,13 @@ object MainForm: TMainForm
         ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
+        ExplicitHeight = 657
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitHeight = 657
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -16936,11 +16986,12 @@ object MainForm: TMainForm
   end
   object mBottomPanel: TPanel
     Left = 0
-    Top = 707
+    Top = 635
     Width = 1150
     Height = 136
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 707
     object mLogPanel: TPanel
       Left = 1
       Top = 1
@@ -16992,14 +17043,15 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 843
+    Top = 771
     Width = 1150
     Height = 19
     Panels = <>
+    ExplicitTop = 843
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 685
+    Top = 613
     Width = 1150
     Height = 19
     Align = alBottom
@@ -17007,6 +17059,7 @@ object MainForm: TMainForm
     TabOrder = 3
     Visible = False
     OnClick = mShowBottomPanelBtnClick
+    ExplicitTop = 685
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True

@@ -160,6 +160,19 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
 	cmd <<" "<<stdstr(VolumesScaleE->Text);
 
 	//9th - static bounds?
+    cmd <<" "<<mtk::toString(CreateTIFFStackCB->Checked);
+
+ 	//10th - delete individual tiffs?
+    if(CreateTIFFStackCB->Checked)
+    {
+    	cmd <<" "<<mtk::toString(DeleteTempTiffsCB->Checked);
+    }
+    else
+    {
+    	cmd <<" false";
+    }
+
+	//11th - static bounds?
     cmd <<" "<<mtk::toString(BoundsCB->Checked);
 
     if(BoundsCB->Checked)
@@ -175,8 +188,6 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     cmd << " &" ;
     cmd << endl;
 
-//    //Now execute..
-//    TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
 	return cmd.str();
 }
 
@@ -187,6 +198,7 @@ void __fastcall TMainForm::TSSHFrame1ScSSHClientAfterConnect(TObject *Sender)
 	enableDisableGroupBox(TestSSHGB, true);
 
   	TSSHFrame1->ScSSHClientAfterConnect(Sender);
+	DeleteTempTiffsCB->Enabled = CreateTIFFStackCB->Checked;
 }
 
 //---------------------------------------------------------------------------

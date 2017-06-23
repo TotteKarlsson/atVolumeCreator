@@ -872,4 +872,10 @@ void __fastcall TMainForm::AddOverlayedImage1Click(TObject *Sender)
     f->Show();
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CreateTIFFStackCBClick(TObject *Sender)
+{
+	DeleteTempTiffsCB->Enabled = CreateTIFFStackCB->Checked;
+}
+
 

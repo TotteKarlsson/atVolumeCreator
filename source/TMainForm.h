@@ -149,6 +149,8 @@ __published:	// IDE-managed Components
 	THeaderControl *HeaderControl1;
 	TPanel *Panel1;
 	TMenuItem *AddOverlayedImage1;
+	TPropertyCheckBox *CreateTIFFStackCB;
+	TPropertyCheckBox *DeleteTempTiffsCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -199,6 +201,7 @@ __published:	// IDE-managed Components
 	void __fastcall CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall OpenaClone1Click(TObject *Sender);
 	void __fastcall AddOverlayedImage1Click(TObject *Sender);
+	void __fastcall CreateTIFFStackCBClick(TObject *Sender);
 
 
 

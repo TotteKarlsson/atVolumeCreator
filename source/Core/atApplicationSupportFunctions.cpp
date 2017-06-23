@@ -83,10 +83,11 @@ void setupApplicationTheme()
 	}
 }
 
-void loadStyles()
+int loadStyles()
 {
 	string themeFolder("themes");
 	themeFolder = joinPath(getCWD(), themeFolder);
+    int nrOfStyles(0);
 	if(DirectoryExists(themeFolder.c_str()))
 	{
 		StringList list = getFilesInDir(themeFolder, "vsf");
@@ -98,6 +99,7 @@ void loadStyles()
 				if(TStyleManager::IsValidStyle(vclstr(styleFile)))
 				{
 					TStyleManager::LoadFromFile(vclstr(styleFile));
+                    nrOfStyles++;
 				}
 			}
 			catch(...)
@@ -106,6 +108,7 @@ void loadStyles()
 			}
 		}
 	}
+    return nrOfStyles;
 }
 
 BOOL CALLBACK FindOtherWindow(HWND hwnd, LPARAM lParam)

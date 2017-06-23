@@ -67,14 +67,10 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
         setupLogging();
 
         //Load Styles from files
-        loadStyles();
-        setupApplicationTheme();
-
-        if(gApplicationStyle != "Windows")
-	    {
-        	TStyleManager::TrySetStyle("Auric");
-		TStyleManager::TrySetStyle(gApplicationStyle.c_str());
-    	}
+        if(loadStyles())
+        {
+        	setupApplicationTheme();
+        }
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
