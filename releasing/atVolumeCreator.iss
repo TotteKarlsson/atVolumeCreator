@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "atVolumeCreator"
-#define MyAppVersion "0.5.6"
+#define MyAppVersion "0.5.7"
 #define MyAppPublisher "Smith Lab"
 #define MyAppURL "http://www.example.com/"
 #define MyAppExeName "VolumeCreator.exe"
@@ -11,20 +11,20 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F30EB32C-5FDB-4CDA-913D-E3DFC186AB6F}}
-AppName={#MyAppName}
-AppVersion={#MyAppVersion}
-AppVerName={#MyAppName}_{#MyAppVersion}
-AppPublisher={#MyAppPublisher}
-AppPublisherURL={#MyAppURL}
-AppSupportURL={#MyAppURL}
-AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
-DisableProgramGroupPage=yes
-OutputBaseFilename={#MyAppName}-{#MyAppVersion}
-OutputDir=x:\atSoftwareReleases
-Compression=lzma
-SolidCompression=yes
+AppId                   = {{E0EF83CA-60A5-4AFA-9066-67E8CD023A02}}
+AppName                 = {#MyAppName}
+AppVersion              = {#MyAppVersion}
+AppVerName              = {#MyAppName}_{#MyAppVersion}
+AppPublisher            = {#MyAppPublisher}
+AppPublisherURL         = {#MyAppURL}
+AppSupportURL           = {#MyAppURL}
+AppUpdatesURL           = {#MyAppURL}
+DefaultDirName          = {pf}\{#MyAppName}
+DisableProgramGroupPage = yes
+OutputBaseFilename      = {#MyAppName}-{#MyAppVersion}
+OutputDir               = x:\atSoftwareReleases
+Compression             = lzma
+SolidCompression        = yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

@@ -23,6 +23,7 @@
 #pragma link "mtkIntEdit"
 #pragma link "TSSHFrame"
 #pragma link "TImageControlsFrame"
+#pragma link "TParaConverterFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
@@ -876,6 +877,7 @@ void __fastcall TMainForm::CreateTIFFStackCBClick(TObject *Sender)
 {
 	DeleteTempTiffsCB->Enabled = CreateTIFFStackCB->Checked;
 }
+
 
 
 

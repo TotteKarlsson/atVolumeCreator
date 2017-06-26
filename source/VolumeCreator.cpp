@@ -13,9 +13,10 @@
 using namespace mtk;
 
 using std::string;
+USEFORM("Frames\TParaConverterFrame.cpp", ParaConverterFrame); /* TFrame: File Type */
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
-USEFORM("Forms\TOverlayedImage.cpp", OverlayedImage);
 USEFORM("Forms\TImageForm.cpp", ImageForm);
+USEFORM("Forms\TOverlayedImage.cpp", OverlayedImage);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
 //---------------------------------------------------------------------------

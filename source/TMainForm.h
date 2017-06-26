@@ -35,6 +35,7 @@
 #include "MagickWand/MagickWand.h"
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
+#include "TParaConverterFrame.h"
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -154,6 +155,12 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *ZBatchSizeE;
 	TIntegerLabeledEdit *MaxNumberOfRemoteJobsE;
 	TIntegerLabeledEdit *NicenessE;
+	TTabSheet *TabSheet2;
+	TTabSheet *TabSheet6;
+	TMemo *Memo1;
+	TParaConverterFrame *TParaConverterFrame1;
+	TGroupBox *JobCreationGB;
+	TSSHFrame *SSHFrame1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);

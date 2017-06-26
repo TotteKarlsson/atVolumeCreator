@@ -1,7 +1,6 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  ActiveControl = BashScriptMemo
   AlphaBlendValue = 100
   Caption = 'Volume Creator'
   ClientHeight = 820
@@ -41,7 +40,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 643
-    ActivePage = TabSheet5
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16644,7 +16643,7 @@ object MainForm: TMainForm
             TabOrder = 6
             OnClick = RunClick
           end
-          object TGroupBox
+          object JobCreationGB: TGroupBox
             Left = 497
             Top = -3
             Width = 280
@@ -16697,7 +16696,7 @@ object MainForm: TMainForm
         Height = 70
         Align = alTop
         AutoSize = True
-        TabOrder = 1
+        TabOrder = 3
         ExplicitWidth = 1142
         inherited GroupBox1: TGroupBox
           inherited edSSHPassword: TSTDStringLabeledEdit
@@ -16758,7 +16757,7 @@ object MainForm: TMainForm
         Align = alClient
         Caption = 'Select Stacks'
         Constraints.MinHeight = 350
-        TabOrder = 3
+        TabOrder = 1
         object StacksForProjectCB: TCheckListBox
           AlignWithMargins = True
           Left = 17
@@ -16795,6 +16794,59 @@ object MainForm: TMainForm
             Text = 'ALI'
             OnKeyDown = CustomFilterEKeyDown
           end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Terrafly'
+      ImageIndex = 4
+      inline TParaConverterFrame1: TParaConverterFrame
+        Left = 0
+        Top = 70
+        Width = 1142
+        Height = 545
+        Align = alClient
+        Constraints.MinHeight = 500
+        TabOrder = 0
+        ExplicitWidth = 1142
+        ExplicitHeight = 615
+        inherited GroupBox1: TGroupBox
+          Width = 1142
+          Height = 545
+          ExplicitTop = 0
+          ExplicitWidth = 1142
+          ExplicitHeight = 615
+          inherited GroupBox2: TGroupBox
+            Width = 1138
+            ExplicitWidth = 1138
+          end
+          inherited GroupBox3: TGroupBox
+            Width = 1138
+            ExplicitWidth = 1138
+          end
+          inherited RunGB: TGroupBox
+            Width = 1138
+            Height = 225
+            ExplicitWidth = 1138
+            ExplicitHeight = 295
+          end
+        end
+      end
+      inline SSHFrame1: TSSHFrame
+        Left = 0
+        Top = 0
+        Width = 1142
+        Height = 70
+        Align = alTop
+        AutoSize = True
+        TabOrder = 1
+        ExplicitLeft = 480
+        ExplicitTop = 32
+        inherited ScSSHChannel: TScSSHChannel
+          Client = nil
+        end
+        inherited ScSSHClient: TScSSHClient
+          KeyStorage = nil
         end
       end
     end
@@ -17023,6 +17075,18 @@ object MainForm: TMainForm
             'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
             '1'
         end
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = 'TerraConverter script'
+      ImageIndex = 5
+      object Memo1: TMemo
+        Left = 0
+        Top = 0
+        Width = 1142
+        Height = 615
+        Align = alClient
+        TabOrder = 0
       end
     end
   end
