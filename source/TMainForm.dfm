@@ -40,7 +40,7 @@ object MainForm: TMainForm
     Top = 0
     Width = 1150
     Height = 643
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -16796,69 +16796,11 @@ object MainForm: TMainForm
           end
         end
       end
-    end
-    object TabSheet2: TTabSheet
-      Caption = 'Terrafly'
-      ImageIndex = 4
-      inline TParaConverterFrame1: TParaConverterFrame
-        Left = 0
-        Top = 70
-        Width = 1142
-        Height = 545
-        Align = alClient
-        Constraints.MinHeight = 500
-        TabOrder = 0
-        ExplicitWidth = 1142
-        ExplicitHeight = 615
-        inherited GroupBox1: TGroupBox
-          Width = 1142
-          Height = 545
-          ExplicitTop = 0
-          ExplicitWidth = 1142
-          ExplicitHeight = 615
-          inherited GroupBox2: TGroupBox
-            Width = 1138
-            ExplicitWidth = 1138
-          end
-          inherited GroupBox3: TGroupBox
-            Width = 1138
-            ExplicitWidth = 1138
-          end
-          inherited RunGB: TGroupBox
-            Width = 1138
-            Height = 225
-            ExplicitWidth = 1138
-            ExplicitHeight = 295
-          end
-        end
-      end
-      inline SSHFrame1: TSSHFrame
-        Left = 0
-        Top = 0
-        Width = 1142
-        Height = 70
-        Align = alTop
-        AutoSize = True
-        TabOrder = 1
-        ExplicitLeft = 480
-        ExplicitTop = 32
-        inherited ScSSHChannel: TScSSHChannel
-          Client = nil
-        end
-        inherited ScSSHClient: TScSSHClient
-          KeyStorage = nil
-        end
-      end
-    end
-    object TabSheet5: TTabSheet
-      Caption = 'Stack Script'
-      ImageIndex = 4
       object BashScriptMemo: TMemo
-        Left = 0
-        Top = 0
-        Width = 1142
-        Height = 615
-        Align = alClient
+        Left = 597
+        Top = 256
+        Width = 502
+        Height = 269
         Lines.Strings = (
           '#! /bin/bash'
           'args=("$@")'
@@ -16991,7 +16933,7 @@ object MainForm: TMainForm
           ''
           '  for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
           #9'echo $file >> $info'
-          #9'tiffcp -a $file $stackFileName'
+          #9'nice -n $job_niceness tiffcp -a $file $stackFileName'
           '  done'
           ''
           '  if [ "$delete_individual_tiffs"  == "true" ]; then'
@@ -17017,12 +16959,67 @@ object MainForm: TMainForm
           'echo "This job ended on: "`date` >> $info')
         ReadOnly = True
         ScrollBars = ssBoth
+        TabOrder = 4
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Terafly Generation (Linux)'
+      ImageIndex = 4
+      inline TParaConverterFrame1: TParaConverterFrame
+        Left = 0
+        Top = 0
+        Width = 1142
+        Height = 615
+        Align = alClient
+        Constraints.MinHeight = 500
         TabOrder = 0
+        ExplicitWidth = 1142
+        ExplicitHeight = 615
+        inherited SettingsGB: TGroupBox
+          Width = 1142
+          Height = 545
+          ExplicitWidth = 1142
+          ExplicitHeight = 545
+          inherited RunGB: TGroupBox
+            Width = 1138
+            Height = 398
+            ExplicitWidth = 1138
+            ExplicitHeight = 398
+          end
+          inherited Panel1: TPanel
+            Width = 1138
+            ExplicitWidth = 1138
+            inherited GroupBox3: TGroupBox
+              Width = 1138
+              ExplicitWidth = 1138
+            end
+            inherited GroupBox2: TGroupBox
+              Left = 1138
+              Width = 0
+              ExplicitLeft = 1138
+              ExplicitWidth = 0
+            end
+          end
+        end
+        inherited TSSHFrame1: TSSHFrame
+          Width = 1142
+          ExplicitWidth = 1142
+        end
+        inherited ScriptMemo: TMemo
+          Left = 346
+          Top = 328
+          ExplicitLeft = 346
+          ExplicitTop = 328
+        end
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Settings'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox6: TGroupBox
         Left = 19
         Top = 25
@@ -17075,18 +17072,6 @@ object MainForm: TMainForm
             'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
             '1'
         end
-      end
-    end
-    object TabSheet6: TTabSheet
-      Caption = 'TerraConverter script'
-      ImageIndex = 5
-      object Memo1: TMemo
-        Left = 0
-        Top = 0
-        Width = 1142
-        Height = 615
-        Align = alClient
-        TabOrder = 0
       end
     end
   end
@@ -17195,8 +17180,8 @@ object MainForm: TMainForm
     Top = 32
   end
   object ZsPopUpMenu: TPopupMenu
-    Left = 208
-    Top = 456
+    Left = 176
+    Top = 504
     object Checkrange1: TMenuItem
       Caption = 'Select/Unselect Z'#39's'
       OnClick = Checkrange1Click
@@ -17240,12 +17225,12 @@ object MainForm: TMainForm
   object CreateCacheTimer: TTimer
     Interval = 150
     OnTimer = CreateCacheTimerTimer
-    Left = 248
-    Top = 344
+    Left = 352
+    Top = 176
   end
   object ImagePopup: TPopupMenu
-    Left = 408
-    Top = 304
+    Left = 816
+    Top = 296
     object ParseNDVIZURL1: TMenuItem
       Caption = 'Parse NDVIZ URL'
       OnClick = ParseNDVIZURL1Click

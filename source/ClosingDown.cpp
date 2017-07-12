@@ -28,6 +28,11 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 		TSSHFrame1->disconnect();
 	}
 
+    TSSHFrame* f = TParaConverterFrame1->TSSHFrame1;
+	if(f->isConnected())
+    {
+		f->disconnect();
+	}
     Close();
 }
 
@@ -48,7 +53,8 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 	mBottomPanelHeight          	= mBottomPanel->Height;
 
 	mGeneralProperties.write();
-	mServerProperties.write();
+	mServer1Properties.write();
+	mServer2Properties.write();
 
 	//Write to file
 	mIniFileC->save();
@@ -64,8 +70,11 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
     {
     	CanClose = false;
     }
-
-	if(TSSHFrame1->isConnected())
+	else if(TSSHFrame1->isConnected())
+    {
+		CanClose = false;
+    }
+	else if(TParaConverterFrame1->TSSHFrame1->isConnected())
     {
 		CanClose = false;
     }

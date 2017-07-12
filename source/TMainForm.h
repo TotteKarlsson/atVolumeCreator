@@ -101,7 +101,6 @@ __published:	// IDE-managed Components
 	TMenuItem *About1;
 	TGroupBox *GroupBox4;
 	TSTDStringLabeledEdit *mBaseUrlE;
-	TTabSheet *TabSheet5;
 	TMemo *BashScriptMemo;
 	TGroupBox *GroupBox1;
 	TLabel *Label1;
@@ -156,11 +155,8 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *MaxNumberOfRemoteJobsE;
 	TIntegerLabeledEdit *NicenessE;
 	TTabSheet *TabSheet2;
-	TTabSheet *TabSheet6;
-	TMemo *Memo1;
 	TParaConverterFrame *TParaConverterFrame1;
 	TGroupBox *JobCreationGB;
-	TSSHFrame *SSHFrame1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -234,7 +230,8 @@ __published:	// IDE-managed Components
 		mtk::Property<string>	 		                mCurrentOwner;
 		mtk::Property<string>	 		                mCurrentStack;
 
-        IniFileProperties	      	                    mServerProperties;
+        IniFileProperties	      	                    mServer1Properties;
+        IniFileProperties	      	                    mServer2Properties;
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
 		double 											getImageStretchFactor();

@@ -14,7 +14,7 @@
 class PACKAGE TParaConverterFrame : public TFrame
 {
     __published:	// IDE-managed Components
-        TGroupBox *GroupBox1;
+	TGroupBox *SettingsGB;
         TIntegerLabeledEdit *NumberOfProcessesE;
         TIntegerLabeledEdit *BoxHeightE;
         TIntegerLabeledEdit *BoxWidthE;
@@ -23,11 +23,21 @@ class PACKAGE TParaConverterFrame : public TFrame
         TSTDStringLabeledEdit *InputFolderE;
         TGroupBox *GroupBox3;
         TSTDStringLabeledEdit *OutputFolderE;
-//        TSSHFrame *TSSHFrame1;
         TGroupBox *RunGB;
-        TButton *Button1;
+	TButton *RunBtn;
 	TSSHFrame *TSSHFrame1;
+	TMemo *ScriptMemo;
+	TIntegerLabeledEdit *NicenessE;
+	TPanel *Panel1;
+	TSTDStringLabeledEdit *ResolutionsE;
+	TButton *KillBtn;
         void __fastcall TSSHFrame1ConnectBtnClick(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHClientAfterConnect(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHClientAfterDisconnect(TObject *Sender);
+	void __fastcall RunBtnClick(TObject *Sender);
+	void __fastcall TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender);
+	void __fastcall KillBtnClick(TObject *Sender);
+
     private:
 
     public:

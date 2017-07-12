@@ -3,7 +3,7 @@
 #include "TMainForm.h"
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
-
+#include "atSSHUtils.h"
 
 using namespace mtk;
 
@@ -27,14 +27,6 @@ void __fastcall TMainForm::CMDButtonClick(TObject *Sender)
 	stringstream cmd;
     cmd << stdstr(mCMD->Text) << endl;
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));
-}
-
-string escape(const string& before)
-{
-    string escaped(before);
-    //Pretty bisarre syntax.. see http://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings
-    escaped = replaceSubstring("'", "'\"'\"'", escaped);
-    return "'" + escaped + "'";
 }
 
 //---------------------------------------------------------------------------
@@ -103,7 +95,7 @@ bool TMainForm::populateRemoteScript(const string& remoteScriptName)
     for(int i = 0 ; i < lines.size(); i++)
     {
 		//Log(lInfo) << "echo "<<escape(lines[i])<< " >> " << remoteScript << endl;
-		cmd << "echo "<< escape(lines[i])<< " >> " << remoteScriptName << endl;
+		cmd << "echo "<< ssh_escape(lines[i])<< " >> " << remoteScriptName << endl;
     }
 
     TSSHFrame1->ScSSHShell1->WriteString(vclstr(cmd.str()));

@@ -21,7 +21,7 @@
         <Projects Include="P:\libs\dsl\VCL\Forms\DuneForms.cbproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="P:\libs\atapi\source\atCore.cbproj">
+        <Projects Include="P:\libs\atapi\source\core\atCore.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\atapi\source\database\atDatabase.cbproj">
@@ -99,13 +99,13 @@
         <MSBuild Projects="P:\libs\dsl\VCL\Forms\DuneForms.cbproj" Targets="Make"/>
     </Target>
     <Target Name="atCore">
-        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj"/>
+        <MSBuild Projects="P:\libs\atapi\source\core\atCore.cbproj"/>
     </Target>
     <Target Name="atCore:Clean">
-        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj" Targets="Clean"/>
+        <MSBuild Projects="P:\libs\atapi\source\core\atCore.cbproj" Targets="Clean"/>
     </Target>
     <Target Name="atCore:Make">
-        <MSBuild Projects="P:\libs\atapi\source\atCore.cbproj" Targets="Make"/>
+        <MSBuild Projects="P:\libs\atapi\source\core\atCore.cbproj" Targets="Make"/>
     </Target>
     <Target Name="atDatabase">
         <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj"/>

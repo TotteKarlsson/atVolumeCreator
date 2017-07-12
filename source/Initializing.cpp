@@ -61,10 +61,10 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 	enableDisableGroupBox(TestSSHGB, 		false);
 	enableDisableGroupBox(StackGenerationGB,false);
 
-    TabSheet5->TabVisible = false;
-
     //Setup path for ssh
 	TSSHFrame1->ScFileStorage->Path = vclstr(gAppDataLocation);
+
+    TParaConverterFrame1->TSSHFrame1->ScFileStorage->Path = vclstr(gAppDataLocation);
 }
 
 void TMainForm::setupIniFile()
@@ -81,7 +81,8 @@ void TMainForm::setupIniFile()
 
 	//For convenience and for option form, populate appProperties container
 	mAppProperties.append(&mGeneralProperties);
-	mAppProperties.append(&mServerProperties);
+	mAppProperties.append(&mServer1Properties);
+	mAppProperties.append(&mServer2Properties);
 }
 
 bool TMainForm::setupAndReadIniParameters()
@@ -133,20 +134,47 @@ bool TMainForm::setupAndReadIniParameters()
     VolumesScaleE->update();
 
 	//Remote server properties
-	mServerProperties.setIniFile(mIniFileC->getIniFile());
-    mServerProperties.setSection("REMOTE_SERVER");
-    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHHost->getProperty()->setup("REMOTE_HOST", 	                  	"atbigdawg"));
-    mServerProperties.add((BaseProperty*)  &TSSHFrame1->seSSHPort->getProperty()->setup("REMOTE_PORT", 	                  	22));
-    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHUserName->getProperty()->setup("REMOTE_USER_NAME", 	       	"albert"));
-    mServerProperties.add((BaseProperty*)  &TSSHFrame1->edSSHPassword->getProperty()->setup("REMOTE_USER_PASSWORD",        	"123"));
+	mServer1Properties.setIniFile(mIniFileC->getIniFile());
+    mServer1Properties.setSection("REMOTE_SERVER_1");
+    mServer1Properties.add((BaseProperty*)  &TSSHFrame1->edSSHHost->getProperty()->setup("REMOTE_HOST", 	                  	"atbigdawg"));
+    mServer1Properties.add((BaseProperty*)  &TSSHFrame1->seSSHPort->getProperty()->setup("REMOTE_PORT", 	                  	22));
+    mServer1Properties.add((BaseProperty*)  &TSSHFrame1->edSSHUserName->getProperty()->setup("REMOTE_USER_NAME", 	       	"albert"));
+    mServer1Properties.add((BaseProperty*)  &TSSHFrame1->edSSHPassword->getProperty()->setup("REMOTE_USER_PASSWORD",        	"123"));
 
+	mServer2Properties.setIniFile(mIniFileC->getIniFile());
+    mServer2Properties.setSection("REMOTE_SERVER_2");
 
-	mServerProperties.read();
+    TSSHFrame* sshF = TParaConverterFrame1->TSSHFrame1;
+    mServer2Properties.add((BaseProperty*)  &sshF->edSSHHost->getProperty()->setup("REMOTE_HOST", 	                  	"atbigdawg"));
+    mServer2Properties.add((BaseProperty*)  &sshF->seSSHPort->getProperty()->setup("REMOTE_PORT", 	                  	22));
+    mServer2Properties.add((BaseProperty*)  &sshF->edSSHUserName->getProperty()->setup("REMOTE_USER_NAME", 	       		"albert2"));
+    mServer2Properties.add((BaseProperty*)  &sshF->edSSHPassword->getProperty()->setup("REMOTE_USER_PASSWORD",        	"123"));
+
+    TParaConverterFrame* pf = TParaConverterFrame1;
+    mServer2Properties.add((BaseProperty*)  &pf->OutputFolderE->getProperty()->setup(	"TERRAFLY_OUTPUT_ROOT_FOLDER",     "123"));
+    mServer2Properties.add((BaseProperty*)  &pf->InputFolderE->getProperty()->setup(	"TERRAFLY_INPUT_ROOT_FOLDER",     "123"));
+    mServer2Properties.add((BaseProperty*)  &pf->BoxWidthE->getProperty()->setup(		"BOX_WIDTH",     512));
+    mServer2Properties.add((BaseProperty*)  &pf->BoxHeightE->getProperty()->setup(		"BOX_HEIGHT",    512));
+    mServer2Properties.add((BaseProperty*)  &pf->BoxDepthE->getProperty()->setup(		"BOX_DEPTH",     512));
+
+	mServer1Properties.read();
+	mServer2Properties.read();
 
 	TSSHFrame1->edSSHHost->update();
     TSSHFrame1->seSSHPort->update();
     TSSHFrame1->edSSHUserName->update();
     TSSHFrame1->edSSHPassword->update();
+
+	sshF->edSSHHost->update();
+    sshF->seSSHPort->update();
+    sshF->edSSHUserName->update();
+    sshF->edSSHPassword->update();
+	pf->OutputFolderE->update();
+    pf->InputFolderE->update();
+    pf->BoxWidthE->update();
+    pf->BoxHeightE->update();
+    pf->BoxDepthE->update();
+
 
 	mBottomPanel->Height = mBottomPanelHeight;
     return true;

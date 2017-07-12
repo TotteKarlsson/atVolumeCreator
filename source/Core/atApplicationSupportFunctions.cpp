@@ -17,8 +17,11 @@ extern HWND	  gOtherAppWindow;
 TPoint controlToImage(const TPoint& p, double scale, double stretchFactor)
 {
 	TPoint pt;
-    pt.X = (p.X / scale) / stretchFactor;
-    pt.Y = (p.Y / scale) / stretchFactor;
+    if(scale > 0)
+    {
+    	pt.X = (p.X / scale) / stretchFactor;
+	    pt.Y = (p.Y / scale) / stretchFactor;
+    }
 	return pt;
 }
 
