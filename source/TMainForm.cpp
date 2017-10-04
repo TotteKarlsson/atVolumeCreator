@@ -12,6 +12,7 @@
 #include "TImageForm.h"
 #include "atApplicationSupportFunctions.h"
 #include "TOverlayedImage.h"
+#include "atVolumeCreatorProject.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "TFloatLabeledEdit"
@@ -24,6 +25,7 @@
 #pragma link "TSSHFrame"
 #pragma link "TImageControlsFrame"
 #pragma link "TParaConverterFrame"
+#pragma link "RzTreeVw"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
@@ -45,7 +47,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCurrentOwner(""),
     mCurrentStack(""),
     mIsStyleMenuPopulated(false),
-	gImageForm(NULL)
+	gImageForm(NULL),
+    mVCProject(NULL)
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -877,7 +880,6 @@ void __fastcall TMainForm::CreateTIFFStackCBClick(TObject *Sender)
 {
 	DeleteTempTiffsCB->Enabled = CreateTIFFStackCB->Checked;
 }
-
 
 
 

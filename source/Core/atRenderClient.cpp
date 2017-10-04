@@ -246,7 +246,7 @@ RenderBox RenderClient::getBoxForZ(int z)
     sUrl << mBaseURL;
     sUrl << "/owner/" 		<< mProject.getProjectOwner();
     sUrl << "/project/" 	<< mProject.getProjectName();
-    sUrl << "/stack/"		<<mProject.getCurrentStackname();
+    sUrl << "/stack/"		<<mProject.getCurrentStackName();
     sUrl <<"/z/"<<z   	 	<<"/bounds";
 
     Log(lDebug5) << "Fetching from server using URL: "<<sUrl.str();
@@ -278,7 +278,7 @@ RenderBox RenderClient::getOptimalXYBoxForZs(const vector<int>& zs)
         sUrl << mBaseURL;
         sUrl << "/owner/" 		<< mProject.getProjectOwner();
         sUrl << "/project/" << mProject.getProjectName();
-        sUrl << "/stack/"	<<mProject.getCurrentStackname()<<"/z/"<<zs[z]<<"/bounds";
+        sUrl << "/stack/"	<<mProject.getCurrentStackName()<<"/z/"<<zs[z]<<"/bounds";
 
         //	    Log(lDebug5) << "Fetching from server using URL: "<<sUrl.str();
         TStringStream* zstrings = new TStringStream;;
@@ -361,7 +361,7 @@ string RenderClient::getURLForZ(int z)
     sUrl << mBaseURL;
     sUrl << "/owner/" 		<< mProject.getProjectOwner();
     sUrl << "/project/" << mProject.getProjectName();
-    sUrl << "/stack/"	<<mProject.getCurrentStackname();
+    sUrl << "/stack/"	<<mProject.getCurrentStackName();
     sUrl << "/z/"<<z;
     sUrl << "/box/"<<mRenderBox.getX1()<<","<<mRenderBox.getY1() << "," << mRenderBox.getWidth() << ","<<mRenderBox.getHeight() << ","<<mScale;
     sUrl << "/jpeg-image";
@@ -378,7 +378,7 @@ string RenderClient::getURL()
     sUrl << mBaseURL;
     sUrl << "/owner/" 	<< mProject.getProjectOwner();
     sUrl << "/project/" << mProject.getProjectName();
-    sUrl << "/stack/"	<<mProject.getCurrentStackname();
+    sUrl << "/stack/"	<<mProject.getCurrentStackName();
     sUrl << "/z/"<<mZ;
     sUrl << "/box/"<<round(mRenderBox.getX1())<<","<<round(mRenderBox.getY1()) << "," << round(mRenderBox.getWidth()) << ","<<round(mRenderBox.getHeight()) << ","<<mScale;
     sUrl << "/jpeg-image";
@@ -416,7 +416,7 @@ vector<int> RenderClient::getValidZs()
     sUrl << mBaseURL;
     sUrl << "/owner/"    << mProject.getProjectOwner();
     sUrl << "/project/" << mProject.getProjectName();
-    sUrl << "/stack/"	<<mProject.getCurrentStackname();
+    sUrl << "/stack/"	<<mProject.getCurrentStackName();
     sUrl <<"/zValues";
 
     Log(lInfo) << "Fetching from server using URL: "<<sUrl.str();

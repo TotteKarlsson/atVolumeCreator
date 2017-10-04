@@ -36,6 +36,14 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 #include "TParaConverterFrame.h"
+#include <System.Actions.hpp>
+#include <Vcl.ActnList.hpp>
+#include <Vcl.StdActns.hpp>
+#include <Vcl.ToolWin.hpp>
+#include <Vcl.Dialogs.hpp>
+#include <Vcl.ExtDlgs.hpp>
+#include <Vcl.ImgList.hpp>
+#include "RzTreeVw.hpp"
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -44,6 +52,9 @@ using mtk::TRegistryProperties;
 extern string gApplicationRegistryRoot;
 void brightnessContrast(TImage *imageSelected);
 string createProcessedImageFileName(const string& fname);
+
+class VolumeCreatorProject;
+
 class TMainForm : public TForm
 {
 __published:	// IDE-managed Components
@@ -157,6 +168,35 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheet2;
 	TParaConverterFrame *TParaConverterFrame1;
 	TGroupBox *JobCreationGB;
+	TMenuItem *Open1;
+	TActionList *MenuActions;
+	TFileOpen *FileOpen1;
+	TToolBar *ToolBar1;
+	TToolButton *ToolButton1;
+	TMenuItem *New1;
+	TAction *NewProjectA;
+	TSaveDialog *SaveDialog1;
+	TAction *SaveProjectA;
+	TMenuItem *Save1;
+	TAction *SaveProjectAsA;
+	TMenuItem *SaveAs1;
+	TAction *CloseProjectA;
+	TMenuItem *Close1;
+	TImageList *ImageList1;
+	TToolButton *ToolButton2;
+	TToolButton *ToolButton3;
+	TPanel *ProjectManagerPanel;
+	TMenuItem *N1;
+	TMenuItem *N2;
+	TMenuItem *Reopen;
+	TMenuItem *N3;
+	TTreeView *ProjectTView;
+	TPanel *ProjFilePathPanel;
+	TLabel *ProjFileLbl;
+	TPopupMenu *ProjTreeViewPopup;
+	TAction *AddRenderProject;
+	TMenuItem *AddRenderProject1;
+	TMenuItem *Close2;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -208,14 +248,23 @@ __published:	// IDE-managed Components
 	void __fastcall OpenaClone1Click(TObject *Sender);
 	void __fastcall AddOverlayedImage1Click(TObject *Sender);
 	void __fastcall CreateTIFFStackCBClick(TObject *Sender);
-
-
+	void __fastcall NewProjectAExecute(TObject *Sender);
+	void __fastcall ProjectStatusTimerTimer(TObject *Sender);
+	void __fastcall FileOpen1Accept(TObject *Sender);
+	void __fastcall CloseProjectAExecute(TObject *Sender);
+	void __fastcall CloseProjectAUpdate(TObject *Sender);
+	void __fastcall SaveProjectAsAUpdate(TObject *Sender);
+	void __fastcall SaveProjectAUpdate(TObject *Sender);
+	void __fastcall SaveProjectAExecute(TObject *Sender);
+	void __fastcall SaveProjectAsAExecute(TObject *Sender);
+	void __fastcall AddRenderProjectExecute(TObject *Sender);
+	void __fastcall ProjectTViewContextPopup(TObject *Sender, TPoint &MousePos,
+          bool &Handled);
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
         RenderClient									mRC;
         int												getCurrentZ();
-//		TImageForm*										mImageForm;
 		bool        									mRenderEnabled;
 
         void __fastcall                                 logMsg();
@@ -250,8 +299,6 @@ __published:	// IDE-managed Components
 
         //Render areas history
 	    ROIHistory										mROIHistory;
-//        RenderBox										mOriginalRB;
-//		RenderBox										mLastRB;
 		RenderBox										mCurrentRB;
       	TCanvas*										getCanvas();
 
@@ -270,6 +317,13 @@ __published:	// IDE-managed Components
 
 	    TImageForm*										gImageForm;
         string 											mCurrentImageFile;
+
+        												//!VC can have one VC project open at any one time.
+        VolumeCreatorProject*					 		mVCProject;
+		int __fastcall 									saveProject();
+		int __fastcall 									saveProjectAs();
+		int __fastcall 									closeProject();
+		VolumeCreatorProject* __fastcall 				createNewProject();
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);

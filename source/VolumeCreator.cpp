@@ -13,12 +13,12 @@
 using namespace mtk;
 
 using std::string;
-USEFORM("Frames\TParaConverterFrame.cpp", ParaConverterFrame); /* TFrame: File Type */
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
+USEFORM("Frames\TParaConverterFrame.cpp", ParaConverterFrame); /* TFrame: File Type */
 USEFORM("Forms\TImageForm.cpp", ImageForm);
 USEFORM("Forms\TOverlayedImage.cpp", OverlayedImage);
-USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
 USEFORM("TMainForm.cpp", MainForm);
+USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -103,4 +103,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 #pragma comment(lib, "libcurl.lib")
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "DuneForms.bpi")
+#pragma comment(lib, "atCore.lib")
+#pragma comment(lib, "tinyxml2-static.lib")
 

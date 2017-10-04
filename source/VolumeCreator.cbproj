@@ -41,7 +41,7 @@
         <ILINK_LibraryPath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;Frames;Core;Forms;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
-        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib;vclimg.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;DuneComponents.lib;vclactnband.lib;VCLCommon.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;sbridge170.lib;vclimg.lib;RaizeComponentsTrialVcl.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <_TCHARMapping>wchar_t</_TCHARMapping>
@@ -105,7 +105,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <ILINK_LibraryPath>$(DEBUG_BUILD)\lib;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>$(DEBUG_BUILD)\include;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include\MagickCore;C:\Program Files (x86)\ImageMagick-7.0.3-Q8\include;$(IncludePath)</IncludePath>
         <Debugger_DebugSourcePath>P:\libs\dsl\VCL\Common\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi;RaizeComponentsTrialVcl.bpi</LinkPackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -159,6 +159,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>Core\atSSHUtils.h</DependentOn>
             <BuildOrder>23</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Core\atVolumeCreatorProject.cpp">
+            <BuildOrder>24</BuildOrder>
+        </CppCompile>
         <CppCompile Include="forms\TAboutVolumeCreatorForm.cpp">
             <BuildOrder>21</BuildOrder>
         </CppCompile>
@@ -194,6 +197,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </CppCompile>
         <CppCompile Include="Miscellaneous.cpp">
             <BuildOrder>4</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="ProjectRelated.cpp">
+            <BuildOrder>25</BuildOrder>
         </CppCompile>
         <CppCompile Include="ScriptCreation.cpp">
             <BuildOrder>18</BuildOrder>

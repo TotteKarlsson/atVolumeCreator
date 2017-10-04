@@ -4,6 +4,7 @@
 #include "mtkVCLUtils.h"
 #include "mtkLogger.h"
 #include "TImageForm.h"
+#include "atVolumeCreatorProject.h"
 using namespace mtk;
 
 //---------------------------------------------------------------------------
@@ -16,6 +17,31 @@ void __fastcall TMainForm::Exit1Click(TObject *Sender)
 void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 {
 	mShutDownTimer->Enabled = false;
+
+	if(mVCProject && mVCProject->isNeverSaved() == true)
+    {
+    	int mrResult = MessageDlg("Do you want to save current project?", mtWarning, TMsgDlgButtons() << mbYes<<mbNo<<mbCancel, 0);
+        if(mrResult == mrYes)
+        {
+    		if(closeProject() == mrCancel)
+	        {
+    	    	return;
+        	}
+        }
+        else if(mrResult == mrCancel)
+        {
+        	return;
+        }
+    }
+    else if(mVCProject)
+    {
+
+		mVCProject->save();
+    }
+
+    delete mVCProject;
+    mVCProject = NULL;
+
 
 	if(mLogFileReader.isRunning())
 	{
@@ -38,6 +64,7 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 
 void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
+
     IdHTTP1->Disconnect();
 	Log(lInfo) << "In FormClose";
 	mIniFileC->clear();
@@ -50,7 +77,7 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
     }
 
 	//Save project history
-	mBottomPanelHeight          	= mBottomPanel->Height;
+	mBottomPanelHeight = mBottomPanel->Height;
 
 	mGeneralProperties.write();
 	mServer1Properties.write();
@@ -75,6 +102,11 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
 		CanClose = false;
     }
 	else if(TParaConverterFrame1->TSSHFrame1->isConnected())
+    {
+		CanClose = false;
+    }
+
+    else if(mVCProject && mVCProject->isNeverSaved() == false)
     {
 		CanClose = false;
     }
