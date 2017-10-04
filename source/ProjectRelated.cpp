@@ -6,7 +6,25 @@
 
 using namespace mtk;
 
-void __fastcall addRenderProject(TTreeNode* vcNode, RenderProject* rp, TTreeView* tv)
+void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView* tv);
+
+bool addVCProjectToTreeView(VolumeCreatorProject* mVCProject, TTreeView* tv)
+{
+	TTreeNode* vcn = tv->Items->AddObject(NULL, mVCProject->getProjectName().c_str(), (void*) mVCProject);
+    vcn->EditText();
+
+    for(int i = 1; i < mVCProject->getNumberOfChilds() + 1; i++)
+    {
+    	RenderProject* rp = dynamic_cast<RenderProject*>(mVCProject->getChild(i)) ;
+    	if(rp)
+        {
+	    	addRenderProjectToTreeView(vcn, rp, tv);
+        }
+    }
+
+}
+
+void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView* tv)
 {
     if(!vcNode)
     {
@@ -15,22 +33,10 @@ void __fastcall addRenderProject(TTreeNode* vcNode, RenderProject* rp, TTreeView
     }
     int nrOfChilds(0);
 
-	TTreeNode* n = tv->Items->AddChild(vcNode, "");
-    n->Text = "Render Project " + IntToStr(n->Index + 1);
+	TTreeNode* n = tv->Items->AddChildObject(vcNode, "", (void*) rp);
+    n->Text = rp->getProjectName().c_str();
 	tv->Items->GetFirstNode()->Expand(true);
     tv->Select(n);
-
-    VolumeCreatorProject* vcp = (VolumeCreatorProject*) vcNode->Data;
-    if(vcp)
-    {
-	    tv->Items->AddObject(NULL, vcp->getProjectName().c_str(), (void*) vcp);
-
-        //Add RenderProject as a child
-    	RenderProject* rp = new RenderProject("", "" , "");
-        vcp->addChild(rp);
-    	vcp->setModified();
-    }
-
 }
 
 //---------------------------------------------------------------------------
@@ -45,6 +51,7 @@ void __fastcall TMainForm::NewProjectAExecute(TObject *Sender)
     }
 
     mVCProject = createNewProject();
+    ProjectTView->Items->AddObject(NULL, mVCProject->getProjectName().c_str(), (void*) mVCProject);
 }
 
 //---------------------------------------------------------------------------
@@ -53,12 +60,19 @@ void __fastcall TMainForm::AddRenderProjectExecute(TObject *Sender)
 	//Create a render project and associate with current VC project
     TTreeNode* vcNode = ProjectTView->Items->GetFirstNode();
   	RenderProject* rp = new RenderProject("", "" , "");
-	addRenderProject(vcNode, rp, ProjectTView);
+
+    VolumeCreatorProject* vcp = (VolumeCreatorProject*) vcNode->Data;
+    if(vcp)
+    {
+    	vcp->addChild(rp);
+    	vcp->setModified();
+    }
+
+	addRenderProjectToTreeView(vcNode, rp, ProjectTView);
 }
 
 VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 {
-
 	//Check how many main nodes
     int nrOfVCPs = ProjectTView->Items->Count;
 
@@ -72,7 +86,6 @@ VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ProjectStatusTimerTimer(TObject *Sender)
 {
-
 	if(mVCProject)
     {
        	SaveProjectA->Enabled = mVCProject->isModified() ? true : false;
@@ -107,7 +120,7 @@ void __fastcall TMainForm::FileOpen1Accept(TObject *Sender)
         mVCProject->open();
     }
 
-    ProjectTView->Items->AddObject(NULL, mVCProject->getProjectName().c_str(), (void*) mVCProject);
+    addVCProjectToTreeView(mVCProject, ProjectTView);
 }
 
 //---------------------------------------------------------------------------
@@ -221,7 +234,7 @@ void __fastcall TMainForm::SaveProjectAsAExecute(TObject *Sender)
 void __fastcall TMainForm::ProjectTViewContextPopup(TObject *Sender, TPoint &MousePos,
           bool &Handled)
 {
-	if(ProjectTView->GetNodeAt(MousePos.X, MousePos.Y) == ProjectTView->TopItem)
+	if(ProjectTView->GetNodeAt(MousePos.X, MousePos.Y))// == ProjectTView->TopItem)
     {
     	Handled = false;
     }

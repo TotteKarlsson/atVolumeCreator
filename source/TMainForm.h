@@ -197,6 +197,9 @@ __published:	// IDE-managed Components
 	TAction *AddRenderProject;
 	TMenuItem *AddRenderProject1;
 	TMenuItem *Close2;
+	TPanel *MainPanel;
+	TMenuItem *Edit1;
+	TAction *EditViewNode;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -260,6 +263,11 @@ __published:	// IDE-managed Components
 	void __fastcall AddRenderProjectExecute(TObject *Sender);
 	void __fastcall ProjectTViewContextPopup(TObject *Sender, TPoint &MousePos,
           bool &Handled);
+	void __fastcall ProjectTViewEditing(TObject *Sender, TTreeNode *Node, bool &AllowEdit);
+	void __fastcall ProjectTViewEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S);
+	void __fastcall EditViewNodeExecute(TObject *Sender);
+
+
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);

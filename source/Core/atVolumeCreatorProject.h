@@ -43,6 +43,7 @@ class VolumeCreatorProject : public mtk::Project, public ATObject
                                                 VolumeCreatorProject(const string& projectName = gEmptyString);
                                                 ~VolumeCreatorProject();
 
+		virtual bool 							isModified();
         virtual bool                            save(const string& fName = mtk::gEmptyString);
         virtual bool                            open();
 
@@ -50,13 +51,18 @@ class VolumeCreatorProject : public mtk::Project, public ATObject
 
         string                                  getPresentXMLModelVersion();
         virtual mtk::XMLElement*           		addToXMLDocument(mtk::XMLDocument& doc, mtk::XMLNode* docRoot);
-		virtual mtk::XMLElement*                addToXMLDocumentAsChild(mtk::XMLDocument& doc, mtk::XMLNode* docRoot);
+		virtual mtk::XMLElement*                addToXMLDocumentAsChild(mtk::XMLDocument& doc, mtk::XMLNode* node);
+
+        virtual bool   							loadFromXML(mtk::XMLNode* node);
 
 		string 									getVCObjectTypeAsString();
 
         										//!Info text is used if the user want to document the purpose of
                                                 //a particular process
         string									mInfoText;
+
+        int										getNumberOfChilds();
+        VolumeCreatorProject*					getChild(int i);
 
     protected:
         bool                                    resetXML();

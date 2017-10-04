@@ -29,6 +29,35 @@ mVCObjectType(vcoBaseType)
 VolumeCreatorProject::~VolumeCreatorProject()
 {}
 
+int	VolumeCreatorProject::getNumberOfChilds()
+{
+	int sz =  mChilds.size();
+	return sz;
+}
+
+bool VolumeCreatorProject::isModified()
+{
+    //Cycle trough children
+    for(int i = 0; i < mChilds.size(); i++)
+    {
+    	if(mChilds[i]->isModified())
+        {
+	        return true;
+			break;
+        }
+    }
+    return mIsModified;
+}
+
+VolumeCreatorProject* VolumeCreatorProject::getChild(int i)
+{
+	if(i > 0 && i <= mChilds.size())
+    {
+		return mChilds[i - 1];
+    }
+    return NULL;
+}
+
 string VolumeCreatorProject::getPresentXMLModelVersion()
 {
     return gVolumeCreatorProjectFileVersion;
@@ -78,6 +107,7 @@ XMLElement* VolumeCreatorProject::addToXMLDocument(tinyxml2::XMLDocument& doc, X
 
     //Attributes
     objectNode->SetAttribute("type", getVCObjectTypeAsString().c_str());
+    objectNode->SetAttribute("name", getProjectName().c_str());
 
 	XMLElement* dataval1 = doc.NewElement("info");
     dataval1->SetText(mInfoText.c_str());
@@ -115,6 +145,8 @@ bool VolumeCreatorProject::open()
 {
     try
     {
+    	loadFromXML(mProjectRoot);
+
         Log(lInfo) << "Attempting to load VC Project: "<<this->getFileName();
 
         //Read the name node
@@ -128,6 +160,23 @@ bool VolumeCreatorProject::open()
     }
 }
 
+bool VolumeCreatorProject::loadFromXML(mtk::XMLNode* node)
+{
+    XMLElement* e = node->FirstChildElement("name");
+    if(e)
+    {
+    	setProjectName(e->GetText() ? string(e->GetText()) : string(""));
+    }
+
+//    e = node->FirstChildElement("version");
+//    if(e)
+//    {
+//    	setMoName(e->GetText() ? string(e->GetText()) : string(""));
+//    }
+
+	return true;
+}
+
 int VolumeCreatorProject::loadVCObjects()
 {
     XMLElement* project = this->getXML("vc_objects");
@@ -138,24 +187,24 @@ int VolumeCreatorProject::loadVCObjects()
     }
 
     int nrOfObjects = 0;
-//     //Load process by process
+    //Load child by child
     XMLElement* p = project->FirstChildElement();
     while(p)
     {
         //Find out what kind of element p is
         VolumeCreatorProject* aProc = createVCObject(p);
-//
-//        if(aProc)
-//        {
-//            mProcessSequence.add(aProc);
-//            Log(lDebug) <<"Imported process: "<<aProc->getProcessName()<<" of type: "<<aProc->getTypeName();
+
+        if(aProc)
+        {
+            mChilds.push_back(aProc);
+            Log(lDebug) <<"Imported object: "<<aProc->getProjectName();
             nrOfObjects++;
-//        }
-//        else
-//        {
-//            Log(lError) << "Failed importing a "<<p->Name()<<" process";
-//        }
-//
+        }
+        else
+        {
+            Log(lError) << "Failed importing a "<<p->Name()<<" process";
+        }
+
         p = p->NextSiblingElement();
     }
     return nrOfObjects;
@@ -173,9 +222,7 @@ VolumeCreatorProject* VolumeCreatorProject::createVCObject(tinyxml2::XMLElement*
     switch(pt)
     {
         case vcoRenderProject: return createRenderProject(element);
-
         default: return NULL;
-
     }
 }
 
@@ -187,10 +234,15 @@ RenderProject* VolumeCreatorProject::createRenderProject(tinyxml2::XMLElement* e
     	return NULL;
     }
 
-	XMLElement* val =     element->FirstChildElement("owner");
+	const char* name = element->Attribute("name");
 
-    val->GetText();
-    return new RenderProject(val->GetText(), "", "");
+	RenderProject* p = new RenderProject(name ? string(name) : string(""));
+	if(!p->loadFromXML(element))
+    {
+    	Log(lError) << "There was a problem loading model from XML";
+    }
+
+    return p;
 }
 
 string toString(VCObjectType tp)

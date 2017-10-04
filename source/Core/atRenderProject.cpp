@@ -7,14 +7,16 @@ using namespace mtk;
 
 
 
-RenderProject::RenderProject(const string& owner, const string& project, const string& stack)
+RenderProject::RenderProject(const string& name, const string& owner, const string& project, const string& stack)
 :
+VolumeCreatorProject(name),
 mOwner(owner),
 mProject(project),
 mStack(stack)
 {
 	mVCObjectType = (vcoRenderProject);
 }
+
 
 void RenderProject::setupForStack(const string& owner, const string& project, const string& stack)
 {
@@ -27,6 +29,7 @@ void RenderProject::setupForStack(const string& owner, const string& project, co
 XMLElement* RenderProject::addToXMLDocumentAsChild(tinyxml2::XMLDocument& doc, XMLNode* docRoot)
 {
     //Create XML for saving to file
+
     XMLElement* val = doc.NewElement("owner");
     val->SetText(mOwner.c_str());
     docRoot->InsertEndChild(val);
@@ -42,12 +45,38 @@ XMLElement* RenderProject::addToXMLDocumentAsChild(tinyxml2::XMLDocument& doc, X
     return val;
 }
 
+bool RenderProject::loadFromXML(mtk::XMLNode* node)
+{
+    XMLElement* e = node->FirstChildElement("owner");
+    if(e)
+    {
+    	mOwner = e->GetText() ? string(e->GetText()) : string("");
+    }
+
+    e = node->FirstChildElement("info");
+    if(e)
+    {
+    	mInfo = e->GetText() ? string(e->GetText()) : string("");
+    }
+
+    e = node->FirstChildElement("project");
+    if(e)
+    {
+    	mProject = e->GetText() ? string(e->GetText()) : string("");
+    }
+
+    e = node->FirstChildElement("stack");
+    if(e)
+    {
+    	mStack = e->GetText() ? string(e->GetText()) : string("");
+    }
+
+
+	return true;
+}
+
 bool RenderProject::write()
 {
-//	if(mProcessSequence)
-//    {
-//    	return mProcessSequence->write();
-//    }
 	return false;
 }
 

@@ -191,6 +191,7 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Key == VK_RETURN)
@@ -200,6 +201,7 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
     }
 }
 
+//---------------------------------------------------------------------------
 double TMainForm::getImageStretchFactor()
 {
 	if((mScaleE->getValue() * Height->getValue() * Width->getValue()) == 0)
@@ -218,6 +220,7 @@ double TMainForm::getImageStretchFactor()
     }
 }
 
+//---------------------------------------------------------------------------
 TCanvas* TMainForm::getCanvas()
 {
 	return PaintBox1->Canvas;
@@ -410,6 +413,7 @@ void TMainForm::render(RenderBox* box)
 	ClickZ(NULL);
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::historyBtnClick(TObject *Sender)
 {
     TButton* b = dynamic_cast<TButton*>(Sender);
@@ -543,6 +547,7 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 	ClickZ(Sender);
 }
 
+//---------------------------------------------------------------------------
 void TMainForm::updateScale()
 {
     mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
@@ -589,6 +594,7 @@ void __fastcall TMainForm::OwnerCBChange(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::ProjectCBChange(TObject *Sender)
 {
 	//Update Stacks CB
@@ -652,6 +658,7 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
 	mRenderEnabled = true;
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
@@ -730,6 +737,7 @@ void __fastcall TMainForm::CheckAll1Click(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::UncheckAll1Click(TObject *Sender)
 {
 	TCheckListBox* lb = dynamic_cast<TCheckListBox*>(ZsPopUpMenu->PopupComponent);
@@ -811,6 +819,7 @@ void __fastcall TMainForm::FormShow(TObject *Sender)
 	}
 }
 
+//---------------------------------------------------------------------------
 string createProcessedImageFileName(const string& pic)
 {
 	string fName(getFileNameNoExtension(pic));
@@ -835,6 +844,7 @@ void __fastcall TMainForm::ColorRGClick(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Key != VK_RETURN)
@@ -881,5 +891,36 @@ void __fastcall TMainForm::CreateTIFFStackCBClick(TObject *Sender)
 	DeleteTempTiffsCB->Enabled = CreateTIFFStackCB->Checked;
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ProjectTViewEditing(TObject *Sender, TTreeNode *Node,
+          bool &AllowEdit)
+{
+	AllowEdit = true;
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ProjectTViewEdited(TObject *Sender, TTreeNode *Node,
+          UnicodeString &S)
+{
+	//Update underlying object with new valuse..
+    VolumeCreatorProject* vcp = (VolumeCreatorProject*) Node->Data;
+    if(vcp)
+    {
+    	vcp->setProjectName(stdstr(S));
+        vcp->setModified();
+		SaveProjectA->Update();
+    }
+}
+
+
+
+void __fastcall TMainForm::EditViewNodeExecute(TObject *Sender)
+{
+	TTreeNode* item = ProjectTView->Selected;
+    if(item)
+    {
+    	item->EditText();
+    }
+}
 
 
