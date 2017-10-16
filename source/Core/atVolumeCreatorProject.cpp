@@ -119,7 +119,6 @@ XMLElement* VolumeCreatorProject::addToXMLDocument(tinyxml2::XMLDocument& doc, X
     return objectNode;
 }
 
-
 bool VolumeCreatorProject::save(const string& fName)
 {
     resetXML();
@@ -236,7 +235,7 @@ RenderProject* VolumeCreatorProject::createRenderProject(tinyxml2::XMLElement* e
 
 	const char* name = element->Attribute("name");
 
-	RenderProject* p = new RenderProject(name ? string(name) : string(""));
+	RenderProject* p = new RenderProject(name ? string(name) : string(""), "", "" ,"");
 	if(!p->loadFromXML(element))
     {
     	Log(lError) << "There was a problem loading model from XML";

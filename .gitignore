@@ -13,3 +13,4 @@ __history
 /ThirdParties/*.ZIP
 /PythonSource/*.pyc
 /resources/Backup_of_graphics.cdr
+*.~dsk

@@ -6,7 +6,7 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
-#include "TRegistryForm.h"
+#include "vcl/Forms/TRegistryForm.h"
 //---------------------------------------------------------------------------
 
 class TImageForm : public TRegistryForm

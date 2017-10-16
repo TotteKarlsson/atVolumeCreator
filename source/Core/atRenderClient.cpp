@@ -21,7 +21,7 @@ RenderClient::RenderClient(Idhttp::TIdHTTP* c,  const string& baseURL, const str
 :
 mC(c),
 mBaseURL(baseURL),
-mProject(owner, project, stack),
+mProject(project, owner, project, stack),
 mImageType(imageType),
 mZ(z),
 mRenderBox(box),
@@ -65,10 +65,10 @@ void RenderClient::copyImageData(MemoryStruct chunk)
     }
 }
 
-string RenderClient::getProjectName()
-{
-	return mProject.getProjectName();
-}
+//string RenderClient::getProjectName()
+//{
+//	return mProject.getProjectName();
+//}
 
 string RenderClient::setLocalCacheFolder(const string& f)
 {
@@ -245,7 +245,7 @@ RenderBox RenderClient::getBoxForZ(int z)
     stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owner/" 		<< mProject.getProjectOwner();
-    sUrl << "/project/" 	<< mProject.getProjectName();
+    sUrl << "/project/" 	<< mProject.getProject();
     sUrl << "/stack/"		<<mProject.getCurrentStackName();
     sUrl <<"/z/"<<z   	 	<<"/bounds";
 
@@ -277,7 +277,7 @@ RenderBox RenderClient::getOptimalXYBoxForZs(const vector<int>& zs)
         stringstream sUrl;
         sUrl << mBaseURL;
         sUrl << "/owner/" 		<< mProject.getProjectOwner();
-        sUrl << "/project/" << mProject.getProjectName();
+        sUrl << "/project/" << mProject.getProject();
         sUrl << "/stack/"	<<mProject.getCurrentStackName()<<"/z/"<<zs[z]<<"/bounds";
 
         //	    Log(lDebug5) << "Fetching from server using URL: "<<sUrl.str();
@@ -360,7 +360,7 @@ string RenderClient::getURLForZ(int z)
 	stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owner/" 		<< mProject.getProjectOwner();
-    sUrl << "/project/" << mProject.getProjectName();
+    sUrl << "/project/" << mProject.getProject();
     sUrl << "/stack/"	<<mProject.getCurrentStackName();
     sUrl << "/z/"<<z;
     sUrl << "/box/"<<mRenderBox.getX1()<<","<<mRenderBox.getY1() << "," << mRenderBox.getWidth() << ","<<mRenderBox.getHeight() << ","<<mScale;
@@ -377,7 +377,7 @@ string RenderClient::getURL()
 	stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owner/" 	<< mProject.getProjectOwner();
-    sUrl << "/project/" << mProject.getProjectName();
+    sUrl << "/project/" << mProject.getProject();
     sUrl << "/stack/"	<<mProject.getCurrentStackName();
     sUrl << "/z/"<<mZ;
     sUrl << "/box/"<<round(mRenderBox.getX1())<<","<<round(mRenderBox.getY1()) << "," << round(mRenderBox.getWidth()) << ","<<round(mRenderBox.getHeight()) << ","<<mScale;
@@ -415,35 +415,42 @@ vector<int> RenderClient::getValidZs()
 	stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owner/"    << mProject.getProjectOwner();
-    sUrl << "/project/" << mProject.getProjectName();
-    sUrl << "/stack/"	<<mProject.getCurrentStackName();
+    sUrl << "/project/" << 	mProject.getProject();
+    sUrl << "/stack/"	<<	mProject.getCurrentStackName();
     sUrl <<"/zValues";
 
     Log(lInfo) << "Fetching from server using URL: "<<sUrl.str();
 
-    TStringStream* zstrings = new TStringStream;;
-	mC->Get(sUrl.str().c_str(), zstrings);
-
-
-    if( mC->ResponseCode == HTTP_RESPONSE_OK)
+    try
     {
-        string s = stdstr(zstrings->DataString);
-//        Log(lInfo) << "Response: "<<s;
-		s = stripCharacters("[]", s);
-        zs.appendList(StringList(s,','));
-    }
-    else
-    {
-    	Log(lError) << "Failed fetching zs";
-    }
+        TStringStream* zstrings = new TStringStream;;
+        mC->Get(sUrl.str().c_str(), zstrings);
 
-	vector<int> zInts;
-    for(int i = 0; i < zs.count(); i++)
-    {
-    	zInts.push_back(toInt(zs[i]));
-    }
 
-	return zInts;
+        if( mC->ResponseCode == HTTP_RESPONSE_OK)
+        {
+            string s = stdstr(zstrings->DataString);
+    //        Log(lInfo) << "Response: "<<s;
+            s = stripCharacters("[]", s);
+            zs.appendList(StringList(s,','));
+        }
+        else
+        {
+            Log(lError) << "Failed fetching zs";
+        }
+
+        vector<int> zInts;
+        for(int i = 0; i < zs.count(); i++)
+        {
+            zInts.push_back(toInt(zs[i]));
+        }
+
+        return zInts;
+    }
+    catch(...)
+    {
+    	Log(lError) << "There was an uncaught error";
+    }
 }
 
 RenderBox RenderClient::parseBoundsResponse(const string& _s)

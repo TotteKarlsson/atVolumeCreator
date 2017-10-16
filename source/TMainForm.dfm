@@ -24,17 +24,6 @@ object MainForm: TMainForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter2: TSplitter
-    Left = 0
-    Top = 964
-    Width = 1421
-    Height = 3
-    Cursor = crVSplit
-    Align = alBottom
-    ExplicitLeft = 21
-    ExplicitTop = 724
-    ExplicitWidth = 993
-  end
   object StatusBar1: TStatusBar
     Left = 0
     Top = 967
@@ -44,7 +33,7 @@ object MainForm: TMainForm
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 945
+    Top = 948
     Width = 1421
     Height = 19
     Align = alBottom
@@ -104,15 +93,25 @@ object MainForm: TMainForm
     Left = 0
     Top = 57
     Width = 1421
-    Height = 888
+    Height = 891
     Align = alClient
     TabOrder = 4
+    object Splitter2: TSplitter
+      Left = 1
+      Top = 749
+      Width = 1419
+      Height = 5
+      Cursor = crVSplit
+      Align = alBottom
+      ExplicitLeft = 46
+      ExplicitTop = 685
+    end
     object PageControl1: TPageControl
       Left = 186
       Top = 1
       Width = 1234
-      Height = 750
-      ActivePage = TabSheet1
+      Height = 748
+      ActivePage = TabSheet4
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -121,14 +120,14 @@ object MainForm: TMainForm
           Left = 0
           Top = 113
           Width = 385
-          Height = 609
+          Height = 607
           Align = alLeft
           TabOrder = 0
           object ScrollBox1: TScrollBox
             Left = 1
             Top = 1
             Width = 287
-            Height = 607
+            Height = 605
             Align = alClient
             DoubleBuffered = True
             ParentDoubleBuffered = False
@@ -317,7 +316,7 @@ object MainForm: TMainForm
             Left = 288
             Top = 1
             Width = 96
-            Height = 607
+            Height = 605
             Align = alRight
             Caption = 'Sections'
             TabOrder = 1
@@ -325,7 +324,7 @@ object MainForm: TMainForm
               Left = 2
               Top = 15
               Width = 92
-              Height = 590
+              Height = 588
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
@@ -568,14 +567,14 @@ object MainForm: TMainForm
           Left = 385
           Top = 113
           Width = 841
-          Height = 609
+          Height = 607
           Align = alClient
           TabOrder = 2
           object PaintBox1: TPaintBox
             Left = 1
             Top = 1
             Width = 839
-            Height = 590
+            Height = 588
             Align = alClient
             Color = clRed
             ParentColor = False
@@ -588,7 +587,7 @@ object MainForm: TMainForm
             Left = 1
             Top = 1
             Width = 839
-            Height = 590
+            Height = 588
             Align = alClient
             AutoSize = True
             Picture.Data = {
@@ -16607,7 +16606,7 @@ object MainForm: TMainForm
           end
           object HeaderControl1: THeaderControl
             Left = 1
-            Top = 591
+            Top = 589
             Width = 839
             Height = 17
             Align = alBottom
@@ -16627,137 +16626,152 @@ object MainForm: TMainForm
           Left = 0
           Top = 70
           Width = 1226
-          Height = 123
+          Height = 155
           Align = alTop
           Caption = 'Stack Output Settings'
           TabOrder = 0
-          object Panel3: TPanel
-            Left = 2
-            Top = 15
-            Width = 1222
-            Height = 98
-            Align = alTop
-            BevelOuter = bvNone
+          object BoundsCB: TPropertyCheckBox
+            Left = 282
+            Top = 28
+            Width = 97
+            Height = 17
+            Caption = 'Static Bounds'
+            Checked = True
+            Enabled = False
+            State = cbChecked
             TabOrder = 0
-            object BoundsCB: TPropertyCheckBox
-              Left = 279
-              Top = 28
-              Width = 97
-              Height = 17
-              Caption = 'Static Bounds'
-              Checked = True
-              Enabled = False
-              State = cbChecked
+            Value = True
+          end
+          object ConvertToGreyCB: TPropertyCheckBox
+            Left = 282
+            Top = 97
+            Width = 130
+            Height = 17
+            Caption = 'Convert to Grey (8bit)'
+            Checked = True
+            Enabled = False
+            State = cbChecked
+            TabOrder = 1
+            Value = True
+          end
+          object CreateTIFFStackCB: TPropertyCheckBox
+            Left = 282
+            Top = 51
+            Width = 212
+            Height = 17
+            Caption = 'Create TIFFSTACK (max size ~ 4GB)'
+            TabOrder = 2
+            OnClick = CreateTIFFStackCBClick
+          end
+          object DeleteTempTiffsCB: TPropertyCheckBox
+            Left = 302
+            Top = 74
+            Width = 146
+            Height = 17
+            Caption = 'Delete temporary TIFFS'
+            Enabled = False
+            TabOrder = 3
+          end
+          object JobCreationGB: TGroupBox
+            Left = 500
+            Top = 13
+            Width = 280
+            Height = 102
+            Caption = 'Server Job Creation'
+            TabOrder = 4
+            object ZBatchSizeE: TIntegerLabeledEdit
+              Left = 16
+              Top = 32
+              Width = 105
+              Height = 21
+              EditLabel.Width = 58
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Z Batch Size'
               TabOrder = 0
-              Value = True
+              Text = '10'
+              Value = 10
             end
-            object VolumesScaleE: TFloatLabeledEdit
-              Left = 212
-              Top = 26
-              Width = 45
+            object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
+              Left = 16
+              Top = 72
+              Width = 105
               Height = 21
-              EditLabel.Width = 25
+              EditLabel.Width = 104
               EditLabel.Height = 13
-              EditLabel.Caption = 'Scale'
+              EditLabel.Caption = 'Number of jobs (max)'
               TabOrder = 1
-              Text = '0.50'
-              Value = 0.500000000000000000
+              Text = '10'
+              Value = 10
             end
-            object VolumesFolder: TSTDStringLabeledEdit
-              Left = 12
-              Top = 26
-              Width = 182
+            object NicenessE: TIntegerLabeledEdit
+              Left = 144
+              Top = 32
+              Width = 97
               Height = 21
-              EditLabel.Width = 93
+              Hint = '-20 is highest priority and 19 is lowest priority'
+              EditLabel.Width = 99
               EditLabel.Height = 13
-              EditLabel.Caption = 'Output Root Folder'
+              EditLabel.Caption = 'Niceness (-20 -> 19)'
               TabOrder = 2
-              Text = '/nas4/volumes'
-              Value = '/nas4/volumes'
+              Text = '0'
             end
-            object SubFolder1: TSTDStringLabeledEdit
-              Left = 12
-              Top = 77
-              Width = 182
-              Height = 21
-              EditLabel.Width = 55
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Subfolder 1'
-              TabOrder = 3
-              Text = 'Test'
-              Value = 'Test'
-            end
-            object CreateTIFFStackCB: TPropertyCheckBox
-              Left = 279
-              Top = 51
-              Width = 212
-              Height = 17
-              Caption = 'Create TIFFSTACK (max size ~ 4GB)'
-              TabOrder = 4
-              OnClick = CreateTIFFStackCBClick
-            end
-            object DeleteTempTiffsCB: TPropertyCheckBox
-              Left = 299
-              Top = 74
-              Width = 146
-              Height = 17
-              Caption = 'Delete temporary TIFFS'
-              Enabled = False
-              TabOrder = 5
-            end
-            object Run: TButton
-              Left = 809
-              Top = 8
-              Width = 119
-              Height = 78
-              Caption = 'Run'
-              TabOrder = 6
-              OnClick = RunClick
-            end
-            object JobCreationGB: TGroupBox
-              Left = 497
-              Top = -3
-              Width = 280
-              Height = 102
-              Caption = 'Server Job Creation'
-              TabOrder = 7
-              object ZBatchSizeE: TIntegerLabeledEdit
-                Left = 16
-                Top = 32
-                Width = 105
-                Height = 21
-                EditLabel.Width = 58
-                EditLabel.Height = 13
-                EditLabel.Caption = 'Z Batch Size'
-                TabOrder = 0
-                Text = '10'
-                Value = 10
-              end
-              object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
-                Left = 16
-                Top = 72
-                Width = 105
-                Height = 21
-                EditLabel.Width = 104
-                EditLabel.Height = 13
-                EditLabel.Caption = 'Number of jobs (max)'
-                TabOrder = 1
-                Text = '10'
-                Value = 10
-              end
-              object NicenessE: TIntegerLabeledEdit
-                Left = 144
-                Top = 32
-                Width = 97
-                Height = 21
-                Hint = '-20 is highest priority and 19 is lowest priority'
-                EditLabel.Width = 99
-                EditLabel.Height = 13
-                EditLabel.Caption = 'Niceness (-20 -> 19)'
-                TabOrder = 2
-                Text = '0'
-              end
-            end
+          end
+          object PadFileNamesWithZeroesCB: TPropertyCheckBox
+            Left = 282
+            Top = 120
+            Width = 178
+            Height = 17
+            Caption = 'Pad File Names with Zeroes'
+            Checked = True
+            Enabled = False
+            State = cbChecked
+            TabOrder = 5
+            Value = True
+          end
+          object Run: TButton
+            Left = 812
+            Top = 24
+            Width = 119
+            Height = 78
+            Caption = 'Run'
+            TabOrder = 6
+            OnClick = RunClick
+          end
+          object SubFolder1: TSTDStringLabeledEdit
+            Left = 15
+            Top = 93
+            Width = 182
+            Height = 21
+            EditLabel.Width = 55
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Subfolder 1'
+            TabOrder = 7
+            Text = 'Test'
+            Value = 'Test'
+          end
+          object VolumesFolder: TSTDStringLabeledEdit
+            Left = 15
+            Top = 42
+            Width = 182
+            Height = 21
+            EditLabel.Width = 93
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Output Root Folder'
+            TabOrder = 8
+            Text = '/nas4/volumes'
+            Value = '/nas4/volumes'
+          end
+          object VolumesScaleE: TFloatLabeledEdit
+            Left = 215
+            Top = 42
+            Width = 45
+            Height = 21
+            EditLabel.Width = 25
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Scale'
+            TabOrder = 9
+            Text = '0.50'
+            Value = 0.500000000000000000
           end
         end
         inline TSSHFrame1: TSSHFrame
@@ -16822,23 +16836,25 @@ object MainForm: TMainForm
         end
         object MultiStackCreationGB: TGroupBox
           Left = 0
-          Top = 193
+          Top = 225
           Width = 1226
-          Height = 529
+          Height = 495
           Align = alClient
           Caption = 'Select Stacks'
-          Constraints.MinHeight = 350
           TabOrder = 1
+          ExplicitTop = 193
+          ExplicitHeight = 527
           object StacksForProjectCB: TCheckListBox
             AlignWithMargins = True
             Left = 17
             Top = 18
             Width = 335
-            Height = 506
+            Height = 472
             Margins.Left = 15
             Align = alLeft
             ItemHeight = 13
             TabOrder = 0
+            ExplicitHeight = 504
           end
           object GroupBox3: TGroupBox
             Left = 354
@@ -16868,10 +16884,10 @@ object MainForm: TMainForm
           end
         end
         object BashScriptMemo: TMemo
-          Left = 597
-          Top = 256
-          Width = 502
-          Height = 269
+          Left = 599
+          Top = 424
+          Width = 604
+          Height = 273
           Lines.Strings = (
             '#! /bin/bash'
             'args=("$@")'
@@ -16888,10 +16904,13 @@ object MainForm: TMainForm
             'z_batch_size=${args[10]}'
             'max_number_of_jobs=${args[11]}'
             'job_niceness=${args[12]}'
-            'use_bounds=${args[13]}'
-            'bounds=${args[14]}'
+            'convertToGrey=${args[13]}'
+            'padFileNamesWithZeroes=${args[14]}'
+            'use_bounds=${args[15]}'
+            'bounds=${args[16]}'
             'fmt='#39'tiff'#39
             'filter='#39'false'#39
+            ''
             'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
             ''
             '#Write run info to file'
@@ -16914,20 +16933,26 @@ object MainForm: TMainForm
             'echo "Max number of jobs: "$max_number_of_jobs >> $info'
             'echo "Job niceness: "$job_niceness >> $info'
             'echo "Zs: "$sections_str >> $info'
+            
+              'echo "Pad Filenames with Zeroes: "$padFileNamesWithZeroes >> $in' +
+              'fo'
+            'echo "Convert to grey: "$convertToGrey >> $info'
             'if [ "$use_bounds"  == "true" ]; then'
             '   echo "Using bounds:" $bounds >> $info'
             'fi'
             ''
+            '#JAVA CLIENT SETTINGS'
             
-              '#JAVA CLIENT SETTINGS ==========================================' +
-              '================================================='
+              '================================================================' +
+              '=========='
+            '================='
             '#Class path'
             
-              'classpath='#39' /nas4/getVolume/renderAPI/render-ws-java-client/targ' +
-              'et/render-ws-java-client-0.3.0-SNAPSHOT-standalone.jar'#39
+              'classpath='#39' /nas4/getVolume/render/render-ws-java-client/target/' +
+              'render-ws-java-client-2.0.1-SNAPSHOT-standalone.jar'#39
             ''
             '#Java class'
-            'jc='#39'org.janelia.render.client.RenderSectionClient'#39
+            'jc='#39'org.janelia.render.client.RenderBoundClient'#39
             'script_name=`basename "$0"`'
             'script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"'
             'running_from=`pwd -P`'
@@ -16963,17 +16988,25 @@ object MainForm: TMainForm
             '    if [ "$use_bounds"  == "false" ]; then'
             
               '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
-              'ectory $rootOutPutFolder --customOutputFolder $customFolder --ch' +
-              'annelName $stack --scale $scale --owner $owner                 -' +
-              '-doFilter false --fillWithNoise false --baseDataUrl $baseDataURL' +
-              ' --format $fmt --project $proj ${z_batch[$i]}"'
+              'ectory $rootOutPutFolder --customOutputFolder '
+            
+              '$customFolder --channelName $stack --scale $scale --owner $owner' +
+              ' --padFileNamesWithZeroes $padFileNamesWithZeroes '
+            
+              '--convertToGrey $convertToGrey --doFilter false --fillWithNoise ' +
+              'false --baseDataUrl $baseDataURL --format $fmt --project '
+            '$proj ${z_batch[$i]}"'
             '    else'
             
               '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
-              'ectory $rootOutPutFolder --customOutputFolder $customFolder --ch' +
-              'annelName $stack --scale $scale --owner $owner --bounds $bounds ' +
-              '--doFilter false --fillWithNoise false --baseDataUrl $baseDataUR' +
-              'L --format $fmt --project $proj ${z_batch[$i]}"'
+              'ectory $rootOutPutFolder --customOutputFolder '
+            
+              '$customFolder --channelName $stack --scale $scale --owner $owner' +
+              ' --padFileNamesWithZeroes $padFileNamesWithZeroes '
+            
+              '--convertToGrey $convertToGrey --doFilter false --fillWithNoise ' +
+              'false --baseDataUrl $baseDataURL --format $fmt --project '
+            '$proj ${z_batch[$i]} --bounds $bounds"'
             '    fi'
             '    eval nice -n $job_niceness java $java_args &'
             '    if (( $jobs >= $max_number_of_jobs ))'
@@ -17029,7 +17062,6 @@ object MainForm: TMainForm
             'echo "mxplutx"'
             'echo "This job ended on: "`date` >> $info')
           ReadOnly = True
-          ScrollBars = ssBoth
           TabOrder = 4
           Visible = False
         end
@@ -17041,22 +17073,21 @@ object MainForm: TMainForm
           Left = 0
           Top = 0
           Width = 1226
-          Height = 722
+          Height = 720
           Align = alClient
-          Constraints.MinHeight = 500
           TabOrder = 0
           ExplicitWidth = 1226
-          ExplicitHeight = 722
+          ExplicitHeight = 720
           inherited SettingsGB: TGroupBox
             Width = 1226
-            Height = 652
+            Height = 650
             ExplicitWidth = 1226
-            ExplicitHeight = 652
+            ExplicitHeight = 650
             inherited RunGB: TGroupBox
               Width = 1222
-              Height = 505
+              Height = 503
               ExplicitWidth = 1222
-              ExplicitHeight = 505
+              ExplicitHeight = 503
             end
             inherited Panel1: TPanel
               Width = 1222
@@ -17145,7 +17176,7 @@ object MainForm: TMainForm
     end
     object mBottomPanel: TPanel
       Left = 1
-      Top = 751
+      Top = 754
       Width = 1419
       Height = 136
       Align = alBottom
@@ -17203,23 +17234,23 @@ object MainForm: TMainForm
       Left = 1
       Top = 1
       Width = 185
-      Height = 750
+      Height = 748
       Align = alLeft
       TabOrder = 2
       object ProjectTView: TTreeView
         Left = 1
         Top = 1
         Width = 183
-        Height = 748
+        Height = 746
         Align = alClient
         Indent = 19
         PopupMenu = ProjTreeViewPopup
         RightClickSelect = True
         TabOrder = 0
+        OnClick = ProjectTViewClick
         OnContextPopup = ProjectTViewContextPopup
         OnEdited = ProjectTViewEdited
         OnEditing = ProjectTViewEditing
-        ExplicitLeft = 3
       end
     end
   end
@@ -17254,8 +17285,8 @@ object MainForm: TMainForm
     Top = 264
   end
   object ZsPopUpMenu: TPopupMenu
-    Left = 120
-    Top = 416
+    Left = 288
+    Top = 432
     object Checkrange1: TMenuItem
       Caption = 'Select/Unselect Z'#39's'
       OnClick = Checkrange1Click
@@ -17333,8 +17364,8 @@ object MainForm: TMainForm
     Top = 424
   end
   object ImagePopup: TPopupMenu
-    Left = 816
-    Top = 296
+    Left = 912
+    Top = 280
     object ParseNDVIZURL1: TMenuItem
       Caption = 'Parse NDVIZ URL'
       OnClick = ParseNDVIZURL1Click
@@ -17350,8 +17381,8 @@ object MainForm: TMainForm
   end
   object MenuActions: TActionList
     Images = ImageList1
-    Left = 944
-    Top = 168
+    Left = 48
+    Top = 88
     object FileOpen1: TFileOpen
       Category = 'File'
       Caption = '&Open...'
@@ -17408,7 +17439,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C0101080018002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17819,10 +17850,6 @@ object MainForm: TMainForm
     end
     object Close2: TMenuItem
       Action = CloseProjectA
-    end
-    object Edit1: TMenuItem
-      Action = EditViewNode
-      Caption = 'Edit'
     end
   end
 end

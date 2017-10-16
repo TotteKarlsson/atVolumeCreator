@@ -12,9 +12,9 @@ using mtk::gEmptyString;
 class RenderProject : public VolumeCreatorProject
 {
 	public:
-			    	                    RenderProject(const string& name, const string& owner = gEmptyString, const string& project = gEmptyString, const string& stack = gEmptyString);
+			    	                    RenderProject(const string& name, const string& owner, const string& project, const string& stack);
 		void							setupForStack(const string& owner, const string& project, const string& stack);
-		string							getProjectName(){return mProjectName;}
+//		string							getProjectName(){return mProjectName;}
 
 		string							getProject(){return mProject;}
 		string							getProjectOwner(){return mOwner;}

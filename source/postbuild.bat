@@ -14,6 +14,6 @@ xcopy %OUTPUTDIR%*.ini %APP_RELEASES%\VolumeCreator /y
 xcopy %OUTPUTDIR%%OUTPUTFILENAME% %APP_RELEASES%\VolumeCreator /y
 xcopy p:\redist\atVolumeCreator\*.dll %APP_RELEASES%\VolumeCreator /y
 xcopy p:\redist\atVolumeCreator\*.bpl %APP_RELEASES%\VolumeCreator /y
-xcopy p:\build\xe3_ide\bpl\*.bpl %APP_RELEASES%\VolumeCreator /y
+xcopy p:\build\debug\bpl\*.bpl %APP_RELEASES%\VolumeCreator /y
 
 

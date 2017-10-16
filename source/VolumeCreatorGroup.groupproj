@@ -21,10 +21,16 @@
         <Projects Include="P:\libs\dsl\VCL\Forms\DuneForms.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="P:\libs\atapi\source\core\atCore.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\atapi\source\database\atDatabase.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="P:\libs\atapi\source\barcodereader\atBarcodeReader.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\atapi\source\vcl\atVCLCore.cbproj">
@@ -98,6 +104,15 @@
     <Target Name="DuneForms:Make">
         <MSBuild Projects="P:\libs\dsl\VCL\Forms\DuneForms.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="atSSI">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj"/>
+    </Target>
+    <Target Name="atSSI:Clean">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="atSSI:Make">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="atCore">
         <MSBuild Projects="P:\libs\atapi\source\core\atCore.cbproj"/>
     </Target>
@@ -115,6 +130,15 @@
     </Target>
     <Target Name="atDatabase:Make">
         <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="atBarcodeReader">
+        <MSBuild Projects="P:\libs\atapi\source\barcodereader\atBarcodeReader.cbproj"/>
+    </Target>
+    <Target Name="atBarcodeReader:Clean">
+        <MSBuild Projects="P:\libs\atapi\source\barcodereader\atBarcodeReader.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="atBarcodeReader:Make">
+        <MSBuild Projects="P:\libs\atapi\source\barcodereader\atBarcodeReader.cbproj" Targets="Make"/>
     </Target>
     <Target Name="atVCLCore">
         <MSBuild Projects="P:\libs\atapi\source\vcl\atVCLCore.cbproj"/>
@@ -144,13 +168,13 @@
         <MSBuild Projects="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="mtkCommon;mtkMath;mtkIPC;VCLCommon;DuneComponents;DuneForms;atCore;atDatabase;atVCLCore;VolumeCreator;ImageProcessing"/>
+        <CallTarget Targets="mtkCommon;mtkMath;mtkIPC;VCLCommon;DuneComponents;DuneForms;atSSI;atCore;atDatabase;atBarcodeReader;atVCLCore;VolumeCreator;ImageProcessing"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;mtkIPC:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;atCore:Clean;atDatabase:Clean;atVCLCore:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
+        <CallTarget Targets="mtkCommon:Clean;mtkMath:Clean;mtkIPC:Clean;VCLCommon:Clean;DuneComponents:Clean;DuneForms:Clean;atSSI:Clean;atCore:Clean;atDatabase:Clean;atBarcodeReader:Clean;atVCLCore:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;mtkIPC:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;atCore:Make;atDatabase:Make;atVCLCore:Make;VolumeCreator:Make;ImageProcessing:Make"/>
+        <CallTarget Targets="mtkCommon:Make;mtkMath:Make;mtkIPC:Make;VCLCommon:Make;DuneComponents:Make;DuneForms:Make;atSSI:Make;atCore:Make;atDatabase:Make;atBarcodeReader:Make;atVCLCore:Make;VolumeCreator:Make;ImageProcessing:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

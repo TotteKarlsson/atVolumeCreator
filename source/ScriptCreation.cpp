@@ -173,7 +173,13 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     //13th - Job niceness
 	cmd <<" "<<NicenessE->getValue();
 
-	//14th - static bounds?
+    //14th - convert to gray
+	cmd <<" "<<mtk::toString(ConvertToGreyCB->Checked);
+
+    //15th - pad file names
+	cmd <<" "<<mtk::toString(PadFileNamesWithZeroesCB->Checked);
+
+	//16th - static bounds?
     cmd <<" "<<mtk::toString(BoundsCB->Checked);
 
     if(BoundsCB->Checked)

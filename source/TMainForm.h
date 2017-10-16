@@ -43,7 +43,7 @@
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtDlgs.hpp>
 #include <Vcl.ImgList.hpp>
-#include "RzTreeVw.hpp"
+//#include "RzTreeVw.hpp"
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -132,7 +132,6 @@ __published:	// IDE-managed Components
 	TCheckBox *IMContrastControl;
 	TCheckListBox *StacksForProjectCB;
 	TGroupBox *MultiStackCreationGB;
-	TPanel *Panel3;
 	TPropertyCheckBox *BoundsCB;
 	TFloatLabeledEdit *VolumesScaleE;
 	TSTDStringLabeledEdit *VolumesFolder;
@@ -198,8 +197,9 @@ __published:	// IDE-managed Components
 	TMenuItem *AddRenderProject1;
 	TMenuItem *Close2;
 	TPanel *MainPanel;
-	TMenuItem *Edit1;
 	TAction *EditViewNode;
+	TPropertyCheckBox *ConvertToGreyCB;
+	TPropertyCheckBox *PadFileNamesWithZeroesCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -266,7 +266,7 @@ __published:	// IDE-managed Components
 	void __fastcall ProjectTViewEditing(TObject *Sender, TTreeNode *Node, bool &AllowEdit);
 	void __fastcall ProjectTViewEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S);
 	void __fastcall EditViewNodeExecute(TObject *Sender);
-
+	void __fastcall ProjectTViewClick(TObject *Sender);
 
 
 	private:	// User declarations
@@ -327,7 +327,8 @@ __published:	// IDE-managed Components
         string 											mCurrentImageFile;
 
         												//!VC can have one VC project open at any one time.
-        VolumeCreatorProject*					 		mVCProject;
+        VolumeCreatorProject*					 		mCurrentVCProject;
+        vector<VolumeCreatorProject*>					mVCProjects;
 		int __fastcall 									saveProject();
 		int __fastcall 									saveProjectAs();
 		int __fastcall 									closeProject();

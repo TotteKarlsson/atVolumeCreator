@@ -18,7 +18,7 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 {
 	mShutDownTimer->Enabled = false;
 
-	if(mVCProject && mVCProject->isNeverSaved() == true)
+	if(mCurrentVCProject && mCurrentVCProject->isNeverSaved() == true)
     {
     	int mrResult = MessageDlg("Do you want to save current project?", mtWarning, TMsgDlgButtons() << mbYes<<mbNo<<mbCancel, 0);
         if(mrResult == mrYes)
@@ -33,14 +33,14 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
         	return;
         }
     }
-    else if(mVCProject)
+    else if(mCurrentVCProject)
     {
 
-		mVCProject->save();
+		mCurrentVCProject->save();
     }
 
-    delete mVCProject;
-    mVCProject = NULL;
+    delete mCurrentVCProject;
+    mCurrentVCProject = NULL;
 
 
 	if(mLogFileReader.isRunning())
@@ -106,7 +106,7 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
 		CanClose = false;
     }
 
-    else if(mVCProject && mVCProject->isNeverSaved() == false)
+    else if(mCurrentVCProject && mCurrentVCProject->isNeverSaved() == false)
     {
 		CanClose = false;
     }

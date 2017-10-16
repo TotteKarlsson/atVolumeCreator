@@ -25,7 +25,7 @@
 #pragma link "TSSHFrame"
 #pragma link "TImageControlsFrame"
 #pragma link "TParaConverterFrame"
-#pragma link "RzTreeVw"
+
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
@@ -48,7 +48,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCurrentStack(""),
     mIsStyleMenuPopulated(false),
 	gImageForm(NULL),
-    mVCProject(NULL)
+    mCurrentVCProject(NULL)
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -912,14 +912,23 @@ void __fastcall TMainForm::ProjectTViewEdited(TObject *Sender, TTreeNode *Node,
     }
 }
 
-
-
 void __fastcall TMainForm::EditViewNodeExecute(TObject *Sender)
 {
 	TTreeNode* item = ProjectTView->Selected;
     if(item)
     {
     	item->EditText();
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ProjectTViewClick(TObject *Sender)
+{
+	//Get current node from the treeview
+	TTreeNode* item = ProjectTView->Selected;
+    if(item)
+    {
+    	mCurrentVCProject = (VolumeCreatorProject*) item->Data;
     }
 }
 

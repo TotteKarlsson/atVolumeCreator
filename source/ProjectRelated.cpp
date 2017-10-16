@@ -21,7 +21,7 @@ bool addVCProjectToTreeView(VolumeCreatorProject* mVCProject, TTreeView* tv)
 	    	addRenderProjectToTreeView(vcn, rp, tv);
         }
     }
-
+    return true;
 }
 
 void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView* tv)
@@ -42,33 +42,28 @@ void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView*
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::NewProjectAExecute(TObject *Sender)
 {
-    if(mVCProject)
-    {
-        if(closeProject() != mrOk)
-        {
-        	return;
-        }
-    }
-
-    mVCProject = createNewProject();
-    ProjectTView->Items->AddObject(NULL, mVCProject->getProjectName().c_str(), (void*) mVCProject);
+    mCurrentVCProject = createNewProject();
+    ProjectTView->Items->AddObject(NULL, mCurrentVCProject->getProjectName().c_str(), (void*) mCurrentVCProject);
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::AddRenderProjectExecute(TObject *Sender)
 {
-	//Create a render project and associate with current VC project
-    TTreeNode* vcNode = ProjectTView->Items->GetFirstNode();
-  	RenderProject* rp = new RenderProject("", "" , "");
+    TTreeNode* vcNode = ProjectTView->Selected;
+	VolumeCreatorProject* vcp = (VolumeCreatorProject*) vcNode->Data;
 
-    VolumeCreatorProject* vcp = (VolumeCreatorProject*) vcNode->Data;
     if(vcp)
     {
+		//Create a render project and associate with current VC project
+	  	RenderProject* rp = new RenderProject("", "", "" , "");
+
+	    //Check how many renderproject childs
+        int nrOfChilds = vcp->getNumberOfChilds();
+        rp->setProjectName("Render project " + mtk::toString(nrOfChilds + 1));
     	vcp->addChild(rp);
     	vcp->setModified();
+		addRenderProjectToTreeView(vcNode, rp, ProjectTView);
     }
-
-	addRenderProjectToTreeView(vcNode, rp, ProjectTView);
 }
 
 VolumeCreatorProject* __fastcall TMainForm::createNewProject()
@@ -78,6 +73,7 @@ VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 
 	string pName = "VC Project " + mtk::toString(nrOfVCPs);
 	VolumeCreatorProject* vcp = new VolumeCreatorProject(pName);
+    mVCProjects.push_back(vcp);
 
     Log(lInfo) << "Created a new VolumeCreator project";
     return vcp;
@@ -86,9 +82,9 @@ VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ProjectStatusTimerTimer(TObject *Sender)
 {
-	if(mVCProject)
+	if(mCurrentVCProject)
     {
-       	SaveProjectA->Enabled = mVCProject->isModified() ? true : false;
+       	SaveProjectA->Enabled = mCurrentVCProject->isModified() ? true : false;
     }
     else
     {
@@ -100,27 +96,27 @@ void __fastcall TMainForm::ProjectStatusTimerTimer(TObject *Sender)
 void __fastcall TMainForm::FileOpen1Accept(TObject *Sender)
 {
     string f(stdstr(FileOpen1->Dialog->FileName));
-    if(mVCProject && mVCProject->isOpen())
+    if(mCurrentVCProject && mCurrentVCProject->isOpen())
     {
 		if(closeProject() == mrOk)
         {
-        	mVCProject->close();
+        	mCurrentVCProject->close();
         }
     }
 
-    if(!mVCProject)
+    if(!mCurrentVCProject)
 	{
-		mVCProject = createNewProject();
+		mCurrentVCProject = createNewProject();
     }
 
-	if(mVCProject->loadFromFile(f))
+	if(mCurrentVCProject->loadFromFile(f))
     {
 	    ProjFileLbl->Caption = string("Project File: " + f).c_str();
     	Log(lInfo) << "Loaded project file: "<<f;
-        mVCProject->open();
+        mCurrentVCProject->open();
     }
 
-    addVCProjectToTreeView(mVCProject, ProjectTView);
+    addVCProjectToTreeView(mCurrentVCProject, ProjectTView);
 }
 
 //---------------------------------------------------------------------------
@@ -128,12 +124,11 @@ int __fastcall TMainForm::closeProject()
 {
 	if(saveProject() == mrOk)
     {
-        mVCProject->close();
-        Log(lInfo) << "Closed project: "<<mVCProject->getFileName();
+        mCurrentVCProject->close();
+        Log(lInfo) << "Closed project: "<<mCurrentVCProject->getFileName();
    	    ProjFileLbl->Caption = string("Project File: None").c_str();
-        ProjectTView->Items->Clear();
-        delete mVCProject;
-        mVCProject = NULL;
+        delete mCurrentVCProject;
+        mCurrentVCProject = NULL;
         return mrOk;
     }
     else
@@ -157,9 +152,9 @@ int __fastcall TMainForm::saveProjectAs()
                 return mrCancel;
             }
         }
-        mVCProject->setFileName(fName);
-        mVCProject->save();
-        Log(lInfo) << "Saved project: "<<mVCProject->getFileName();
+        mCurrentVCProject->setFileName(fName);
+        mCurrentVCProject->save();
+        Log(lInfo) << "Saved project: "<<mCurrentVCProject->getFileName();
 	    ProjFileLbl->Caption = string("Project File: " + fName).c_str();
         return mrOk;
     }
@@ -174,7 +169,7 @@ int __fastcall TMainForm::saveProjectAs()
 int __fastcall TMainForm::saveProject()
 {
 	//If project don't have an assigned filename, open filesavefile dialog
-    if(mVCProject && mVCProject->isNeverSaved())
+    if(mCurrentVCProject && mCurrentVCProject->isNeverSaved())
     {
     	int res = MessageDlg("Save Project?", mtConfirmation, TMsgDlgButtons() << mbYes<<mbNo<<mbCancel, 0);
         if(res == mrYes)
@@ -186,10 +181,10 @@ int __fastcall TMainForm::saveProject()
         	return mrCancel;
         }
     }
-    else if(mVCProject)
+    else if(mCurrentVCProject)
     {
-		mVCProject->save();
-        Log(lInfo) << "Saved project: "<<mVCProject->getFileName();
+		mCurrentVCProject->save();
+        Log(lInfo) << "Saved project: "<<mCurrentVCProject->getFileName();
         return mrOk;
     }
 	return mrOk;
@@ -198,24 +193,30 @@ int __fastcall TMainForm::saveProject()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::CloseProjectAExecute(TObject *Sender)
 {
-	closeProject();
+	if(closeProject() == mrOk)
+    {
+        if(ProjectTView->Selected)
+        {
+			ProjectTView->Items->Delete(ProjectTView->Selected);
+        }
+    }
 }
 
 void __fastcall TMainForm::CloseProjectAUpdate(TObject *Sender)
 {
-   	CloseProjectA->Enabled = mVCProject ? true : false;
+   	CloseProjectA->Enabled = mCurrentVCProject ? true : false;
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveProjectAsAUpdate(TObject *Sender)
 {
-	SaveProjectAsA->Enabled = mVCProject ? true : false;
+	SaveProjectAsA->Enabled = mCurrentVCProject ? true : false;
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveProjectAUpdate(TObject *Sender)
 {
-	SaveProjectA->Enabled = (mVCProject && mVCProject->isModified()) ? true : false;
+	SaveProjectA->Enabled = (mCurrentVCProject && mCurrentVCProject->isModified()) ? true : false;
 }
 
 //---------------------------------------------------------------------------
@@ -237,6 +238,22 @@ void __fastcall TMainForm::ProjectTViewContextPopup(TObject *Sender, TPoint &Mou
 	if(ProjectTView->GetNodeAt(MousePos.X, MousePos.Y))// == ProjectTView->TopItem)
     {
     	Handled = false;
+        //Check what item is held by the treeview
+		TTreeNode* node = ProjectTView->GetNodeAt(MousePos.X, MousePos.Y);
+        if(node)
+        {
+        	VolumeCreatorProject* vcp = (VolumeCreatorProject*) node->Data;
+            if(dynamic_cast<RenderProject*>(vcp))
+            {
+		        AddRenderProject->Enabled = false;
+            }
+            else
+            {
+	            AddRenderProject->Enabled = true;
+            }
+        }
+
+
     }
     else
     {
