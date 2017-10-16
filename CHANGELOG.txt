@@ -1,3 +1,12 @@
+Release 0.5.8 (Oct 16)
+=======================
+* Added flags for padding seroes and convert to gray
+* Many changes to project views (not employed yet)
+* Got treeview functionality partly implemented
+* Added new ssh frame for terafly creation
+* Integrating paraconverter script remote running
+* Added frame for Paraconversion connection
+
 Release 0.5.7 (June 23)
 =======================
 * Fixed use static bounds checkbox and generation of stacks using layer bounds
