@@ -1,0 +1,101 @@
+#pragma hdrstop
+#include "atProjectManager.h"
+#include "atVolumeCreatorProject.h"
+#include "mtkVCLUtils.h"
+#include "mtkLogger.h"
+
+
+using namespace mtk;
+
+TTreeNode* getNodeWithCaption(TTreeView* tv, const string& name);
+TTreeNode* getNodeWithProject(TTreeView* tv, const VolumeCreatorProject* p);
+
+ProjectManager::ProjectManager(TTreeView& tv)
+:
+ProjectTView(&tv)
+{
+}
+
+ProjectManager::~ProjectManager()
+{}
+
+bool ProjectManager::createNewProject()
+{
+	//Check how many main nodes
+    int nrOfVCPs = mVCProjects.size();
+
+	string pName = "VC Project " + mtk::toString(nrOfVCPs);
+	VolumeCreatorProject* vcp = new VolumeCreatorProject(pName);
+    mVCProjects.push_back(vcp);
+
+    Log(lInfo) << "Created a new VolumeCreator project";
+
+    ProjectTView->Items->AddObject(NULL, vcp->getProjectName().c_str(), (void*) vcp);
+	return true;
+}
+
+bool ProjectManager::selectFirst()
+{
+	mCurrentVCProject = mVCProjects.begin();
+
+    return selectNode(*mCurrentVCProject);
+}
+
+bool ProjectManager::selectLast()
+{
+	if(!mVCProjects.size())
+    {
+    	return false;
+    }
+
+	mCurrentVCProject = mVCProjects.end();
+    mCurrentVCProject--;
+
+    return selectNode(*mCurrentVCProject);
+}
+
+bool ProjectManager::selectNode(VolumeCreatorProject*)
+{
+	TTreeNode* node = getNodeWithProject(ProjectTView, (*mCurrentVCProject));
+    if(node)
+    {
+		ProjectTView->Selected = node;
+        return true;
+    }
+	return false;
+}
+
+bool ProjectManager::selectNext()
+{
+}
+
+bool ProjectManager::selectPrevious()
+{
+}
+
+
+TTreeNode* getNodeWithCaption(TTreeView* tv, const string& name)
+{
+	for(int i = 0; i < tv->Items->Count; i++)
+    {
+		TTreeNode* node = tv->Items->Item[i];
+    	if(node->Text == vclstr(name))
+        {
+        	return node;
+        }
+    }
+    return NULL;
+}
+
+TTreeNode* getNodeWithProject(TTreeView* tv, const VolumeCreatorProject* p)
+{
+	for(int i = 0; i < tv->Items->Count; i++)
+    {
+		TTreeNode* node = tv->Items->Item[i];
+    	if((VolumeCreatorProject*) node->Data == p)
+        {
+        	return node;
+        }
+    }
+    return NULL;
+}

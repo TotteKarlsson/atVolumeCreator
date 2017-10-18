@@ -43,7 +43,7 @@
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtDlgs.hpp>
 #include <Vcl.ImgList.hpp>
-//#include "RzTreeVw.hpp"
+#include "atProjectManager.h"
 class TImageForm;
 using mtk::Process;
 //---------------------------------------------------------------------------
@@ -326,7 +326,8 @@ __published:	// IDE-managed Components
 	    TImageForm*										gImageForm;
         string 											mCurrentImageFile;
 
-        												//!VC can have one VC project open at any one time.
+        												//!VC can have only one VC project open at any one time.
+		ProjectManager									mProjectManager;
         VolumeCreatorProject*					 		mCurrentVCProject;
         vector<VolumeCreatorProject*>					mVCProjects;
 		int __fastcall 									saveProject();

@@ -42,8 +42,10 @@ void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView*
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::NewProjectAExecute(TObject *Sender)
 {
-    mCurrentVCProject = createNewProject();
-    ProjectTView->Items->AddObject(NULL, mCurrentVCProject->getProjectName().c_str(), (void*) mCurrentVCProject);
+	mProjectManager.createNewProject();
+	mProjectManager.selectLast();
+//    mCurrentVCProject = createNewProject();
+//    ProjectTView->Items->AddObject(NULL, mCurrentVCProject->getProjectName().c_str(), (void*) mCurrentVCProject);
 }
 
 //---------------------------------------------------------------------------
@@ -69,7 +71,7 @@ void __fastcall TMainForm::AddRenderProjectExecute(TObject *Sender)
 VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 {
 	//Check how many main nodes
-    int nrOfVCPs = ProjectTView->Items->Count;
+    int nrOfVCPs = mVCProjects.size();
 
 	string pName = "VC Project " + mtk::toString(nrOfVCPs);
 	VolumeCreatorProject* vcp = new VolumeCreatorProject(pName);

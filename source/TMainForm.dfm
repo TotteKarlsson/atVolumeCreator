@@ -16842,8 +16842,6 @@ object MainForm: TMainForm
           Align = alClient
           Caption = 'Select Stacks'
           TabOrder = 1
-          ExplicitTop = 193
-          ExplicitHeight = 527
           object StacksForProjectCB: TCheckListBox
             AlignWithMargins = True
             Left = 17
@@ -16854,7 +16852,6 @@ object MainForm: TMainForm
             Align = alLeft
             ItemHeight = 13
             TabOrder = 0
-            ExplicitHeight = 504
           end
           object GroupBox3: TGroupBox
             Left = 354
@@ -17439,7 +17436,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800400010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800480010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -48,7 +48,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCurrentStack(""),
     mIsStyleMenuPopulated(false),
 	gImageForm(NULL),
-    mCurrentVCProject(NULL)
+    mCurrentVCProject(NULL),
+    mProjectManager((*ProjectTView))
 {
     setupIniFile();
     setupAndReadIniParameters();
