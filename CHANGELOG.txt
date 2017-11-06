@@ -1,3 +1,10 @@
+Release 0.5.9 (Nov 6)
+=======================
+* Fixed generation of stack script to work with latest renderclient code
+* Added ability to choose 8, 16 and 24 bit TIFFS when creating stacks
+* Removed convert to gray check box
+* Creating a project manager
+
 Release 0.5.8 (Oct 16)
 =======================
 * Added flags for padding seroes and convert to gray
