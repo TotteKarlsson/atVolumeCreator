@@ -14,6 +14,7 @@ ProjectManager::ProjectManager(TTreeView& tv)
 :
 ProjectTView(&tv)
 {
+	mCurrentVCProject = mVCProjects.begin();
 }
 
 ProjectManager::~ProjectManager()
@@ -34,11 +35,34 @@ bool ProjectManager::createNewProject()
 	return true;
 }
 
+bool ProjectManager::selectItem(TTreeNode* item)
+{
+	//Check if this is a root node or a child
+    if(item->Parent == NULL)
+    {
+		VolumeCreatorProject* vcp = (VolumeCreatorProject*) item->Data;
+        if(vcp)
+        {
+        	Log(lInfo) << "Selecting project: " << vcp->getProjectName();
+            return true;
+        }
+    }
+    else
+
+    return false;
+}
+
 bool ProjectManager::selectFirst()
 {
 	mCurrentVCProject = mVCProjects.begin();
 
     return selectNode(*mCurrentVCProject);
+}
+
+VolumeCreatorProject* ProjectManager::getCurrentProject()
+{
+	//This relies on proper iterator management troughout the code!
+	return (mCurrentVCProject != mVCProjects.end()) ? (*mCurrentVCProject) : NULL;
 }
 
 bool ProjectManager::selectLast()
@@ -67,12 +91,13 @@ bool ProjectManager::selectNode(VolumeCreatorProject*)
 
 bool ProjectManager::selectNext()
 {
+	return false;
 }
 
 bool ProjectManager::selectPrevious()
 {
+	return false;
 }
-
 
 TTreeNode* getNodeWithCaption(TTreeView* tv, const string& name)
 {

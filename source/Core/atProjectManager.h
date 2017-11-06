@@ -26,7 +26,10 @@ class ProjectManager
         bool										selectNext();
         bool										selectPrevious();
         bool										selectLast();
+		bool 										selectItem(TTreeNode* item);
 		bool 										selectNode(VolumeCreatorProject* vcp);
+        VolumeCreatorProject*						getCurrentProject();
+
 	private:
     	TTreeView*			                        ProjectTView;
         vector<VolumeCreatorProject*>			 	mVCProjects;

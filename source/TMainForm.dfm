@@ -111,7 +111,7 @@ object MainForm: TMainForm
       Top = 1
       Width = 1234
       Height = 748
-      ActivePage = TabSheet1
+      ActivePage = TabSheet4
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -16626,10 +16626,17 @@ object MainForm: TMainForm
           Left = 0
           Top = 70
           Width = 1226
-          Height = 155
+          Height = 227
           Align = alTop
           Caption = 'Stack Output Settings'
           TabOrder = 0
+          object Label4: TLabel
+            Left = 282
+            Top = 51
+            Width = 55
+            Height = 13
+            Caption = 'Image type'
+          end
           object BoundsCB: TPropertyCheckBox
             Left = 282
             Top = 28
@@ -16642,35 +16649,23 @@ object MainForm: TMainForm
             TabOrder = 0
             Value = True
           end
-          object ConvertToGreyCB: TPropertyCheckBox
-            Left = 282
-            Top = 97
-            Width = 130
-            Height = 17
-            Caption = 'Convert to Grey (8bit)'
-            Checked = True
-            Enabled = False
-            State = cbChecked
-            TabOrder = 1
-            Value = True
-          end
           object CreateTIFFStackCB: TPropertyCheckBox
-            Left = 282
-            Top = 51
+            Left = 281
+            Top = 170
             Width = 212
             Height = 17
             Caption = 'Create TIFFSTACK (max size ~ 4GB)'
-            TabOrder = 2
+            TabOrder = 1
             OnClick = CreateTIFFStackCBClick
           end
           object DeleteTempTiffsCB: TPropertyCheckBox
-            Left = 302
-            Top = 74
+            Left = 301
+            Top = 193
             Width = 146
             Height = 17
             Caption = 'Delete temporary TIFFS'
             Enabled = False
-            TabOrder = 3
+            TabOrder = 2
           end
           object JobCreationGB: TGroupBox
             Left = 500
@@ -16678,7 +16673,7 @@ object MainForm: TMainForm
             Width = 280
             Height = 102
             Caption = 'Server Job Creation'
-            TabOrder = 4
+            TabOrder = 3
             object ZBatchSizeE: TIntegerLabeledEdit
               Left = 16
               Top = 32
@@ -16718,14 +16713,14 @@ object MainForm: TMainForm
           end
           object PadFileNamesWithZeroesCB: TPropertyCheckBox
             Left = 282
-            Top = 120
+            Top = 147
             Width = 178
             Height = 17
             Caption = 'Pad File Names with Zeroes'
             Checked = True
             Enabled = False
             State = cbChecked
-            TabOrder = 5
+            TabOrder = 4
             Value = True
           end
           object Run: TButton
@@ -16734,7 +16729,7 @@ object MainForm: TMainForm
             Width = 119
             Height = 78
             Caption = 'Run'
-            TabOrder = 6
+            TabOrder = 5
             OnClick = RunClick
           end
           object SubFolder1: TSTDStringLabeledEdit
@@ -16745,7 +16740,7 @@ object MainForm: TMainForm
             EditLabel.Width = 55
             EditLabel.Height = 13
             EditLabel.Caption = 'Subfolder 1'
-            TabOrder = 7
+            TabOrder = 6
             Text = 'Test'
             Value = 'Test'
           end
@@ -16757,7 +16752,7 @@ object MainForm: TMainForm
             EditLabel.Width = 93
             EditLabel.Height = 13
             EditLabel.Caption = 'Output Root Folder'
-            TabOrder = 8
+            TabOrder = 7
             Text = '/nas4/volumes'
             Value = '/nas4/volumes'
           end
@@ -16769,9 +16764,23 @@ object MainForm: TMainForm
             EditLabel.Width = 25
             EditLabel.Height = 13
             EditLabel.Caption = 'Scale'
-            TabOrder = 9
+            TabOrder = 8
             Text = '0.50'
             Value = 0.500000000000000000
+          end
+          object ImageTypeCB: TComboBox
+            Left = 282
+            Top = 70
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemIndex = 0
+            TabOrder = 9
+            Text = '24 bit (RGB)'
+            Items.Strings = (
+              '24 bit (RGB)'
+              '16 bit'
+              '8 bit')
           end
         end
         inline TSSHFrame1: TSSHFrame
@@ -16836,9 +16845,9 @@ object MainForm: TMainForm
         end
         object MultiStackCreationGB: TGroupBox
           Left = 0
-          Top = 225
+          Top = 297
           Width = 1226
-          Height = 495
+          Height = 423
           Align = alClient
           Caption = 'Select Stacks'
           TabOrder = 1
@@ -16847,7 +16856,7 @@ object MainForm: TMainForm
             Left = 17
             Top = 18
             Width = 335
-            Height = 472
+            Height = 400
             Margins.Left = 15
             Align = alLeft
             ItemHeight = 13
@@ -16901,13 +16910,13 @@ object MainForm: TMainForm
             'z_batch_size=${args[10]}'
             'max_number_of_jobs=${args[11]}'
             'job_niceness=${args[12]}'
-            'convertToGrey=${args[13]}'
+            'imageType=${args[13]}'
             'padFileNamesWithZeroes=${args[14]}'
             'use_bounds=${args[15]}'
             'bounds=${args[16]}'
+            ''
             'fmt='#39'tiff'#39
             'filter='#39'false'#39
-            ''
             'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
             ''
             '#Write run info to file'
@@ -16916,13 +16925,15 @@ object MainForm: TMainForm
             'echo "Owner: "$owner >> $info'
             'echo "Project: "$proj >> $info'
             'echo "StackName: "$stack >> $info'
+            'echo "Outputfolder: $customFolder >> $info'
+            'echo "Custom Output Folder: $stack >> $info'
             'echo "Scale: "$scale >> $info'
             'echo "Format: "$fmt >> $info'
             'echo "Filter: "$filter >> $info'
             'echo "BaseDataURL: "$baseDataURL >> $info'
             'echo "Using static bounds: "$use_bounds >> $info'
             'echo "Number of Z'#39's: "$nrOfSections >> $info'
-            'echo "Create final tiffstack: "$create_tiff_stack >> $info'
+            'echo "Create tiffstack: "$create_tiff_stack >> $info'
             
               'echo "Delete individual TIFFs: "$delete_individual_tiffs >> $inf' +
               'o'
@@ -16930,26 +16941,22 @@ object MainForm: TMainForm
             'echo "Max number of jobs: "$max_number_of_jobs >> $info'
             'echo "Job niceness: "$job_niceness >> $info'
             'echo "Zs: "$sections_str >> $info'
+            'echo "Image type (bits): "$imageType >> $info'
             
               'echo "Pad Filenames with Zeroes: "$padFileNamesWithZeroes >> $in' +
               'fo'
-            'echo "Convert to grey: "$convertToGrey >> $info'
             'if [ "$use_bounds"  == "true" ]; then'
             '   echo "Using bounds:" $bounds >> $info'
             'fi'
             ''
             '#JAVA CLIENT SETTINGS'
-            
-              '================================================================' +
-              '=========='
-            '================='
             '#Class path'
             
               'classpath='#39' /nas4/getVolume/render/render-ws-java-client/target/' +
               'render-ws-java-client-2.0.1-SNAPSHOT-standalone.jar'#39
             ''
             '#Java class'
-            'jc='#39'org.janelia.render.client.RenderBoundClient'#39
+            'jc='#39'org.janelia.render.client.RenderSectionClient'#39
             'script_name=`basename "$0"`'
             'script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"'
             'running_from=`pwd -P`'
@@ -16987,23 +16994,26 @@ object MainForm: TMainForm
               '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
               'ectory $rootOutPutFolder --customOutputFolder '
             
-              '$customFolder --channelName $stack --scale $scale --owner $owner' +
-              ' --padFileNamesWithZeroes $padFileNamesWithZeroes '
+              '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
+              'wner --padFileNamesWithZeroes '
+            '$padFileNamesWithZeroes'
             
-              '--convertToGrey $convertToGrey --doFilter false --fillWithNoise ' +
-              'false --baseDataUrl $baseDataURL --format $fmt --project '
-            '$proj ${z_batch[$i]}"'
+              '--imageType $imageType --doFilter false --fillWithNoise false --' +
+              'baseDataUrl $baseDataURL --format $fmt --project $proj'
+            '${z_batch[$i]}"'
             '    else'
             
               '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
               'ectory $rootOutPutFolder --customOutputFolder '
             
-              '$customFolder --channelName $stack --scale $scale --owner $owner' +
-              ' --padFileNamesWithZeroes $padFileNamesWithZeroes '
+              '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
+              'wner --padFileNamesWithZeroes '
+            '$padFileNamesWithZeroes'
             
-              '--convertToGrey $convertToGrey --doFilter false --fillWithNoise ' +
-              'false --baseDataUrl $baseDataURL --format $fmt --project '
-            '$proj ${z_batch[$i]} --bounds $bounds"'
+              '--imageType $imageType --doFilter false --fillWithNoise false --' +
+              'baseDataUrl $baseDataURL --format $fmt --project $proj'
+            '${z_batch[$i]}'
+            '--bounds $bounds"'
             '    fi'
             '    eval nice -n $job_niceness java $java_args &'
             '    if (( $jobs >= $max_number_of_jobs ))'
@@ -17436,7 +17446,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800480010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

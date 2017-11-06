@@ -39,6 +39,11 @@ void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView*
     tv->Select(n);
 }
 
+VolumeCreatorProject* TMainForm::getCurrentVCProject()
+{
+	return mProjectManager.getCurrentProject();
+}
+
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::NewProjectAExecute(TObject *Sender)
 {
@@ -84,9 +89,9 @@ VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ProjectStatusTimerTimer(TObject *Sender)
 {
-	if(mCurrentVCProject)
+	if(getCurrentVCProject() && getCurrentVCProject()->isModified())
     {
-       	SaveProjectA->Enabled = mCurrentVCProject->isModified() ? true : false;
+       	SaveProjectA->Enabled = true;
     }
     else
     {
@@ -98,27 +103,28 @@ void __fastcall TMainForm::ProjectStatusTimerTimer(TObject *Sender)
 void __fastcall TMainForm::FileOpen1Accept(TObject *Sender)
 {
     string f(stdstr(FileOpen1->Dialog->FileName));
-    if(mCurrentVCProject && mCurrentVCProject->isOpen())
+    VolumeCreatorProject* p = getCurrentVCProject();
+    if(p && p->isOpen())
     {
 		if(closeProject() == mrOk)
         {
-        	mCurrentVCProject->close();
+        	p->close();
         }
     }
 
-    if(!mCurrentVCProject)
+    if(!p)
 	{
-		mCurrentVCProject = createNewProject();
+		p = createNewProject();
     }
 
-	if(mCurrentVCProject->loadFromFile(f))
+	if(p->loadFromFile(f))
     {
 	    ProjFileLbl->Caption = string("Project File: " + f).c_str();
     	Log(lInfo) << "Loaded project file: "<<f;
-        mCurrentVCProject->open();
+        p->open();
     }
 
-    addVCProjectToTreeView(mCurrentVCProject, ProjectTView);
+    addVCProjectToTreeView(p, ProjectTView);
 }
 
 //---------------------------------------------------------------------------
@@ -126,11 +132,12 @@ int __fastcall TMainForm::closeProject()
 {
 	if(saveProject() == mrOk)
     {
-        mCurrentVCProject->close();
-        Log(lInfo) << "Closed project: "<<mCurrentVCProject->getFileName();
+	    VolumeCreatorProject* p = getCurrentVCProject();
+        p->close();
+        Log(lInfo) << "Closed project: "<<p->getFileName();
    	    ProjFileLbl->Caption = string("Project File: None").c_str();
-        delete mCurrentVCProject;
-        mCurrentVCProject = NULL;
+        delete p;
+        p = NULL;
         return mrOk;
     }
     else
@@ -154,9 +161,10 @@ int __fastcall TMainForm::saveProjectAs()
                 return mrCancel;
             }
         }
-        mCurrentVCProject->setFileName(fName);
-        mCurrentVCProject->save();
-        Log(lInfo) << "Saved project: "<<mCurrentVCProject->getFileName();
+	    VolumeCreatorProject* p = getCurrentVCProject();
+        p->setFileName(fName);
+        p->save();
+        Log(lInfo) << "Saved project: "<<p->getFileName();
 	    ProjFileLbl->Caption = string("Project File: " + fName).c_str();
         return mrOk;
     }
@@ -171,7 +179,8 @@ int __fastcall TMainForm::saveProjectAs()
 int __fastcall TMainForm::saveProject()
 {
 	//If project don't have an assigned filename, open filesavefile dialog
-    if(mCurrentVCProject && mCurrentVCProject->isNeverSaved())
+    VolumeCreatorProject* p = getCurrentVCProject();
+    if(p && p->isNeverSaved())
     {
     	int res = MessageDlg("Save Project?", mtConfirmation, TMsgDlgButtons() << mbYes<<mbNo<<mbCancel, 0);
         if(res == mrYes)
@@ -183,10 +192,10 @@ int __fastcall TMainForm::saveProject()
         	return mrCancel;
         }
     }
-    else if(mCurrentVCProject)
+    else if(p)
     {
-		mCurrentVCProject->save();
-        Log(lInfo) << "Saved project: "<<mCurrentVCProject->getFileName();
+		p->save();
+        Log(lInfo) << "Saved project: "<<p->getFileName();
         return mrOk;
     }
 	return mrOk;
@@ -206,19 +215,20 @@ void __fastcall TMainForm::CloseProjectAExecute(TObject *Sender)
 
 void __fastcall TMainForm::CloseProjectAUpdate(TObject *Sender)
 {
-   	CloseProjectA->Enabled = mCurrentVCProject ? true : false;
+   	CloseProjectA->Enabled = getCurrentVCProject() ? true : false;
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveProjectAsAUpdate(TObject *Sender)
 {
-	SaveProjectAsA->Enabled = mCurrentVCProject ? true : false;
+	SaveProjectAsA->Enabled = getCurrentVCProject() ? true : false;
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveProjectAUpdate(TObject *Sender)
 {
-	SaveProjectA->Enabled = (mCurrentVCProject && mCurrentVCProject->isModified()) ? true : false;
+    VolumeCreatorProject* p = getCurrentVCProject();
+	SaveProjectA->Enabled = (p && p->isModified()) ? true : false;
 }
 
 //---------------------------------------------------------------------------

@@ -90,9 +90,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <BCC_PCHInject>VolumeCreatorPCH1.h</BCC_PCHInject>
-        <VerInfo_Keys>CompanyName=Allen Institute for Brain Science;FileDescription=;FileVersion=0.5.8.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=0.5.5;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Allen Institute for Brain Science;FileDescription=;FileVersion=0.5.9.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=0.5.5;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Release>8</VerInfo_Release>
+        <VerInfo_Release>9</VerInfo_Release>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <LinkPackageStatics>sbridge170.lib</LinkPackageStatics>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
@@ -290,8 +290,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
                 </ProjectProperties>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="p:\build\debug\BPL\ArrayCamPackage.bpl">ArrayCam VCL Core package</Excluded_Packages>
                     <Excluded_Packages Name="p:\build\debug\BPL\ArrayBotPackage.bpl">File p:\build\debug\BPL\ArrayBotPackage.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="p:\build\debug\BPL\ArrayCamPackage.bpl">File p:\build\debug\BPL\ArrayCamPackage.bpl not found</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k170.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp170.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>

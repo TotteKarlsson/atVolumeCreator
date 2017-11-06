@@ -48,7 +48,6 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCurrentStack(""),
     mIsStyleMenuPopulated(false),
 	gImageForm(NULL),
-    mCurrentVCProject(NULL),
     mProjectManager((*ProjectTView))
 {
     setupIniFile();
@@ -927,10 +926,8 @@ void __fastcall TMainForm::ProjectTViewClick(TObject *Sender)
 {
 	//Get current node from the treeview
 	TTreeNode* item = ProjectTView->Selected;
-    if(item)
-    {
-    	mCurrentVCProject = (VolumeCreatorProject*) item->Data;
-    }
+	mProjectManager.selectItem(item);
+
 }
 
 

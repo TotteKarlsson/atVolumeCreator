@@ -173,8 +173,8 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     //13th - Job niceness
 	cmd <<" "<<NicenessE->getValue();
 
-    //14th - convert to gray
-	cmd <<" "<<mtk::toString(ConvertToGreyCB->Checked);
+    //14th - imageType
+	cmd <<" "<<toInt(stdstr(ImageTypeCB->Text));
 
     //15th - pad file names
 	cmd <<" "<<mtk::toString(PadFileNamesWithZeroesCB->Checked);
