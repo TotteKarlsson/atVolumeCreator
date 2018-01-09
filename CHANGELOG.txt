@@ -1,3 +1,9 @@
+Release 0.6.0 (Jan 9)
+=======================
+* Added a "Extra Scale Factor" Edit box to deal with data having "weird" scale
+* Hiding the project pane for now, until "projects" works
+
+--- 2018 --------------
 Release 0.5.9 (Nov 6)
 =======================
 * Fixed generation of stack script to work with latest renderclient code
@@ -87,3 +93,6 @@ Release 0.5.1 (May 3)
 Release 0.5.0 (March 10)
 =======================
 * Created an initial release
+
+
+--- 2017 ---

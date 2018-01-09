@@ -388,7 +388,7 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
 	try
     {
 	    mROIHistory.clear();
-	    mScaleE->setValue(0.05);
+	    mScaleE->setValue(0.05 * ScaleConstantE->getValue());
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
         mCurrentRB.setScale(mScaleE->getValue());
         render(&mCurrentRB);

@@ -201,6 +201,7 @@ __published:	// IDE-managed Components
 	TPropertyCheckBox *PadFileNamesWithZeroesCB;
 	TComboBox *ImageTypeCB;
 	TLabel *Label4;
+	TFloatLabeledEdit *ScaleConstantE;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -268,7 +269,6 @@ __published:	// IDE-managed Components
 	void __fastcall ProjectTViewEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S);
 	void __fastcall EditViewNodeExecute(TObject *Sender);
 	void __fastcall ProjectTViewClick(TObject *Sender);
-
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
