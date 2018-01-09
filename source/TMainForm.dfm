@@ -111,7 +111,7 @@ object MainForm: TMainForm
       Top = 1
       Width = 1234
       Height = 748
-      ActivePage = TabSheet4
+      ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
       object TabSheet1: TTabSheet
@@ -149,14 +149,14 @@ object MainForm: TMainForm
                 EditLabel.Height = 13
                 EditLabel.Caption = 'Scale'
                 TabOrder = 0
-                Text = '0.05'
+                Text = '0.0500'
                 OnKeyDown = mScaleEKeyDown
                 Value = 0.050000000000000000
               end
               object mResetButton: TButton
-                Left = 157
+                Left = 144
                 Top = 101
-                Width = 122
+                Width = 135
                 Height = 45
                 Caption = 'Reset to Layer Bounds'
                 TabOrder = 5
@@ -238,6 +238,19 @@ object MainForm: TMainForm
                 TabOrder = 7
                 Text = '0'
                 OnKeyDown = IntensityKeyDown
+              end
+              object ScaleConstantE: TFloatLabeledEdit
+                Left = 160
+                Top = 76
+                Width = 50
+                Height = 21
+                EditLabel.Width = 101
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Extra Scale Constant'
+                TabOrder = 8
+                Text = '1.0000'
+                OnKeyDown = mScaleEKeyDown
+                Value = 1.000000000000000000
               end
             end
             object PostProcessingGB: TGroupBox
@@ -16765,7 +16778,7 @@ object MainForm: TMainForm
             EditLabel.Height = 13
             EditLabel.Caption = 'Scale'
             TabOrder = 8
-            Text = '0.50'
+            Text = '0.5000'
             Value = 0.500000000000000000
           end
           object ImageTypeCB: TComboBox
@@ -17244,6 +17257,7 @@ object MainForm: TMainForm
       Height = 748
       Align = alLeft
       TabOrder = 2
+      Visible = False
       object ProjectTView: TTreeView
         Left = 1
         Top = 1
@@ -17446,7 +17460,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800900010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
