@@ -5,7 +5,7 @@
 #include "mtkLogger.h"
 #include <vector>
 #include "atRenderClient.h"
-#include "mtkExeFile.h"
+//#include "mtkExeFile.h"
 #include "mtkMathUtils.h"
 #include "TMemoLogger.h"
 #include "TSelectZsForm.h"
@@ -94,7 +94,12 @@ void __fastcall TMainForm::onImage()
 
     string pic = mRC.getImageLocalPathAndFileName().c_str();
 
-    if(IMContrastControl->Checked || FlipImageRightCB->Checked|| FlipImageLeftCB->Checked || ColorRG->ItemIndex > 0)
+    if(	IMContrastControl->Checked  ||
+    	FlipImageRightCB->Checked   ||
+        FlipImageLeftCB->Checked    ||
+        ColorRG->ItemIndex > 0		||
+		CustomRotationE->getValue() != 0
+        )
     {
         //Read imageMagick image from file
         MagickWand*image_wand;
@@ -120,6 +125,11 @@ void __fastcall TMainForm::onImage()
         if(FlipImageLeftCB->Checked)
         {
             flipImage(image_wand, -90);
+        }
+
+        if(CustomRotationE->getValue() != 0)
+        {
+		    flipImage(image_wand, CustomRotationE->getValue());
         }
 
         if(ColorRG->ItemIndex > 0)
@@ -928,6 +938,17 @@ void __fastcall TMainForm::ProjectTViewClick(TObject *Sender)
 	TTreeNode* item = ProjectTView->Selected;
 	mProjectManager.selectItem(item);
 
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CustomRotationEKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+	if(Key == VK_RETURN)
+    {
+		//Do a rotation
+		ClickZ(NULL);
+    }
 }
 
 

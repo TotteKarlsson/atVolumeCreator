@@ -257,10 +257,12 @@ object MainForm: TMainForm
               Left = 0
               Top = 161
               Width = 283
-              Height = 128
+              Height = 280
               Align = alTop
               Caption = 'Post Processing'
               TabOrder = 1
+              ExplicitLeft = 3
+              ExplicitTop = 176
               object IMContrastControl: TCheckBox
                 Left = 17
                 Top = 47
@@ -280,10 +282,11 @@ object MainForm: TMainForm
                 OnClick = ClickImageProcCB
               end
               object ColorRG: TRadioGroup
-                Left = 14
-                Top = 70
-                Width = 281
+                Left = 2
+                Top = 226
+                Width = 279
                 Height = 52
+                Align = alBottom
                 Caption = 'Color'
                 Columns = 4
                 ItemIndex = 0
@@ -295,6 +298,9 @@ object MainForm: TMainForm
                   'Magenta')
                 TabOrder = 2
                 OnClick = ColorRGClick
+                ExplicitLeft = -2
+                ExplicitTop = 70
+                ExplicitWidth = 281
               end
               object FlipImageLeftCB: TCheckBox
                 Left = 17
@@ -305,15 +311,28 @@ object MainForm: TMainForm
                 TabOrder = 3
                 OnClick = ClickImageProcCB
               end
+              object CustomRotationE: TFloatLabeledEdit
+                Left = 17
+                Top = 96
+                Width = 112
+                Height = 21
+                EditLabel.Width = 109
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Custom Rotation (deg)'
+                TabOrder = 4
+                Text = '0'
+                OnKeyDown = CustomRotationEKeyDown
+              end
             end
             object CacheGB: TGroupBox
               Left = 0
-              Top = 289
+              Top = 441
               Width = 283
               Height = 77
               Align = alTop
               Caption = 'Local Cache'
               TabOrder = 2
+              ExplicitTop = 289
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 21
@@ -17306,8 +17325,8 @@ object MainForm: TMainForm
     Top = 264
   end
   object ZsPopUpMenu: TPopupMenu
-    Left = 288
-    Top = 432
+    Left = 344
+    Top = 384
     object Checkrange1: TMenuItem
       Caption = 'Select/Unselect Z'#39's'
       OnClick = Checkrange1Click
@@ -17460,7 +17479,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800900010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800980010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

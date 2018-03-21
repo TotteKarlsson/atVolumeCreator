@@ -48,7 +48,7 @@ bool ProjectManager::selectItem(TTreeNode* item)
         }
     }
     else
-
+	{}
     return false;
 }
 

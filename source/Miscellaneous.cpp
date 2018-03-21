@@ -77,18 +77,18 @@ void __fastcall TMainForm::ThemesMenuClick(TObject *Sender)
 
     if(mrResult == mrOk)
     {
-        if (!ActivateApplicationStyleChange(gRestartMutexName, stdstr(styleName)))
-        {
-            ::MessageBox(NULL, TEXT("Something Wrong"),
-                         TEXT("Restart App"),
-                         MB_OK|MB_ICONEXCLAMATION);
-            return ;
-        }
-
-        gApplicationStyle = stdstr(styleName);
-        //Write to registry
-        writeStringToRegistry(gApplicationRegistryRoot, "", "Theme", gApplicationStyle);
-
+//        if (!ActivateApplicationStyleChange(gRestartMutexName, stdstr(styleName)))
+//        {
+//            ::MessageBox(NULL, TEXT("Something Wrong"),
+//                         TEXT("Restart App"),
+//                         MB_OK|MB_ICONEXCLAMATION);
+//            return ;
+//        }
+//
+//        gApplicationStyle = stdstr(styleName);
+//        //Write to registry
+//        writeStringToRegistry(gApplicationRegistryRoot, "", "Theme", gApplicationStyle);
+//
         // Terminate application.
         Close();
     }

@@ -172,8 +172,6 @@ int __fastcall TMainForm::saveProjectAs()
     {
         return mrCancel;
     }
-
-    return mrOk;
 }
 
 int __fastcall TMainForm::saveProject()

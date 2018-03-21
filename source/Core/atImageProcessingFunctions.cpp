@@ -146,7 +146,7 @@ void sobel(TImage *image)
                   2*pa[x] - 2*pc[x] +
                   pc[x+1] - pc[x+1];
 
-            newvalue = sqrt(pow(auxvalue1,2)+pow(auxvalue2,2));
+            newvalue = sqrt(pow((double) auxvalue1,2)+pow((double) auxvalue2,2));
 
             if(newvalue>255) matrix[y][x]=255;
             else if (newvalue<0) matrix[y][x]=0;

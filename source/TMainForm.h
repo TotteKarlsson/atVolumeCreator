@@ -22,7 +22,7 @@
 #include "TPropertyCheckBox.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
-#include "mtkProcess.h"
+//#include "mtkProcess.h"
 #include "mtkIniFileProperties.h"
 #include "TRegistryProperties.h"
 #include "mtkIniFileC.h"
@@ -45,7 +45,7 @@
 #include <Vcl.ImgList.hpp>
 #include "atProjectManager.h"
 class TImageForm;
-using mtk::Process;
+//using mtk::Process;
 //---------------------------------------------------------------------------
 using mtk::IniFileProperties;
 using mtk::TRegistryProperties;
@@ -202,6 +202,7 @@ __published:	// IDE-managed Components
 	TComboBox *ImageTypeCB;
 	TLabel *Label4;
 	TFloatLabeledEdit *ScaleConstantE;
+	TFloatLabeledEdit *CustomRotationE;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -269,6 +270,8 @@ __published:	// IDE-managed Components
 	void __fastcall ProjectTViewEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S);
 	void __fastcall EditViewNodeExecute(TObject *Sender);
 	void __fastcall ProjectTViewClick(TObject *Sender);
+	void __fastcall CustomRotationEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 
 	private:	// User declarations
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);

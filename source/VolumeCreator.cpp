@@ -36,16 +36,16 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
 	try
 	{
-  		// Initialize restart code
-		// Check if this instance is restarted and
-		// wait while previos instance finish
-		if (mtk::checkForCommandLineFlag("--Restart"))
-		{
-            //TODO: Fix this.. not working properly..
-            //            MessageDlg("Wait...", mtWarning, TMsgDlgButtons() << mbOK, 0);
-			mtk::WaitForPreviousProcessToFinish(gRestartMutexName);
-            Sleep(1000);
-		}
+//  		// Initialize restart code
+//		// Check if this instance is restarted and
+//		// wait while previos instance finish
+//		if (mtk::checkForCommandLineFlag("--Restart"))
+//		{
+//            //TODO: Fix this.. not working properly..
+//            //            MessageDlg("Wait...", mtWarning, TMsgDlgButtons() << mbOK, 0);
+//			mtk::WaitForPreviousProcessToFinish(gRestartMutexName);
+//            Sleep(1000);
+//		}
 
         //Look at this later... does not work yet
         appMutex = ::CreateMutexA(NULL, FALSE, gApplicationMutexName.c_str());
@@ -67,11 +67,11 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->MainFormOnTaskBar = true;
         setupLogging();
 
-        //Load Styles from files
-        if(loadStyles())
-        {
-        	setupApplicationTheme();
-        }
+//        //Load Styles from files
+//        if(loadStyles())
+//        {
+//        	setupApplicationTheme();
+//        }
 
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
@@ -103,6 +103,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 #pragma comment(lib, "libcurl.lib")
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "DuneForms.bpi")
+
 #pragma comment(lib, "atCore.lib")
 #pragma comment(lib, "tinyxml2-static.lib")
 

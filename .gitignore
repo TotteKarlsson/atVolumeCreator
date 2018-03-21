@@ -14,3 +14,4 @@ __history
 /PythonSource/*.pyc
 /resources/Backup_of_graphics.cdr
 *.~dsk
+*.stat
