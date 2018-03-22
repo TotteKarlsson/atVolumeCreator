@@ -2,14 +2,13 @@
 #pragma hdrstop
 #include <tchar.h>
 #include <string>
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
 #include "atApplicationSupportFunctions.h"
 #include "mtkRestartApplicationUtils.h"
+#include "mtkVCLUtils.h"
+#include "mtkLogger.h"
 //---------------------------------------------------------------------------
-
 using namespace mtk;
 
 using std::string;
@@ -24,7 +23,7 @@ extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
 extern string       gAppDataLocation            = joinPath(getSpecialFolder(CSIDL_LOCAL_APPDATA), gAppName);
 extern string 		gApplicationRegistryRoot  	= "\\Software\\Allen Institute\\VolumeCreator\\0.5.0";
-extern string       gApplicationStyle           = "Cobalt XEMedia";
+extern string       gApplicationStyle           = "Iceberg Classico";
 extern string       gApplicationMutexName       = "VolumeCreatorMutex";
 extern HWND         gOtherAppWindow             = NULL;
 extern string       gRestartMutexName           = "VolumeCreatorRestartMutex";
@@ -36,18 +35,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 
 	try
 	{
-//  		// Initialize restart code
-//		// Check if this instance is restarted and
-//		// wait while previos instance finish
-//		if (mtk::checkForCommandLineFlag("--Restart"))
-//		{
-//            //TODO: Fix this.. not working properly..
-//            //            MessageDlg("Wait...", mtWarning, TMsgDlgButtons() << mbOK, 0);
-//			mtk::WaitForPreviousProcessToFinish(gRestartMutexName);
-//            Sleep(1000);
-//		}
 
-        //Look at this later... does not work yet
         appMutex = ::CreateMutexA(NULL, FALSE, gApplicationMutexName.c_str());
         if( ERROR_ALREADY_EXISTS == GetLastError() )
         {
@@ -63,20 +51,17 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
             return(1); // Exit program
         }
 
+		gApplicationStyle = readStringFromRegistry(gApplicationRegistryRoot, "", "Theme",  gApplicationStyle);
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
         setupLogging();
 
-//        //Load Styles from files
-//        if(loadStyles())
-//        {
-//        	setupApplicationTheme();
-//        }
-
+		TStyleManager::TrySetStyle("Carbon");
 		Application->CreateForm(__classid(TMainForm), &MainForm);
 		Application->CreateForm(__classid(TSSHFrame), &SSHFrame);
 		Application->CreateForm(__classid(TOverlayedImage), &OverlayedImage);
 		Application->Run();
+		writeStringToRegistry(gApplicationRegistryRoot, "", "Theme",  gApplicationStyle);
 	}
 	catch (Exception &exception)
 	{

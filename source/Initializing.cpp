@@ -5,15 +5,20 @@
 #include "mtkLogger.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
+//---------------------------------------------------------------------------
 
 using namespace mtk;
 extern string gAppName;
 extern string gAppDataLocation;
+extern string gApplicationStyle;
+
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
 	this->Caption = vclstr(createWindowTitle("VolumeCreator", Application));
     this->DoubleBuffered = true;
+
+	TStyleManager::SetStyle(gApplicationStyle.c_str());
 
 	gLogger.setLogLevel(mLogLevel);
 	mLogFileReader.start(true);

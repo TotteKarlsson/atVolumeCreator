@@ -36,62 +36,37 @@ void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
     }
 }
 
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::populateStyleMenu()
-{
-    //Populate styles menu
-    string themeFolder("themes");
-    themeFolder = joinPath(getCWD(), themeFolder);
-
-    //Populate menu with styles in the style manager
-    //Add to menu
-    System::DynamicArray<System::UnicodeString> aList = TStyleManager::StyleNames;
-    String activeStyle = TStyleManager::ActiveStyle->Name;
-    for(int i = 0; i < aList.Length; i++)
-    {
-        String name = TStyleManager::StyleNames[i];
-
-        TMenuItem *Item = new TMenuItem(ThemesMenu);
-        Item->Caption = name;
-        Item->OnClick = ThemesMenuClick;
-        ThemesMenu->Add(Item);
-        if(Item->Caption == activeStyle)
-        {
-            Item->Checked = true;
-        }
-    }
-}
-
 void __fastcall TMainForm::ThemesMenuClick(TObject *Sender)
 {
-    TMenuItem* anItem = dynamic_cast<TMenuItem*>(Sender);
-    if(!anItem)
+
+   TMenuItem* menuItem = dynamic_cast<TMenuItem*>(Sender);
+    if(!menuItem)
     {
         return;
     }
 
-    TReplaceFlags rFlags(rfIgnoreCase|rfReplaceAll);
-    String styleName = StringReplace(anItem->Caption, "&", "", rFlags);
+	//Uncheck any checked items
+	for(int i = 0; i < ThemesMenu->Count; i++)
+	{
+		TMenuItem* menuItem = ThemesMenu->Items[i];
+		if(menuItem && menuItem->Checked)
+		{
+			menuItem->Checked = false;
+		}
+	}
 
-    int mrResult = MessageDlg("Changing theme require restart of the Application.\nRestart?", mtCustom, TMsgDlgButtons() << mbOK<<mbCancel, 0);
+	TRegistryForm::writeToRegistry();
 
-    if(mrResult == mrOk)
-    {
-//        if (!ActivateApplicationStyleChange(gRestartMutexName, stdstr(styleName)))
-//        {
-//            ::MessageBox(NULL, TEXT("Something Wrong"),
-//                         TEXT("Restart App"),
-//                         MB_OK|MB_ICONEXCLAMATION);
-//            return ;
-//        }
-//
-//        gApplicationStyle = stdstr(styleName);
-//        //Write to registry
-//        writeStringToRegistry(gApplicationRegistryRoot, "", "Theme", gApplicationStyle);
-//
-        // Terminate application.
-        Close();
-    }
+	TReplaceFlags rFlags(rfIgnoreCase|rfReplaceAll);
+	String styleName = StringReplace(menuItem->Caption, "&", "", rFlags);
+	TStyleManager::SetStyle(styleName);
+
+	//Check the menu item
+	menuItem->Checked = (TStyleManager::ActiveStyle->Name == styleName) ? true : false;
+
+	//Write to registry
+	gApplicationStyle = stdstr(styleName);
+	writeStringToRegistry(gApplicationRegistryRoot, "", "Theme", gApplicationStyle);
 }
 
 //---------------------------------------------------------------------------

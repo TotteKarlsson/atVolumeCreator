@@ -34,9 +34,11 @@ using namespace std;
 TImage *CurrImage;
 extern string gAppDataLocation;
 extern string gLogFileName;
+
+//__fastcall      TRegistryForm(const string& regRoot, const string& formName, TComponent* Owner);
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
-	: TForm(Owner),
+	: TRegistryForm(gApplicationRegistryRoot, "MainForm", Owner),
     mLogLevel(lAny),
     mLogFileReader(joinPath(gAppDataLocation, gLogFileName), logMsg),
     mBottomPanelHeight(205),
@@ -824,7 +826,7 @@ void __fastcall TMainForm::FormShow(TObject *Sender)
 {
     if(mIsStyleMenuPopulated == false)
     {
-        populateStyleMenu();
+        populateStyleMenu(ThemesMenu, ThemesMenuClick);
         mIsStyleMenuPopulated = true;
 	}
 }

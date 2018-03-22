@@ -44,6 +44,8 @@
 #include <Vcl.ExtDlgs.hpp>
 #include <Vcl.ImgList.hpp>
 #include "atProjectManager.h"
+#include <System.ImageList.hpp>
+#include "TRegistryForm.h"
 class TImageForm;
 //using mtk::Process;
 //---------------------------------------------------------------------------
@@ -55,7 +57,7 @@ string createProcessedImageFileName(const string& fname);
 
 class VolumeCreatorProject;
 
-class TMainForm : public TForm
+class TMainForm : public TRegistryForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
@@ -282,7 +284,6 @@ __published:	// IDE-managed Components
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
 		bool          									mIsStyleMenuPopulated;
-        void __fastcall                          		populateStyleMenu();
         TApplicationProperties                          mAppProperties;
         IniFileProperties	      	                    mGeneralProperties;
         mtk::Property<int>	                            mBottomPanelHeight;

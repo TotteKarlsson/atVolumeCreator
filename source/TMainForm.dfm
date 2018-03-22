@@ -79,14 +79,12 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 16
       Top = 4
-      Width = 1401
-      Height = 27
+      Width = 40
+      Height = 13
       Margins.Left = 15
       Align = alClient
       Caption = '<none>'
       Layout = tlCenter
-      ExplicitWidth = 40
-      ExplicitHeight = 13
     end
   end
   object MainPanel: TPanel
@@ -116,6 +114,10 @@ object MainForm: TMainForm
       TabOrder = 0
       object TabSheet1: TTabSheet
         Caption = 'General'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object mLeftPanel: TPanel
           Left = 0
           Top = 113
@@ -261,8 +263,6 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Post Processing'
               TabOrder = 1
-              ExplicitLeft = 3
-              ExplicitTop = 176
               object IMContrastControl: TCheckBox
                 Left = 17
                 Top = 47
@@ -298,9 +298,6 @@ object MainForm: TMainForm
                   'Magenta')
                 TabOrder = 2
                 OnClick = ColorRGClick
-                ExplicitLeft = -2
-                ExplicitTop = 70
-                ExplicitWidth = 281
               end
               object FlipImageLeftCB: TCheckBox
                 Left = 17
@@ -332,7 +329,6 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Local Cache'
               TabOrder = 2
-              ExplicitTop = 289
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 21
@@ -618,8 +614,8 @@ object MainForm: TMainForm
           object Image1: TImage
             Left = 1
             Top = 1
-            Width = 839
-            Height = 588
+            Width = 715
+            Height = 715
             Align = alClient
             AutoSize = True
             Picture.Data = {
@@ -16654,6 +16650,10 @@ object MainForm: TMainForm
       object TabSheet4: TTabSheet
         Caption = 'Stack Creation'
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object StackGenerationGB: TGroupBox
           Left = 0
           Top = 70
@@ -17108,6 +17108,7 @@ object MainForm: TMainForm
       object TabSheet2: TTabSheet
         Caption = 'Terafly Generation (Linux)'
         ImageIndex = 4
+        ExplicitWidth = 109
         inline TParaConverterFrame1: TParaConverterFrame
           Left = 0
           Top = 0
@@ -17115,7 +17116,7 @@ object MainForm: TMainForm
           Height = 720
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 1226
+          ExplicitWidth = 109
           ExplicitHeight = 720
           inherited SettingsGB: TGroupBox
             Width = 1226
@@ -17158,6 +17159,10 @@ object MainForm: TMainForm
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object GroupBox6: TGroupBox
           Left = 19
           Top = 25
@@ -17291,6 +17296,8 @@ object MainForm: TMainForm
         OnContextPopup = ProjectTViewContextPopup
         OnEdited = ProjectTViewEdited
         OnEditing = ProjectTViewEditing
+        ExplicitLeft = 105
+        ExplicitTop = -183
       end
     end
   end
@@ -17346,8 +17353,8 @@ object MainForm: TMainForm
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 32
-    Top = 328
+    Left = 240
+    Top = 24
     object File1: TMenuItem
       Caption = 'File'
       object New1: TMenuItem
@@ -17479,7 +17486,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800980010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800A80010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -9,13 +9,13 @@
         <Projects Include="P:\libs\atapi\source\database\atDatabase.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="P:\libs\dsl\VCL\Common\VCLCommon.cbproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="P:\libs\atapi\source\vcl\atVCLCore.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="VolumeCreator.cbproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -44,6 +44,15 @@
     <Target Name="atDatabase:Make">
         <MSBuild Projects="P:\libs\atapi\source\database\atDatabase.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="VCLCommon">
+        <MSBuild Projects="P:\libs\dsl\VCL\Common\VCLCommon.cbproj"/>
+    </Target>
+    <Target Name="VCLCommon:Clean">
+        <MSBuild Projects="P:\libs\dsl\VCL\Common\VCLCommon.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VCLCommon:Make">
+        <MSBuild Projects="P:\libs\dsl\VCL\Common\VCLCommon.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="atVCLCore">
         <MSBuild Projects="P:\libs\atapi\source\vcl\atVCLCore.cbproj"/>
     </Target>
@@ -62,23 +71,14 @@
     <Target Name="VolumeCreator:Make">
         <MSBuild Projects="VolumeCreator.cbproj" Targets="Make"/>
     </Target>
-    <Target Name="ImageProcessing">
-        <MSBuild Projects="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj"/>
-    </Target>
-    <Target Name="ImageProcessing:Clean">
-        <MSBuild Projects="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ImageProcessing:Make">
-        <MSBuild Projects="C:\Users\Public\Documents\RAD Studio\10.0\Samples\CPP\VCL\ImageProc\ImageProcessing.cbproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="atCore;atDatabase;atVCLCore;VolumeCreator;ImageProcessing"/>
+        <CallTarget Targets="atCore;atDatabase;VCLCommon;atVCLCore;VolumeCreator"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="atCore:Clean;atDatabase:Clean;atVCLCore:Clean;VolumeCreator:Clean;ImageProcessing:Clean"/>
+        <CallTarget Targets="atCore:Clean;atDatabase:Clean;VCLCommon:Clean;atVCLCore:Clean;VolumeCreator:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="atCore:Make;atDatabase:Make;atVCLCore:Make;VolumeCreator:Make;ImageProcessing:Make"/>
+        <CallTarget Targets="atCore:Make;atDatabase:Make;VCLCommon:Make;atVCLCore:Make;VolumeCreator:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

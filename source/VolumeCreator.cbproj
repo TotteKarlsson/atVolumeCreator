@@ -56,6 +56,7 @@
         <BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
         <SanitizedProjectName>VolumeCreator</SanitizedProjectName>
+        <Custom_Styles>Carbon|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Carbon.vsf;Glossy|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Glossy.vsf;Glow|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Glow.vsf;&quot;Iceberg Classico|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\IcebergClassico.vsf&quot;;Luna|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Luna.vsf;Obsidian|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Obsidian.vsf;&quot;Ruby Graphite|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\RubyGraphite.vsf&quot;;&quot;Sapphire Kamri|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\SapphireKamri.vsf&quot;;Sky|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Sky.vsf;TabletDark|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\TabletDark.vsf</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <ILINK_LibraryPath>C:\Program Files (x86)\ImageMagick-7.0.7-Q16\lib\;$(ILINK_LibraryPath)</ILINK_LibraryPath>

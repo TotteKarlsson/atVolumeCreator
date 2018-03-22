@@ -74,6 +74,7 @@ miscRedist="/cygdrive/p/redist"
 cp $miscRedist/dbexppgsql40.dll             $dest
 cp $miscRedist/tsclib.dll                   $dest
 cp $miscRedist/navusbapi.dll                $dest
+cp $miscRedist/CORE*.dll                    $dest
 
 #for local bin folder
 
