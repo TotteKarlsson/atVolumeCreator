@@ -56,7 +56,7 @@
         <BCC_ExtendedErrorInfo>true</BCC_ExtendedErrorInfo>
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
         <SanitizedProjectName>VolumeCreator</SanitizedProjectName>
-        <Custom_Styles>Carbon|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Carbon.vsf;Glossy|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Glossy.vsf;Glow|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Glow.vsf;&quot;Iceberg Classico|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\IcebergClassico.vsf&quot;;Luna|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Luna.vsf;Obsidian|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Obsidian.vsf;&quot;Ruby Graphite|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\RubyGraphite.vsf&quot;;&quot;Sapphire Kamri|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\SapphireKamri.vsf&quot;;Sky|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Sky.vsf;TabletDark|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\TabletDark.vsf</Custom_Styles>
+        <Custom_Styles>Carbon|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Carbon.vsf;Glow|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Glow.vsf;&quot;Iceberg Classico|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\IcebergClassico.vsf&quot;;Luna|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\Luna.vsf;TabletDark|VCLSTYLE|C:\Users\Public\Documents\Embarcadero\Studio\19.0\Styles\TabletDark.vsf</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <ILINK_LibraryPath>C:\Program Files (x86)\ImageMagick-7.0.7-Q16\lib\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
@@ -95,7 +95,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <BCC_PCHInject>VolumeCreatorPCH1.h</BCC_PCHInject>
-        <VerInfo_Keys>CompanyName=Allen Institute for Brain Science;FileVersion=0.6.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=0.5.5;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Allen Institute for Brain Science;FileVersion=0.6.1.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=0.5.5;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <Icon_MainIcon>..\resources\VolumeCreator.ico</Icon_MainIcon>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
@@ -112,6 +112,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <BT_BuildType>Debug</BT_BuildType>
         <LinkPackageStatics>sbridge250.lib</LinkPackageStatics>
         <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;DuneComponents.bpi;vclactnband.bpi;VCLCommon.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi</LinkPackageImports>
+        <VerInfo_Release>1</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>

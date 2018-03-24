@@ -1,3 +1,8 @@
+Release 0.6.1 (March 22)
+=======================
+* Added styling
+* Compiled with Tokyo
+
 Release 0.6.0 (Jan 9)
 =======================
 * Added a "Extra Scale Factor" Edit box to deal with data having "weird" scale

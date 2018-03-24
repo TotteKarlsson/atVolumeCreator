@@ -75,6 +75,7 @@ cp $miscRedist/dbexppgsql40.dll             $dest
 cp $miscRedist/tsclib.dll                   $dest
 cp $miscRedist/navusbapi.dll                $dest
 cp $miscRedist/CORE*.dll                    $dest
+cp $miscRedist/sbridge250.bpl               $dest
 
 #for local bin folder
 
