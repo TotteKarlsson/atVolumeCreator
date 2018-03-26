@@ -7,7 +7,7 @@
 
 using std::string;
 using std::vector;
-using mtk::gEmptyString;
+using dsl::gEmptyString;
 
 class RenderProject : public VolumeCreatorProject
 {
@@ -22,8 +22,8 @@ class RenderProject : public VolumeCreatorProject
 
         								//!ProjectManagement
 		virtual bool 	   	            write();
-        virtual mtk::XMLElement*        addToXMLDocumentAsChild(mtk::XMLDocument& doc, mtk::XMLNode* docRoot);
-		virtual bool 					loadFromXML(mtk::XMLNode* node);
+        virtual dsl::XMLElement*        addToXMLDocumentAsChild(dsl::XMLDocument& doc, dsl::XMLNode* docRoot);
+		virtual bool 					loadFromXML(dsl::XMLNode* node);
 
 
     	string 		                    mInfo;

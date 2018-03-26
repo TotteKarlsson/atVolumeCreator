@@ -1,15 +1,15 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
-#include "mtkRestartApplicationUtils.h"
+#include "dslRestartApplicationUtils.h"
 #include "TAboutVolumeCreatorForm.h"
 //---------------------------------------------------------------------------
 
-using namespace mtk;
+using namespace dsl;
 extern string gAppName;
 extern string gApplicationStyle;
 extern string gRestartMutexName;
@@ -287,7 +287,7 @@ void __fastcall TMainForm::ParseNDVIZURL1Click(TObject *Sender)
     XCoord->setValue(x);
     YCoord->setValue(y);
 
-    i = mZs->Items->IndexOf(mtk::toString(z).c_str());
+    i = mZs->Items->IndexOf(dsl::toString(z).c_str());
     if(i < 0)
     {
     	Log(lError) <<"Failed to parse render URL";
@@ -315,11 +315,11 @@ string TMainForm::createNDVIZURL()
     URL = replaceSubstring("STACK", 	        stdstr(StackCB->Text), 	                                URL);
     URL = replaceSubstring("OWNER", 	        stdstr(OwnerCB->Text), 	                                URL);
     URL = replaceSubstring("PROJECT", 	        stdstr(ProjectCB->Text), 	                                URL);
-    URL = replaceSubstring("MAX_INTENSITY", 	mtk::toString(2.0 * (MaxIntensity->getValue()/65535.0)), 	URL);
-    URL = replaceSubstring("X_CENTER", 			mtk::toString(xCenter), 					                URL);
-    URL = replaceSubstring("Y_CENTER", 			mtk::toString(yCenter), 					                URL);
-    URL = replaceSubstring("Z_VALUE", 			mtk::toString(getCurrentZ()), 	 			                URL);
-    URL = replaceSubstring("ZOOM_FACTOR", 		mtk::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
+    URL = replaceSubstring("MAX_INTENSITY", 	dsl::toString(2.0 * (MaxIntensity->getValue()/65535.0)), 	URL);
+    URL = replaceSubstring("X_CENTER", 			dsl::toString(xCenter), 					                URL);
+    URL = replaceSubstring("Y_CENTER", 			dsl::toString(yCenter), 					                URL);
+    URL = replaceSubstring("Z_VALUE", 			dsl::toString(getCurrentZ()), 	 			                URL);
+    URL = replaceSubstring("ZOOM_FACTOR", 		dsl::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
 	return URL;
 }
 

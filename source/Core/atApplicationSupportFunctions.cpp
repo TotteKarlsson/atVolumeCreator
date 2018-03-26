@@ -1,11 +1,11 @@
 #pragma hdrstop
 #include "atApplicationSupportFunctions.h"
-#include "mtkUtils.h"
-#include "mtkLogger.h"
-#include "mtkRestartApplicationUtils.h"
-#include "mtkVCLUtils.h"
+#include "dslUtils.h"
+#include "dslLogger.h"
+#include "dslRestartApplicationUtils.h"
+#include "dslVCLUtils.h"
 
-using namespace mtk;
+using namespace dsl;
 
 extern string gAppDataLocation;
 extern string gLogFileName;
@@ -36,7 +36,7 @@ void setupLogging()
 
 	string fullLogFileName(joinPath(gAppDataLocation, gLogFileName));
 	clearFile(fullLogFileName);
-	mtk::gLogger.logToFile(fullLogFileName);
+	dsl::gLogger.logToFile(fullLogFileName);
 	LogOutput::mShowLogLevel = true;
 	LogOutput::mShowLogTime = false;
 	LogOutput::mUseLogTabs = false;
@@ -46,7 +46,7 @@ void setupLogging()
 //---------------------------------------------------------------------------
 void setupApplicationTheme()
 {
-	if(mtk::checkForCommandLineFlag("-Theme="))
+	if(dsl::checkForCommandLineFlag("-Theme="))
 	{
 		string cmdLine = stdstr(GetCommandLineA());
 		//User is changing the theme.

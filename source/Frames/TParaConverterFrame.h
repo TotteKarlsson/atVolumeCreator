@@ -4,10 +4,11 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include "TIntegerLabeledEdit.h"
+#include "dslTIntegerLabeledEdit.h"
 #include "TSSHFrame.h"
-#include "TSTDStringLabeledEdit.h"
+#include "dslTSTDStringLabeledEdit.h"
 #include <Vcl.ExtCtrls.hpp>
+#include "dslTSTDStringLabeledEdit.h"
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------

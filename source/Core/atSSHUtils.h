@@ -1,10 +1,10 @@
 #ifndef atSSHUtilsH
 #define atSSHUtilsH
 #include <string>
-#include "mtkStringList.h"
+#include "dslStringList.h"
 //---------------------------------------------------------------------------
 
-using mtk::StringList;
+using dsl::StringList;
 using std::string;
 
 namespace Scsshchannel

@@ -1,13 +1,13 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
 //---------------------------------------------------------------------------
 
-using namespace mtk;
+using namespace dsl;
 extern string gAppName;
 extern string gAppDataLocation;
 extern string gApplicationStyle;

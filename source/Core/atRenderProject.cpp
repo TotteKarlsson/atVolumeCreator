@@ -1,9 +1,9 @@
 #pragma hdrstop
 #include "atRenderProject.h"
-#include "mtkXMLUtils.h"
+#include "dslXMLUtils.h"
 //---------------------------------------------------------------------------
 
-using namespace mtk;
+using namespace dsl;
 
 
 
@@ -45,7 +45,7 @@ XMLElement* RenderProject::addToXMLDocumentAsChild(tinyxml2::XMLDocument& doc, X
     return val;
 }
 
-bool RenderProject::loadFromXML(mtk::XMLNode* node)
+bool RenderProject::loadFromXML(dsl::XMLNode* node)
 {
     XMLElement* e = node->FirstChildElement("owner");
     if(e)

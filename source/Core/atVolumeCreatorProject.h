@@ -1,8 +1,8 @@
 #ifndef atVolumeCreatorProjectH
 #define atVolumeCreatorProjectH
 #include "arraybot/atABExporter.h"
-#include "mtkProject.h"
-#include "mtkConstants.h"
+#include "dslProject.h"
+#include "dslConstants.h"
 #include "core/atATObject.h"
 #include <vector>
 
@@ -15,7 +15,7 @@ namespace tinyxml2
 }
 
 using namespace std;
-using mtk::gEmptyString;
+using dsl::gEmptyString;
 //!A render project is a project as exposed by Render
 class RenderProject;
 
@@ -36,7 +36,7 @@ VCObjectType 	toVCObjectType(const string& str);
 //!in volume creator
 //!A VolumeCreatorProject is the baseclass for such objects.
 
-class VolumeCreatorProject : public mtk::Project, public ATObject
+class VolumeCreatorProject : public dsl::Project, public ATObject
 {
 
     public:
@@ -44,16 +44,16 @@ class VolumeCreatorProject : public mtk::Project, public ATObject
                                                 ~VolumeCreatorProject();
 
 		virtual bool 							isModified();
-        virtual bool                            save(const string& fName = mtk::gEmptyString);
+        virtual bool                            save(const string& fName = dsl::gEmptyString);
         virtual bool                            open();
 
         virtual bool							addChild(VolumeCreatorProject* child);
 
         string                                  getPresentXMLModelVersion();
-        virtual mtk::XMLElement*           		addToXMLDocument(mtk::XMLDocument& doc, mtk::XMLNode* docRoot);
-		virtual mtk::XMLElement*                addToXMLDocumentAsChild(mtk::XMLDocument& doc, mtk::XMLNode* node);
+        virtual dsl::XMLElement*           		addToXMLDocument(dsl::XMLDocument& doc, dsl::XMLNode* docRoot);
+		virtual dsl::XMLElement*                addToXMLDocumentAsChild(dsl::XMLDocument& doc, dsl::XMLNode* node);
 
-        virtual bool   							loadFromXML(mtk::XMLNode* node);
+        virtual bool   							loadFromXML(dsl::XMLNode* node);
 
 		string 									getVCObjectTypeAsString();
 

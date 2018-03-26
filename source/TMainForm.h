@@ -6,30 +6,30 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
-#include "TFloatLabeledEdit.h"
-#include "TIntegerLabeledEdit.h"
-#include "TSTDStringLabeledEdit.h"
+#include "dslTFloatLabeledEdit.h"
+#include "dslTIntegerLabeledEdit.h"
+#include "dslTSTDStringLabeledEdit.h"
 #include <Vcl.CheckLst.hpp>
 #include <IdBaseComponent.hpp>
 #include <IdComponent.hpp>
 #include <IdHTTP.hpp>
 #include <IdTCPClient.hpp>
 #include <IdTCPConnection.hpp>
-#include "mtkLogFileReader.h"
-#include "mtkLogLevel.h"
+#include "dslLogFileReader.h"
+#include "dslLogLevel.h"
 #include <Vcl.ComCtrls.hpp>
-#include "TIntLabel.h"
-#include "TPropertyCheckBox.h"
+#include "dslTIntLabel.h"
+#include "dslTPropertyCheckBox.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
-//#include "mtkProcess.h"
-#include "mtkIniFileProperties.h"
-#include "TRegistryProperties.h"
-#include "mtkIniFileC.h"
-#include "TApplicationProperties.h"
+//#include "dslProcess.h"
+#include "dslIniFileProperties.h"
+#include "dslRegistryProperties.h"
+#include "dslTIniFileC.h"
+#include "dslApplicationProperties.h"
 #include "atFetchImagesThread.h"
 #include <Vcl.Menus.hpp>
-#include "mtkIntEdit.h"
+#include "dslTIntegerEdit.h"
 #include "TSSHFrame.h"
 #include "TImageControlsFrame.h"
 #include "MagickWand/MagickWand.h"
@@ -45,12 +45,19 @@
 #include <Vcl.ImgList.hpp>
 #include "atProjectManager.h"
 #include <System.ImageList.hpp>
-#include "TRegistryForm.h"
+#include "dslTRegistryForm.h"
+#include "dslTFloatLabeledEdit.h"
+#include "dslTIniFileC.h"
+#include "dslTIntegerEdit.h"
+#include "dslTIntegerLabeledEdit.h"
+#include "dslTIntLabel.h"
+#include "dslTPropertyCheckBox.h"
+#include "dslTSTDStringLabeledEdit.h"
 class TImageForm;
-//using mtk::Process;
+//using dsl::Process;
 //---------------------------------------------------------------------------
-using mtk::IniFileProperties;
-using mtk::TRegistryProperties;
+using dsl::IniFileProperties;
+using dsl::TRegistryProperties;
 extern string gApplicationRegistryRoot;
 void brightnessContrast(TImage *imageSelected);
 string createProcessedImageFileName(const string& fname);
@@ -76,7 +83,7 @@ __published:	// IDE-managed Components
 	TButton *mHistoryFFW;
 	TPanel *mLeftPanel;
 	TPaintBox *PaintBox1;
-	mtkIniFileC *mIniFileC;
+	TIniFileC *mIniFileC;
 	TPanel *Panel2;
 	TButton *mCLearMemo;
 	TSplitter *Splitter2;
@@ -89,7 +96,7 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *XCoord;
 	TIntegerLabeledEdit *YCoord;
 	TButton *mCloseBottomPanelBtn;
-	mtkIntEdit *mZoomFactor;
+	TIntegerEdit *mZoomFactor;
 	TButton *mShowBottomPanelBtn;
 	TTabSheet *TabSheet3;
 	TButton *mBrowseForCacheFolder;
@@ -284,13 +291,13 @@ __published:	// IDE-managed Components
         void __fastcall                                 logMsg();
 		LogFileReader                                   mLogFileReader;
 		bool          									mIsStyleMenuPopulated;
-        TApplicationProperties                          mAppProperties;
+        ApplicationProperties                           mAppProperties;
         IniFileProperties	      	                    mGeneralProperties;
-        mtk::Property<int>	                            mBottomPanelHeight;
-		mtk::Property<mtk::LogLevel>	                mLogLevel;
-		mtk::Property<string>	 		                mCurrentProject;
-		mtk::Property<string>	 		                mCurrentOwner;
-		mtk::Property<string>	 		                mCurrentStack;
+        dsl::Property<int>	                            mBottomPanelHeight;
+		dsl::Property<dsl::LogLevel>	                mLogLevel;
+		dsl::Property<string>	 		                mCurrentProject;
+		dsl::Property<string>	 		                mCurrentOwner;
+		dsl::Property<string>	 		                mCurrentStack;
 
         IniFileProperties	      	                    mServer1Properties;
         IniFileProperties	      	                    mServer2Properties;

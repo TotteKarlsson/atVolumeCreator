@@ -1,10 +1,10 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-#include "mtkLogger.h"
-#include "mtkVCLUtils.h"
+#include "dslLogger.h"
+#include "dslVCLUtils.h"
 
-using namespace mtk;
+using namespace dsl;
 
 void addRenderProjectToTreeView(TTreeNode* vcNode, RenderProject* rp, TTreeView* tv);
 
@@ -66,7 +66,7 @@ void __fastcall TMainForm::AddRenderProjectExecute(TObject *Sender)
 
 	    //Check how many renderproject childs
         int nrOfChilds = vcp->getNumberOfChilds();
-        rp->setProjectName("Render project " + mtk::toString(nrOfChilds + 1));
+        rp->setProjectName("Render project " + dsl::toString(nrOfChilds + 1));
     	vcp->addChild(rp);
     	vcp->setModified();
 		addRenderProjectToTreeView(vcNode, rp, ProjectTView);
@@ -78,7 +78,7 @@ VolumeCreatorProject* __fastcall TMainForm::createNewProject()
 	//Check how many main nodes
     int nrOfVCPs = mVCProjects.size();
 
-	string pName = "VC Project " + mtk::toString(nrOfVCPs);
+	string pName = "VC Project " + dsl::toString(nrOfVCPs);
 	VolumeCreatorProject* vcp = new VolumeCreatorProject(pName);
     mVCProjects.push_back(vcp);
 

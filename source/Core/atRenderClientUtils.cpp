@@ -1,9 +1,9 @@
 #pragma hdrstop
 #include "atRenderClientUtils.h"
 #include <vector>
-#include "mtkStringUtils.h"
+#include "dslStringUtils.h"
 
-using namespace mtk;
+using namespace dsl;
 
 
 //---------------------------------------------------------------------------
@@ -17,7 +17,7 @@ int getImageZFromURL(const string& url)
 		cachePaths = splitString(cachePaths[1], '/');
         if(cachePaths.size() > 2)
         {
-        	return mtk::toInt(cachePaths[1]);
+        	return dsl::toInt(cachePaths[1]);
         }
     }
     return -1;

@@ -1,12 +1,12 @@
 #pragma hdrstop
 #include "atSSHUtils.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 #include <sstream>
 #include "ScSSHChannel.hpp"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-using namespace mtk;
+using namespace dsl;
 
 
 string createEmptyScriptFileOnServer(TScSSHShell* ssh, const string& subFolders, const string& scriptName)

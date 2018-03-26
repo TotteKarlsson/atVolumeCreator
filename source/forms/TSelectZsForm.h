@@ -6,11 +6,11 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.CheckLst.hpp>
-#include "mtkStringList.h"
-#include "TIntegerLabeledEdit.h"
-#include "TIntLabel.h"
+#include "dslStringList.h"
+#include "dslTIntegerLabeledEdit.h"
+#include "dslTIntLabel.h"
 
-using namespace mtk;
+using namespace dsl;
 
 //---------------------------------------------------------------------------
 class TSelectZsForm : public TForm

@@ -1,11 +1,11 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 #include "atSSHUtils.h"
 
-using namespace mtk;
+using namespace dsl;
 
 
 void __fastcall TMainForm::TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender)
@@ -152,12 +152,12 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
 	cmd <<" "<<stdstr(VolumesScaleE->Text);
 
 	//9th - static bounds?
-    cmd <<" "<<mtk::toString(CreateTIFFStackCB->Checked);
+    cmd <<" "<<dsl::toString(CreateTIFFStackCB->Checked);
 
  	//10th - delete individual tiffs?
     if(CreateTIFFStackCB->Checked)
     {
-    	cmd <<" "<<mtk::toString(DeleteTempTiffsCB->Checked);
+    	cmd <<" "<<dsl::toString(DeleteTempTiffsCB->Checked);
     }
     else
     {
@@ -177,10 +177,10 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
 	cmd <<" "<<toInt(stdstr(ImageTypeCB->Text));
 
     //15th - pad file names
-	cmd <<" "<<mtk::toString(PadFileNamesWithZeroesCB->Checked);
+	cmd <<" "<<dsl::toString(PadFileNamesWithZeroesCB->Checked);
 
 	//16th - static bounds?
-    cmd <<" "<<mtk::toString(BoundsCB->Checked);
+    cmd <<" "<<dsl::toString(BoundsCB->Checked);
 
     if(BoundsCB->Checked)
     {

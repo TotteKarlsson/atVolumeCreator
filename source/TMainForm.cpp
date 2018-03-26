@@ -1,13 +1,13 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 #include <vector>
 #include "atRenderClient.h"
-//#include "mtkExeFile.h"
-#include "mtkMathUtils.h"
-#include "TMemoLogger.h"
+//#include "dslExeFile.h"
+#include "dslMathUtils.h"
+#include "dslTMemoLogger.h"
 #include "TSelectZsForm.h"
 #include "TImageForm.h"
 #include "atApplicationSupportFunctions.h"
@@ -15,21 +15,28 @@
 #include "atVolumeCreatorProject.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "TFloatLabeledEdit"
-#pragma link "TIntegerLabeledEdit"
-#pragma link "TSTDStringLabeledEdit"
-#pragma link "TIntLabel"
-#pragma link "TPropertyCheckBox"
-#pragma link "mtkIniFileC"
-#pragma link "mtkIntEdit"
+#pragma link "dslTFloatLabeledEdit"
+#pragma link "dslTIntegerLabeledEdit"
+#pragma link "dslTSTDStringLabeledEdit"
+#pragma link "dslTIntLabel"
+#pragma link "dslTPropertyCheckBox"
+#pragma link "dslTIniFileC"
+#pragma link "dslTIntegerEdit"
 #pragma link "TSSHFrame"
 #pragma link "TImageControlsFrame"
 #pragma link "TParaConverterFrame"
 
+#pragma link "dslTFloatLabeledEdit"
+#pragma link "dslTIniFileC"
+#pragma link "dslTIntegerEdit"
+#pragma link "dslTIntegerLabeledEdit"
+#pragma link "dslTIntLabel"
+#pragma link "dslTPropertyCheckBox"
+#pragma link "dslTSTDStringLabeledEdit"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
-using namespace mtk;
+using namespace dsl;
 using namespace std;
 TImage *CurrImage;
 extern string gAppDataLocation;

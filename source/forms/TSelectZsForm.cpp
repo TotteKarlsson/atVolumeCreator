@@ -1,13 +1,13 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TSelectZsForm.h"
-#include "mtkVCLUtils.h"
+#include "dslVCLUtils.h"
 #pragma package(smart_init)
-#pragma link "TIntegerLabeledEdit"
-#pragma link "TIntLabel"
+#pragma link "dslTIntegerLabeledEdit"
+#pragma link "dslTIntLabel"
 #pragma resource "*.dfm"
 
-using namespace mtk;
+using namespace dsl;
 
 TSelectZsForm *SelectZsForm;
 //---------------------------------------------------------------------------

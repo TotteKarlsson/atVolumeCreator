@@ -1,9 +1,9 @@
 #pragma hdrstop
 #include "atVolumeCreatorProject.h"
-#include "mtkXMLUtils.h"
-#include "mtkLogger.h"
+#include "dslXMLUtils.h"
+#include "dslLogger.h"
 #include "atRenderProject.h"
-using namespace mtk;
+using namespace dsl;
 using namespace tinyxml2;
 
 //XML Version history
@@ -159,7 +159,7 @@ bool VolumeCreatorProject::open()
     }
 }
 
-bool VolumeCreatorProject::loadFromXML(mtk::XMLNode* node)
+bool VolumeCreatorProject::loadFromXML(dsl::XMLNode* node)
 {
     XMLElement* e = node->FirstChildElement("name");
     if(e)

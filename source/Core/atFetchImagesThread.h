@@ -1,13 +1,13 @@
 #ifndef atFetchImagesThreadH
 #define atFetchImagesThreadH
-#include "mtkThread.h"
-#include "mtkStringList.h"
+#include "dslThread.h"
+#include "dslStringList.h"
 //---------------------------------------------------------------------------
 
-using mtk::StringList;
-using mtk::Thread;
+using dsl::StringList;
+using dsl::Thread;
 
-class FetchImagesThread : public mtk::Thread
+class FetchImagesThread : public dsl::Thread
 {
 	public:
 							FetchImagesThread(const StringList& urls = StringList(""), const string& cacheRoot = "p:\\cache");

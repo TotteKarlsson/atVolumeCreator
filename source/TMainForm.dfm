@@ -470,14 +470,16 @@ object MainForm: TMainForm
               TabOrder = 1
               OnClick = historyBtnClick
             end
-            object mZoomFactor: mtkIntEdit
+            object mZoomFactor: TIntegerEdit
               Left = 44
               Top = 29
               Width = 89
               Height = 21
               Anchors = [akTop, akRight]
+              NumbersOnly = True
               TabOrder = 2
               Text = '10'
+              Value = 10
             end
             object mZoomInBtn: TButton
               Left = 140
@@ -17325,7 +17327,7 @@ object MainForm: TMainForm
     Left = 664
     Top = 576
   end
-  object mIniFileC: mtkIniFileC
+  object mIniFileC: TIniFileC
     IniFileName = 'volumecreator.ini'
     RootFolder = '.'
     Left = 1048
@@ -17486,7 +17488,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800A80010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800B00010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

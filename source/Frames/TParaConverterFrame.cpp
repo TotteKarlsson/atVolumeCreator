@@ -1,17 +1,18 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TParaConverterFrame.h"
-#include "mtkVCLUtils.h"
+#include "dslVCLUtils.h"
 #include "atSSHUtils.h"
-#include "mtkLogger.h"
+#include "dslLogger.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "TIntegerLabeledEdit"
+#pragma link "dslTIntegerLabeledEdit"
 #pragma link "TSSHFrame"
-#pragma link "TSTDStringLabeledEdit"
+#pragma link "dslTSTDStringLabeledEdit"
+#pragma link "dslTSTDStringLabeledEdit"
 #pragma resource "*.dfm"
 TParaConverterFrame *ParaConverterFrame;
-using namespace mtk;
+using namespace dsl;
 
 
 //---------------------------------------------------------------------------

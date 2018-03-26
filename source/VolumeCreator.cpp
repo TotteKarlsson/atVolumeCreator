@@ -5,11 +5,11 @@
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
 #include "atApplicationSupportFunctions.h"
-#include "mtkRestartApplicationUtils.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslRestartApplicationUtils.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 //---------------------------------------------------------------------------
-using namespace mtk;
+using namespace dsl;
 
 using std::string;
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
@@ -82,13 +82,15 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 }
 
 //---------------------------------------------------------------------------
-#pragma comment(lib, "mtkCommon")
-#pragma comment(lib, "mtkMath")
+#pragma comment(lib, "dslFoundation")
+#pragma comment(lib, "dslVCLCommon.lib")
+#pragma comment(lib, "dslVCLComponents.bpi")
+#pragma comment(lib, "dslVisuals.bpi")
+
 #pragma comment(lib, "poco_foundation-static.lib")
 #pragma comment(lib, "libcurl.lib")
 #pragma comment(lib, "Ws2_32.lib")
-#pragma comment(lib, "DuneForms.bpi")
 
-#pragma comment(lib, "atCore.lib")
+#pragma comment(lib, "atFoundation.lib")
 #pragma comment(lib, "tinyxml2-static.lib")
 

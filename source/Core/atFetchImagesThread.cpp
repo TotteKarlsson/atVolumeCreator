@@ -1,13 +1,13 @@
 #pragma hdrstop
 #include "atFetchImagesThread.h"
-#include "mtkLogger.h"
+#include "dslLogger.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include "Poco/File.h"
-#include "mtkFileUtils.h"
+#include "dslFileUtils.h"
 #include "atRenderClientUtils.h"
 //---------------------------------------------------------------------------
-using namespace mtk;
+using namespace dsl;
 
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
 

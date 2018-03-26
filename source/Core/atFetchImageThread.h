@@ -1,16 +1,16 @@
 #ifndef atFetchImageThreadH
 #define atFetchImageThreadH
-#include "mtkThread.h"
-#include "mtkStringList.h"
+#include "dslThread.h"
+#include "dslStringList.h"
 #include "atRenderClientUtils.h"
 //---------------------------------------------------------------------------
 
-using mtk::StringList;
-using mtk::Thread;
+using dsl::StringList;
+using dsl::Thread;
 
 typedef void __fastcall (__closure *RCCallBack)(void);
 class RenderClient;
-class FetchImageThread : public mtk::Thread
+class FetchImageThread : public dsl::Thread
 {
 	public:
 							                FetchImageThread(RenderClient& rc);

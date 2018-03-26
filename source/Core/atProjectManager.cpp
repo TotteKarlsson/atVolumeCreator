@@ -1,11 +1,11 @@
 #pragma hdrstop
 #include "atProjectManager.h"
 #include "atVolumeCreatorProject.h"
-#include "mtkVCLUtils.h"
-#include "mtkLogger.h"
+#include "dslVCLUtils.h"
+#include "dslLogger.h"
 
 
-using namespace mtk;
+using namespace dsl;
 
 TTreeNode* getNodeWithCaption(TTreeView* tv, const string& name);
 TTreeNode* getNodeWithProject(TTreeView* tv, const VolumeCreatorProject* p);
@@ -25,7 +25,7 @@ bool ProjectManager::createNewProject()
 	//Check how many main nodes
     int nrOfVCPs = mVCProjects.size();
 
-	string pName = "VC Project " + mtk::toString(nrOfVCPs);
+	string pName = "VC Project " + dsl::toString(nrOfVCPs);
 	VolumeCreatorProject* vcp = new VolumeCreatorProject(pName);
     mVCProjects.push_back(vcp);
 

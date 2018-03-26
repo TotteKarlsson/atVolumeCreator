@@ -1,8 +1,8 @@
 #ifndef atRenderClientH
 #define atRenderClientH
 #include <string>
-#include "mtkStringList.h"
-#include "mtkConstants.h"
+#include "dslStringList.h"
+#include "dslConstants.h"
 #include <vector>
 #include "atRenderBox.h"
 #include "atRenderProject.h"
@@ -24,8 +24,8 @@ namespace System
 }
 
 using System::Classes::TMemoryStream;
-using mtk::StringList;
-using mtk::gEmptyString;
+using dsl::StringList;
+using dsl::gEmptyString;
 using std::string;
 
 typedef void __fastcall (__closure *RCCallBack)(void);
