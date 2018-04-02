@@ -30,8 +30,8 @@ cp $OUTPUTDIR/$OUTPUTFILENAME $dest
 #DS Binaries
 cp $OUTPUTDIR/dslFoundation.dll                 $dest
 cp $OUTPUTDIR/dslVCLCommon.dll                  $dest
-cp $BDSCOMMONDIR/BPL/dslVCLComponents.bpl      $dest
-cp $BDSCOMMONDIR/BPL/dslVisuals.bpl            $dest
+cp $BDSCOMMONDIR/BPL/dslVCLComponents.bpl       $dest
+cp $BDSCOMMONDIR/BPL/dslVCLVisualComponents.bpl $dest
 
 
  cp $OUTPUTDIR/atCore.dll                       $dest

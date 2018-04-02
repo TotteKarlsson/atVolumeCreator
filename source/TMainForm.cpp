@@ -961,3 +961,17 @@ void __fastcall TMainForm::CustomRotationEKeyDown(TObject *Sender, WORD &Key,
 }
 
 
+void __fastcall TMainForm::TestRenderServiceBtnClick(TObject *Sender)
+{
+    mRC.setBaseURL(mBaseUrlE->getValue());
+    mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
+
+    //Populate owners
+    StringList o = mRC.getOwners();
+    if(o.size())
+    {
+		populateDropDown(o, OwnerCB);
+    }
+}
+
+

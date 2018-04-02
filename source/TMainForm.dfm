@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 0
   AlphaBlendValue = 100
   Caption = 'Volume Creator'
-  ClientHeight = 986
+  ClientHeight = 833
   ClientWidth = 1421
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -26,14 +26,15 @@ object MainForm: TMainForm
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 967
+    Top = 814
     Width = 1421
     Height = 19
     Panels = <>
+    ExplicitTop = 766
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
-    Top = 948
+    Top = 795
     Width = 1421
     Height = 19
     Align = alBottom
@@ -41,6 +42,7 @@ object MainForm: TMainForm
     TabOrder = 1
     Visible = False
     OnClick = mShowBottomPanelBtnClick
+    ExplicitTop = 747
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -79,24 +81,27 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 16
       Top = 4
-      Width = 40
-      Height = 13
+      Width = 1401
+      Height = 27
       Margins.Left = 15
       Align = alClient
       Caption = '<none>'
       Layout = tlCenter
+      ExplicitWidth = 40
+      ExplicitHeight = 13
     end
   end
   object MainPanel: TPanel
     Left = 0
     Top = 57
     Width = 1421
-    Height = 891
+    Height = 738
     Align = alClient
     TabOrder = 4
+    ExplicitHeight = 690
     object Splitter2: TSplitter
       Left = 1
-      Top = 749
+      Top = 596
       Width = 1419
       Height = 5
       Cursor = crVSplit
@@ -108,32 +113,32 @@ object MainForm: TMainForm
       Left = 186
       Top = 1
       Width = 1234
-      Height = 748
+      Height = 595
       ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
+      ExplicitHeight = 547
       object TabSheet1: TTabSheet
         Caption = 'General'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
+        ExplicitHeight = 519
         object mLeftPanel: TPanel
           Left = 0
           Top = 113
           Width = 385
-          Height = 607
+          Height = 454
           Align = alLeft
           TabOrder = 0
+          ExplicitHeight = 406
           object ScrollBox1: TScrollBox
             Left = 1
             Top = 1
             Width = 287
-            Height = 605
+            Height = 452
             Align = alClient
             DoubleBuffered = True
             ParentDoubleBuffered = False
             TabOrder = 0
+            ExplicitHeight = 404
             object imageParasGB: TGroupBox
               Left = 0
               Top = 0
@@ -142,6 +147,7 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Image Parameters'
               TabOrder = 0
+              ExplicitWidth = 266
               object mScaleE: TFloatLabeledEdit
                 Left = 16
                 Top = 34
@@ -259,10 +265,11 @@ object MainForm: TMainForm
               Left = 0
               Top = 161
               Width = 283
-              Height = 280
+              Height = 198
               Align = alTop
               Caption = 'Post Processing'
               TabOrder = 1
+              ExplicitWidth = 266
               object IMContrastControl: TCheckBox
                 Left = 17
                 Top = 47
@@ -283,7 +290,7 @@ object MainForm: TMainForm
               end
               object ColorRG: TRadioGroup
                 Left = 2
-                Top = 226
+                Top = 144
                 Width = 279
                 Height = 52
                 Align = alBottom
@@ -298,6 +305,8 @@ object MainForm: TMainForm
                   'Magenta')
                 TabOrder = 2
                 OnClick = ColorRGClick
+                ExplicitTop = 226
+                ExplicitWidth = 262
               end
               object FlipImageLeftCB: TCheckBox
                 Left = 17
@@ -323,16 +332,17 @@ object MainForm: TMainForm
             end
             object CacheGB: TGroupBox
               Left = 0
-              Top = 441
+              Top = 359
               Width = 283
               Height = 77
               Align = alTop
               Caption = 'Local Cache'
               TabOrder = 2
+              ExplicitWidth = 266
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 21
-                Width = 97
+                Width = 153
                 Height = 50
                 Caption = 'Generate'
                 TabOrder = 0
@@ -344,20 +354,22 @@ object MainForm: TMainForm
             Left = 288
             Top = 1
             Width = 96
-            Height = 605
+            Height = 452
             Align = alRight
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitHeight = 404
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 92
-              Height = 588
+              Height = 435
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 387
             end
           end
         end
@@ -597,14 +609,15 @@ object MainForm: TMainForm
           Left = 385
           Top = 113
           Width = 841
-          Height = 607
+          Height = 454
           Align = alClient
           TabOrder = 2
+          ExplicitHeight = 406
           object PaintBox1: TPaintBox
             Left = 1
             Top = 1
             Width = 839
-            Height = 588
+            Height = 435
             Align = alClient
             Color = clRed
             ParentColor = False
@@ -616,8 +629,8 @@ object MainForm: TMainForm
           object Image1: TImage
             Left = 1
             Top = 1
-            Width = 715
-            Height = 715
+            Width = 839
+            Height = 435
             Align = alClient
             AutoSize = True
             Picture.Data = {
@@ -16636,7 +16649,7 @@ object MainForm: TMainForm
           end
           object HeaderControl1: THeaderControl
             Left = 1
-            Top = 589
+            Top = 436
             Width = 839
             Height = 17
             Align = alBottom
@@ -16646,16 +16659,14 @@ object MainForm: TMainForm
                 Text = 'Misc'
                 Width = 50
               end>
+            ExplicitTop = 388
           end
         end
       end
       object TabSheet4: TTabSheet
         Caption = 'Stack Creation'
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
+        ExplicitHeight = 519
         object StackGenerationGB: TGroupBox
           Left = 0
           Top = 70
@@ -16881,20 +16892,22 @@ object MainForm: TMainForm
           Left = 0
           Top = 297
           Width = 1226
-          Height = 423
+          Height = 270
           Align = alClient
           Caption = 'Select Stacks'
           TabOrder = 1
+          ExplicitHeight = 222
           object StacksForProjectCB: TCheckListBox
             AlignWithMargins = True
             Left = 17
             Top = 18
             Width = 335
-            Height = 400
+            Height = 247
             Margins.Left = 15
             Align = alLeft
             ItemHeight = 13
             TabOrder = 0
+            ExplicitHeight = 199
           end
           object GroupBox3: TGroupBox
             Left = 354
@@ -16951,7 +16964,7 @@ object MainForm: TMainForm
             ''
             'fmt='#39'tiff'#39
             'filter='#39'false'#39
-            'baseDataURL='#39'http://ibs-forrestc-ux1:8081/render-ws/v1'#39
+            'baseDataURL='#39'http://ibs-forrestc-ux1:8988/render-ws/v1'#39
             ''
             '#Write run info to file'
             'info=$rootOutPutFolder/$customFolder/$stack"_info.txt"'
@@ -16959,8 +16972,8 @@ object MainForm: TMainForm
             'echo "Owner: "$owner >> $info'
             'echo "Project: "$proj >> $info'
             'echo "StackName: "$stack >> $info'
-            'echo "Outputfolder: $customFolder >> $info'
-            'echo "Custom Output Folder: $stack >> $info'
+            'echo "Outputfolder: "$customFolder >> $info'
+            'echo "Custom Output Folder: "$stack >> $info'
             'echo "Scale: "$scale >> $info'
             'echo "Format: "$fmt >> $info'
             'echo "Filter: "$filter >> $info'
@@ -17110,26 +17123,26 @@ object MainForm: TMainForm
       object TabSheet2: TTabSheet
         Caption = 'Terafly Generation (Linux)'
         ImageIndex = 4
-        ExplicitWidth = 109
+        ExplicitHeight = 519
         inline TParaConverterFrame1: TParaConverterFrame
           Left = 0
           Top = 0
           Width = 1226
-          Height = 720
+          Height = 567
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 109
-          ExplicitHeight = 720
+          ExplicitWidth = 1226
+          ExplicitHeight = 519
           inherited SettingsGB: TGroupBox
             Width = 1226
-            Height = 650
+            Height = 497
             ExplicitWidth = 1226
-            ExplicitHeight = 650
+            ExplicitHeight = 449
             inherited RunGB: TGroupBox
               Width = 1222
-              Height = 503
+              Height = 350
               ExplicitWidth = 1222
-              ExplicitHeight = 503
+              ExplicitHeight = 302
             end
             inherited Panel1: TPanel
               Width = 1222
@@ -17161,10 +17174,7 @@ object MainForm: TMainForm
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
+        ExplicitHeight = 519
         object GroupBox6: TGroupBox
           Left = 19
           Top = 25
@@ -17197,13 +17207,13 @@ object MainForm: TMainForm
         object GroupBox4: TGroupBox
           Left = 19
           Top = 171
-          Width = 478
-          Height = 118
+          Width = 646
+          Height = 94
           Caption = 'Render Service Settings'
           TabOrder = 1
           object mBaseUrlE: TSTDStringLabeledEdit
             Left = 13
-            Top = 36
+            Top = 34
             Width = 444
             Height = 21
             EditLabel.Width = 45
@@ -17217,16 +17227,26 @@ object MainForm: TMainForm
               'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
               '1'
           end
+          object TestRenderServiceBtn: TButton
+            Left = 472
+            Top = 32
+            Width = 75
+            Height = 25
+            Caption = 'Test'
+            TabOrder = 1
+            OnClick = TestRenderServiceBtnClick
+          end
         end
       end
     end
     object mBottomPanel: TPanel
       Left = 1
-      Top = 754
+      Top = 601
       Width = 1419
       Height = 136
       Align = alBottom
       TabOrder = 1
+      ExplicitTop = 553
       object mLogPanel: TPanel
         Left = 1
         Top = 1
@@ -17280,15 +17300,16 @@ object MainForm: TMainForm
       Left = 1
       Top = 1
       Width = 185
-      Height = 748
+      Height = 595
       Align = alLeft
       TabOrder = 2
       Visible = False
+      ExplicitHeight = 547
       object ProjectTView: TTreeView
         Left = 1
         Top = 1
         Width = 183
-        Height = 746
+        Height = 593
         Align = alClient
         Indent = 19
         PopupMenu = ProjTreeViewPopup
@@ -17298,8 +17319,7 @@ object MainForm: TMainForm
         OnContextPopup = ProjectTViewContextPopup
         OnEdited = ProjectTViewEdited
         OnEditing = ProjectTViewEditing
-        ExplicitLeft = 105
-        ExplicitTop = -183
+        ExplicitHeight = 545
       end
     end
   end
@@ -17334,8 +17354,8 @@ object MainForm: TMainForm
     Top = 264
   end
   object ZsPopUpMenu: TPopupMenu
-    Left = 344
-    Top = 384
+    Left = 752
+    Top = 408
     object Checkrange1: TMenuItem
       Caption = 'Select/Unselect Z'#39's'
       OnClick = Checkrange1Click
@@ -17488,7 +17508,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800B00010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800C40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -32,7 +32,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
     //The app mutex is used to check for already running instances
     HANDLE appMutex;
-
 	try
 	{
 

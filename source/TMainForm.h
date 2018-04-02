@@ -212,6 +212,7 @@ __published:	// IDE-managed Components
 	TLabel *Label4;
 	TFloatLabeledEdit *ScaleConstantE;
 	TFloatLabeledEdit *CustomRotationE;
+	TButton *TestRenderServiceBtn;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -280,6 +281,7 @@ __published:	// IDE-managed Components
 	void __fastcall EditViewNodeExecute(TObject *Sender);
 	void __fastcall ProjectTViewClick(TObject *Sender);
 	void __fastcall CustomRotationEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall TestRenderServiceBtnClick(TObject *Sender);
 
 
 	private:	// User declarations
