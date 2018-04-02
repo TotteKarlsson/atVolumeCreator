@@ -13,11 +13,11 @@ using namespace dsl;
 
 using std::string;
 USEFORM("Forms\TSelectZsForm.cpp", SelectZsForm);
-USEFORM("Frames\TParaConverterFrame.cpp", ParaConverterFrame); /* TFrame: File Type */
 USEFORM("Forms\TImageForm.cpp", ImageForm);
 USEFORM("Forms\TOverlayedImage.cpp", OverlayedImage);
 USEFORM("TMainForm.cpp", MainForm);
 USEFORM("P:\libs\atapi\source\vcl\frames\TSSHFrame.cpp", SSHFrame); /* TFrame: File Type */
+USEFORM("Frames\TParaConverterFrame.cpp", ParaConverterFrame); /* TFrame: File Type */
 //---------------------------------------------------------------------------
 extern string		gAppName					= "VolumeCreator";
 extern string       gLogFileName                = "VolumeCreator.log";
@@ -85,12 +85,15 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 #pragma comment(lib, "dslFoundation")
 #pragma comment(lib, "dslVCLCommon.lib")
 #pragma comment(lib, "dslVCLComponents.bpi")
-#pragma comment(lib, "dslVisuals.bpi")
+#pragma comment(lib, "dslVCLVisualComponents.bpi")
+
+#pragma comment(lib, "atCore.lib")
+
 
 #pragma comment(lib, "poco_foundation-static.lib")
+#pragma comment(lib, "tinyxml2-static.lib")
 #pragma comment(lib, "libcurl.lib")
 #pragma comment(lib, "Ws2_32.lib")
 
-#pragma comment(lib, "atFoundation.lib")
-#pragma comment(lib, "tinyxml2-static.lib")
+
 
