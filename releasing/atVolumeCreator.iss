@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "atVolumeCreator"
-#define MyAppVersion "0.6.2"
+#define MyAppVersion "0.6.3"
 #define MyAppPublisher "Smith Lab"
 #define MyAppURL "http://www.example.com/"
 #define MyAppExeName "VolumeCreator.exe"
@@ -26,6 +26,9 @@ OutputDir               = x:\atSoftwareReleases
 Compression             = lzma
 SolidCompression        = yes
 
+; Tell Windows Explorer to reload the environment
+; ChangesEnvironment=yes
+
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
@@ -34,8 +37,18 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "P:\AppReleases\VolumeCreator\VolumeCreator.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "P:\AppReleases\VolumeCreator\*";            DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "P:\AppReleases\VolumeCreator\*";                 DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+
+;[Registry]
+;Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "MAGICK_CODER_MODULE_PATH"; \
+    ;ValueData: "{app}"; Flags: preservestringtype
+
+;Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "MAGICK_HOME"; \
+    ;ValueData: "{app}"; Flags: preservestringtype
+
+
 
 [Icons]
 Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

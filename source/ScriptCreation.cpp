@@ -63,7 +63,6 @@ void __fastcall TMainForm::RunClick(TObject *Sender)
 string TMainForm::createEmptyScriptFileOnServer(const string& scriptName)
 {
     stringstream cmd;
-
 	//First create remote folders
     string folders(joinPath(stdstr(VolumesFolder->Text), stdstr(SubFolder1->Text), '/'));
     cmd << "mkdir -p "<<folders;

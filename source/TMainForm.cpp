@@ -72,18 +72,28 @@ __fastcall TMainForm::~TMainForm()
 	delete gImageForm;
 }
 
-#define ThrowWandException(wand) \
-{ \
-  char \
-    *description; \
- \
-  ExceptionType \
-    severity; \
- \
-  description=MagickGetException(wand,&severity); \
-  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-  description=(char *) MagickRelinquishMemory(description); \
-  exit(-1); \
+//#define ThrowWandException(wand) \
+//{ \
+//  char \
+//    *description; \
+// \
+//  ExceptionType \
+//    severity; \
+// \
+//  description=MagickGetException(wand,&severity); \
+//  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
+//  description=(char *) MagickRelinquishMemory(description); \
+//  exit(-1); \
+//}
+//
+void ThrowWandException(MagickWand* wand)
+{
+  	char *description;
+	ExceptionType severity;
+
+  	description = MagickGetException(wand, &severity);
+    Log(lInfo) << "ImageMagic encountered a problem: " <<description <<" in module "<<GetMagickModule();
+  	description = (char *) MagickRelinquishMemory(description);
 }
 
 //This is called from a thread and need to be synchronized with the UI main thread
@@ -111,7 +121,7 @@ void __fastcall TMainForm::onImage()
         )
     {
         //Read imageMagick image from file
-        MagickWand*image_wand;
+        MagickWand* image_wand;
         MagickWandGenesis();
         image_wand = NewMagickWand();
         MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());

@@ -30,7 +30,6 @@ object MainForm: TMainForm
     Width = 1421
     Height = 19
     Panels = <>
-    ExplicitTop = 766
   end
   object mShowBottomPanelBtn: TButton
     Left = 0
@@ -42,7 +41,6 @@ object MainForm: TMainForm
     TabOrder = 1
     Visible = False
     OnClick = mShowBottomPanelBtnClick
-    ExplicitTop = 747
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -81,14 +79,12 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 16
       Top = 4
-      Width = 1401
-      Height = 27
+      Width = 40
+      Height = 13
       Margins.Left = 15
       Align = alClient
       Caption = '<none>'
       Layout = tlCenter
-      ExplicitWidth = 40
-      ExplicitHeight = 13
     end
   end
   object MainPanel: TPanel
@@ -98,7 +94,6 @@ object MainForm: TMainForm
     Height = 738
     Align = alClient
     TabOrder = 4
-    ExplicitHeight = 690
     object Splitter2: TSplitter
       Left = 1
       Top = 596
@@ -117,10 +112,12 @@ object MainForm: TMainForm
       ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
-      ExplicitHeight = 547
       object TabSheet1: TTabSheet
         Caption = 'General'
-        ExplicitHeight = 519
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object mLeftPanel: TPanel
           Left = 0
           Top = 113
@@ -128,7 +125,6 @@ object MainForm: TMainForm
           Height = 454
           Align = alLeft
           TabOrder = 0
-          ExplicitHeight = 406
           object ScrollBox1: TScrollBox
             Left = 1
             Top = 1
@@ -138,7 +134,6 @@ object MainForm: TMainForm
             DoubleBuffered = True
             ParentDoubleBuffered = False
             TabOrder = 0
-            ExplicitHeight = 404
             object imageParasGB: TGroupBox
               Left = 0
               Top = 0
@@ -147,7 +142,6 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Image Parameters'
               TabOrder = 0
-              ExplicitWidth = 266
               object mScaleE: TFloatLabeledEdit
                 Left = 16
                 Top = 34
@@ -269,7 +263,6 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Post Processing'
               TabOrder = 1
-              ExplicitWidth = 266
               object IMContrastControl: TCheckBox
                 Left = 17
                 Top = 47
@@ -305,8 +298,6 @@ object MainForm: TMainForm
                   'Magenta')
                 TabOrder = 2
                 OnClick = ColorRGClick
-                ExplicitTop = 226
-                ExplicitWidth = 262
               end
               object FlipImageLeftCB: TCheckBox
                 Left = 17
@@ -338,7 +329,6 @@ object MainForm: TMainForm
               Align = alTop
               Caption = 'Local Cache'
               TabOrder = 2
-              ExplicitWidth = 266
               object mFetchSelectedZsBtn: TButton
                 Left = 16
                 Top = 21
@@ -358,7 +348,6 @@ object MainForm: TMainForm
             Align = alRight
             Caption = 'Sections'
             TabOrder = 1
-            ExplicitHeight = 404
             object mZs: TCheckListBox
               Left = 2
               Top = 15
@@ -369,7 +358,6 @@ object MainForm: TMainForm
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
-              ExplicitHeight = 387
             end
           end
         end
@@ -612,7 +600,6 @@ object MainForm: TMainForm
           Height = 454
           Align = alClient
           TabOrder = 2
-          ExplicitHeight = 406
           object PaintBox1: TPaintBox
             Left = 1
             Top = 1
@@ -629,8 +616,8 @@ object MainForm: TMainForm
           object Image1: TImage
             Left = 1
             Top = 1
-            Width = 839
-            Height = 435
+            Width = 715
+            Height = 715
             Align = alClient
             AutoSize = True
             Picture.Data = {
@@ -16659,14 +16646,12 @@ object MainForm: TMainForm
                 Text = 'Misc'
                 Width = 50
               end>
-            ExplicitTop = 388
           end
         end
       end
       object TabSheet4: TTabSheet
         Caption = 'Stack Creation'
         ImageIndex = 3
-        ExplicitHeight = 519
         object StackGenerationGB: TGroupBox
           Left = 0
           Top = 70
@@ -16896,7 +16881,6 @@ object MainForm: TMainForm
           Align = alClient
           Caption = 'Select Stacks'
           TabOrder = 1
-          ExplicitHeight = 222
           object StacksForProjectCB: TCheckListBox
             AlignWithMargins = True
             Left = 17
@@ -16907,7 +16891,6 @@ object MainForm: TMainForm
             Align = alLeft
             ItemHeight = 13
             TabOrder = 0
-            ExplicitHeight = 199
           end
           object GroupBox3: TGroupBox
             Left = 354
@@ -16937,8 +16920,8 @@ object MainForm: TMainForm
           end
         end
         object BashScriptMemo: TMemo
-          Left = 599
-          Top = 424
+          Left = 380
+          Top = 472
           Width = 604
           Height = 273
           Lines.Strings = (
@@ -17118,12 +17101,12 @@ object MainForm: TMainForm
           ReadOnly = True
           TabOrder = 4
           Visible = False
+          WordWrap = False
         end
       end
       object TabSheet2: TTabSheet
         Caption = 'Terafly Generation (Linux)'
         ImageIndex = 4
-        ExplicitHeight = 519
         inline TParaConverterFrame1: TParaConverterFrame
           Left = 0
           Top = 0
@@ -17132,17 +17115,17 @@ object MainForm: TMainForm
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 1226
-          ExplicitHeight = 519
+          ExplicitHeight = 567
           inherited SettingsGB: TGroupBox
             Width = 1226
             Height = 497
             ExplicitWidth = 1226
-            ExplicitHeight = 449
+            ExplicitHeight = 497
             inherited RunGB: TGroupBox
               Width = 1222
               Height = 350
               ExplicitWidth = 1222
-              ExplicitHeight = 302
+              ExplicitHeight = 350
             end
             inherited Panel1: TPanel
               Width = 1222
@@ -17174,7 +17157,10 @@ object MainForm: TMainForm
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
-        ExplicitHeight = 519
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object GroupBox6: TGroupBox
           Left = 19
           Top = 25
@@ -17246,7 +17232,6 @@ object MainForm: TMainForm
       Height = 136
       Align = alBottom
       TabOrder = 1
-      ExplicitTop = 553
       object mLogPanel: TPanel
         Left = 1
         Top = 1
@@ -17304,7 +17289,6 @@ object MainForm: TMainForm
       Align = alLeft
       TabOrder = 2
       Visible = False
-      ExplicitHeight = 547
       object ProjectTView: TTreeView
         Left = 1
         Top = 1
@@ -17319,7 +17303,6 @@ object MainForm: TMainForm
         OnContextPopup = ProjectTViewContextPopup
         OnEdited = ProjectTViewEdited
         OnEditing = ProjectTViewEditing
-        ExplicitHeight = 545
       end
     end
   end
@@ -17508,7 +17491,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800C40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800D80010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

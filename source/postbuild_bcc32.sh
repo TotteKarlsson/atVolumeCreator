@@ -34,9 +34,7 @@ cp $BDSCOMMONDIR/BPL/dslVCLComponents.bpl       $dest
 cp $BDSCOMMONDIR/BPL/dslVCLVisualComponents.bpl $dest
 
 
- cp $OUTPUTDIR/atCore.dll                       $dest
- cp $OUTPUTDIR/atDatabase.dll                   $dest
- cp $OUTPUTDIR/atBarcodeReader.dll              $dest
+cp $OUTPUTDIR/atCore.dll                       $dest
 cp $BDSCOMMONDIR/BPL/atComponents.bpl          $dest    
 
 #Borland Packages and dll's
@@ -62,17 +60,15 @@ cp $CG_REDIST/vclactnband$suffix                $dest
 cp $CG_REDIST/vcldb$suffix                      $dest
 cp $CG_REDIST/vclimg$suffix                     $dest
 cp $CG_REDIST/vclx$suffix                       $dest
-cp $CG_REDIST/IndySystem$suffix                       $dest
-cp $CG_REDIST/IndyProtocols$suffix                       $dest
-cp $CG_REDIST/IndyCore$suffix                       $dest
+cp $CG_REDIST/IndySystem$suffix                 $dest
+cp $CG_REDIST/IndyProtocols$suffix              $dest
+cp $CG_REDIST/IndyCore$suffix                   $dest
 
 miscRedist="/cygdrive/p/redist"
-cp $miscRedist/dbexppgsql40.dll             $dest
-cp $miscRedist/tsclib.dll                   $dest
-cp $miscRedist/navusbapi.dll                $dest
-cp $miscRedist/CORE*.dll                    $dest
-cp $miscRedist/sbridge250.bpl               $dest
+cp $miscRedist/dbexppgsql40.dll                 $dest
+cp $miscRedist/tsclib.dll                       $dest
+cp $miscRedist/navusbapi.dll                    $dest
+cp -R $miscRedist/imagemagic/.                 $dest
+cp $miscRedist/sbridge250.bpl                   $dest
 
-#for local bin folder
-
-#cp $miscRedist/navusbapi.dll                $OUTPUTDIR
+cp -R $miscRedist/imagemagic/.             $OUTPUTDIR
