@@ -1,3 +1,12 @@
+Release 0.6.2 (April 10)
+=======================
+* Fixed flip image left and right (ImageMagic stuff).
+* Removed obsolete files in source folder
+* Updated postbuild script
+* Changed render-clinet port from 8081 -> 8988
+* Added a test render service button
+* Changed to just use atCore module
+
 Release 0.6.1 (March 22)
 =======================
 * Added styling

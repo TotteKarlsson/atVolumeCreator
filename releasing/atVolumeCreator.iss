@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "atVolumeCreator"
-#define MyAppVersion "0.6.3"
+#define MyAppVersion "0.6.2"
 #define MyAppPublisher "Smith Lab"
 #define MyAppURL "http://www.example.com/"
 #define MyAppExeName "VolumeCreator.exe"
