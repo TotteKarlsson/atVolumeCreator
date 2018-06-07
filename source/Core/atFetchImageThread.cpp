@@ -127,25 +127,25 @@ void FetchImageThread::worker()
 
                     Log(lInfo) <<  (long)chunk.size << " bytes retrieved\n";
                     of.close();
+
+                    mRenderClient.getImageMemory()->LoadFromFile(outFilePathANDFileName.c_str());
+                    //mRenderClient.copyImageData(chunk);
+
+                    /* cleanup curl stuff */
+                    curl_easy_cleanup(curl_handle);
+                    free(chunk.memory);
+
+                    /* we're done with libcurl, so clean it up */
+                    curl_global_cleanup();
+
+                    //Transfer image to UI
+                    TThread::Synchronize(NULL, onImage);
                 }
                 else
                 {
                     Log(lError) << "Failed to write filePath: " << outFilePathANDFileName;
                 }
             }
-
-            mRenderClient.getImageMemory()->LoadFromFile(outFilePathANDFileName.c_str());
-           	//mRenderClient.copyImageData(chunk);
-
-            /* cleanup curl stuff */
-            curl_easy_cleanup(curl_handle);
-            free(chunk.memory);
-
-            /* we're done with libcurl, so clean it up */
-            curl_global_cleanup();
-
-            //Transfer image to UI
-            TThread::Synchronize(NULL, onImage);
         }
         mIsTimeToDie = true;
 	}

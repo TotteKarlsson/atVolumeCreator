@@ -41,6 +41,7 @@ using namespace std;
 TImage *CurrImage;
 extern string gAppDataLocation;
 extern string gLogFileName;
+extern string gAppName;
 
 //__fastcall      TRegistryForm(const string& regRoot, const string& formName, TComponent* Owner);
 //---------------------------------------------------------------------------
@@ -57,7 +58,12 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mCurrentStack(""),
     mIsStyleMenuPopulated(false),
 	gImageForm(NULL),
-    mProjectManager((*ProjectTView))
+    mProjectManager((*ProjectTView)),
+    mAppProperties(gAppName, gApplicationRegistryRoot, ""),
+    mGeneralProperties(shared_ptr<IniFileProperties>(new IniFileProperties)),
+	mServer1Properties(shared_ptr<IniFileProperties>(new IniFileProperties)),
+	mServer2Properties(shared_ptr<IniFileProperties>(new IniFileProperties))
+
 {
     setupIniFile();
     setupAndReadIniParameters();

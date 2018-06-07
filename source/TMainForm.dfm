@@ -79,12 +79,14 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 16
       Top = 4
-      Width = 40
-      Height = 13
+      Width = 1401
+      Height = 27
       Margins.Left = 15
       Align = alClient
       Caption = '<none>'
       Layout = tlCenter
+      ExplicitWidth = 40
+      ExplicitHeight = 13
     end
   end
   object MainPanel: TPanel
@@ -114,10 +116,6 @@ object MainForm: TMainForm
       TabOrder = 0
       object TabSheet1: TTabSheet
         Caption = 'General'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object mLeftPanel: TPanel
           Left = 0
           Top = 113
@@ -616,8 +614,8 @@ object MainForm: TMainForm
           object Image1: TImage
             Left = 1
             Top = 1
-            Width = 715
-            Height = 715
+            Width = 839
+            Height = 435
             Align = alClient
             AutoSize = True
             Picture.Data = {
@@ -17157,10 +17155,6 @@ object MainForm: TMainForm
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object GroupBox6: TGroupBox
           Left = 19
           Top = 25
@@ -17333,8 +17327,8 @@ object MainForm: TMainForm
   object mIniFileC: TIniFileC
     IniFileName = 'volumecreator.ini'
     RootFolder = '.'
-    Left = 1048
-    Top = 264
+    Left = 80
+    Top = 272
   end
   object ZsPopUpMenu: TPopupMenu
     Left = 752
@@ -17491,7 +17485,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800D80010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800EC0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

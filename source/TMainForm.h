@@ -58,6 +58,8 @@ class TImageForm;
 //---------------------------------------------------------------------------
 using dsl::IniFileProperties;
 using dsl::TRegistryProperties;
+using dsl::ApplicationProperties;
+using dsl::shared_ptr;
 extern string gApplicationRegistryRoot;
 void brightnessContrast(TImage *imageSelected);
 string createProcessedImageFileName(const string& fname);
@@ -294,15 +296,15 @@ __published:	// IDE-managed Components
 		LogFileReader                                   mLogFileReader;
 		bool          									mIsStyleMenuPopulated;
         ApplicationProperties                           mAppProperties;
-        IniFileProperties	      	                    mGeneralProperties;
-        dsl::Property<int>	                            mBottomPanelHeight;
-		dsl::Property<dsl::LogLevel>	                mLogLevel;
-		dsl::Property<string>	 		                mCurrentProject;
-		dsl::Property<string>	 		                mCurrentOwner;
-		dsl::Property<string>	 		                mCurrentStack;
+        shared_ptr<IniFileProperties>              		mGeneralProperties;
+        Property<int>	                            	mBottomPanelHeight;
+		Property<dsl::LogLevel>	                		mLogLevel;
+		Property<string>	 		                	mCurrentProject;
+		Property<string>	 		                	mCurrentOwner;
+		Property<string>	 		                	mCurrentStack;
 
-        IniFileProperties	      	                    mServer1Properties;
-        IniFileProperties	      	                    mServer2Properties;
+        shared_ptr<IniFileProperties>                   mServer1Properties;
+        shared_ptr<IniFileProperties>                   mServer2Properties;
         bool                                            setupAndReadIniParameters();
         void                                            setupIniFile();
 		double 											getImageStretchFactor();

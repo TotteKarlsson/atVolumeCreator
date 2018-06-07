@@ -80,9 +80,9 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 	//Save project history
 	mBottomPanelHeight = mBottomPanel->Height;
 
-	mGeneralProperties.write();
-	mServer1Properties.write();
-	mServer2Properties.write();
+	mGeneralProperties->write();
+	mServer1Properties->write();
+	mServer2Properties->write();
 
 	//Write to file
 	mIniFileC->save();
