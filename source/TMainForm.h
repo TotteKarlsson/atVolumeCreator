@@ -53,6 +53,7 @@
 #include "dslTIntLabel.h"
 #include "dslTPropertyCheckBox.h"
 #include "dslTSTDStringLabeledEdit.h"
+#include "DcefB.Core.DcefBrowser.hpp"
 class TImageForm;
 //using dsl::Process;
 //---------------------------------------------------------------------------
@@ -213,6 +214,10 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *ScaleConstantE;
 	TFloatLabeledEdit *CustomRotationE;
 	TButton *TestRenderServiceBtn;
+	TPageControl *PageControl2;
+	TTabSheet *TabSheet2;
+	TTabSheet *TabSheet5;
+	TDcefBrowser *DcefBrowser1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -282,6 +287,13 @@ __published:	// IDE-managed Components
 	void __fastcall ProjectTViewClick(TObject *Sender);
 	void __fastcall CustomRotationEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall TestRenderServiceBtnClick(TObject *Sender);
+	void __fastcall DcefBrowser1BeforeBrowse(ICefBrowser * const browser, ICefFrame * const frame,
+          ICefRequest * const request, bool isRedirect, bool &Cancel);
+	void __fastcall DcefBrowser1ConsoleMessage(ICefBrowser * const browser, const ustring message,
+          const ustring source, int line, bool &Cancel);
+	void __fastcall DcefBrowser1StateChange(ICefBrowser * const browser, const TBrowserDataChangeKind Kind,
+          const UnicodeString Value);
+
 
 
 	private:	// User declarations

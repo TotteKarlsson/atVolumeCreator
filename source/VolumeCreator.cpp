@@ -53,6 +53,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		gApplicationStyle = readStringFromRegistry(gApplicationRegistryRoot, "", "Theme",  gApplicationStyle);
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
+        Application->Icon->LoadFromFile("VolumeCreator_Icon.ico");
         setupLogging();
 
 		TStyleManager::TrySetStyle("Carbon");

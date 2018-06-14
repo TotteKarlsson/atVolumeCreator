@@ -57,10 +57,12 @@ void __fastcall TMainForm::ThemesMenuClick(TObject *Sender)
 
 	TRegistryForm::writeToRegistry();
 
+    DcefBrowser1->Visible = false;
+
 	TReplaceFlags rFlags(rfIgnoreCase|rfReplaceAll);
 	String styleName = StringReplace(menuItem->Caption, "&", "", rFlags);
 	TStyleManager::SetStyle(styleName);
-
+    DcefBrowser1->Visible = true;
 	//Check the menu item
 	menuItem->Checked = (TStyleManager::ActiveStyle->Name == styleName) ? true : false;
 
@@ -330,7 +332,8 @@ void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
     if(b == OpenInNDVIZBtn)
     {
 	    string   url(createNDVIZURL());
-		ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
+		//ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
+        DcefBrowser1->Load(url.c_str());
 		return;
     }
 

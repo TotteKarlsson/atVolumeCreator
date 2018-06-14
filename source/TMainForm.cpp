@@ -184,9 +184,13 @@ void __fastcall TMainForm::onImage()
         {
             //Create a temporary stream
             unique_ptr<TMemoryStream> stream = unique_ptr<TMemoryStream>(new TMemoryStream());
+
             stream->LoadFromFile(pic.c_str());
-            stream->Position = 0;
-            Image1->Picture->Graphic->LoadFromStream(stream.get());
+            if(stream->Size)
+            {
+            	stream->Position = 0;
+    	        Image1->Picture->Graphic->LoadFromStream(stream.get());
+            }
         }
         catch(...)
         {
@@ -221,10 +225,16 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
 	mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
-	this->Image1->Cursor = crHourGlass;
-
-    //Image pops up in onImage callback
-    mRC.getImageInThread(z);
+    if(PageControl2->Pages[PageControl2->TabIndex] == TabSheet2)
+    {
+		this->Image1->Cursor = crHourGlass;
+    	//Image pops up in onImage callback
+	    mRC.getImageInThread(z);
+    }
+    else
+    {
+		OpenInNDVIZBtnClick(OpenInNDVIZBtn);
+    }
 
     if(Sender != NULL)
     {
@@ -997,4 +1007,28 @@ void __fastcall TMainForm::TestRenderServiceBtnClick(TObject *Sender)
     }
 }
 
+
+void __fastcall TMainForm::DcefBrowser1BeforeBrowse(ICefBrowser * const browser,
+          ICefFrame * const frame, ICefRequest * const request,
+          bool isRedirect, bool &Cancel)
+{
+    Log(lDebug) << "browsing..";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::DcefBrowser1ConsoleMessage(ICefBrowser * const browser,
+          const ustring message, const ustring source, int line,
+          bool &Cancel)
+{
+    Log(lDebug) <<"Console Message";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::DcefBrowser1StateChange(ICefBrowser * const browser,
+          const TBrowserDataChangeKind Kind, const UnicodeString Value)
+
+{
+    Log(lDebug) <<"State Change";
+}
+//---------------------------------------------------------------------------
 
