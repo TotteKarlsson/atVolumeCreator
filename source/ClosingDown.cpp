@@ -55,11 +55,6 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 		TSSHFrame1->disconnect();
 	}
 
-    TSSHFrame* f = TParaConverterFrame1->TSSHFrame1;
-	if(f->isConnected())
-    {
-		f->disconnect();
-	}
     Close();
 }
 
@@ -100,10 +95,6 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
     	CanClose = false;
     }
 	else if(TSSHFrame1->isConnected())
-    {
-		CanClose = false;
-    }
-	else if(TParaConverterFrame1->TSSHFrame1->isConnected())
     {
 		CanClose = false;
     }

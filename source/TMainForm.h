@@ -175,8 +175,6 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *ZBatchSizeE;
 	TIntegerLabeledEdit *MaxNumberOfRemoteJobsE;
 	TIntegerLabeledEdit *NicenessE;
-	TTabSheet *TabSheet2;
-	TParaConverterFrame *TParaConverterFrame1;
 	TGroupBox *JobCreationGB;
 	TMenuItem *Open1;
 	TActionList *MenuActions;

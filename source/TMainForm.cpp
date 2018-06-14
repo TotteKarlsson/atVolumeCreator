@@ -180,12 +180,19 @@ void __fastcall TMainForm::onImage()
     }
     else
     {
-        //Create a temporary stream
-        TMemoryStream* stream = new TMemoryStream();
-        stream->LoadFromFile(pic.c_str());
-        stream->Position = 0;
-        Image1->Picture->Graphic->LoadFromStream(stream);
-        delete stream;
+        try
+        {
+            //Create a temporary stream
+            unique_ptr<TMemoryStream> stream = unique_ptr<TMemoryStream>(new TMemoryStream());
+            stream->LoadFromFile(pic.c_str());
+            stream->Position = 0;
+            Image1->Picture->Graphic->LoadFromStream(stream.get());
+        }
+        catch(...)
+        {
+            Log(lError) << "Failed to load image: "<<pic;
+            return;
+        }
         mCurrentImageFile = pic;
     }
 

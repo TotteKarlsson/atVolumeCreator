@@ -17102,56 +17102,6 @@ object MainForm: TMainForm
           WordWrap = False
         end
       end
-      object TabSheet2: TTabSheet
-        Caption = 'Terafly Generation (Linux)'
-        ImageIndex = 4
-        inline TParaConverterFrame1: TParaConverterFrame
-          Left = 0
-          Top = 0
-          Width = 1226
-          Height = 567
-          Align = alClient
-          TabOrder = 0
-          ExplicitWidth = 1226
-          ExplicitHeight = 567
-          inherited SettingsGB: TGroupBox
-            Width = 1226
-            Height = 497
-            ExplicitWidth = 1226
-            ExplicitHeight = 497
-            inherited RunGB: TGroupBox
-              Width = 1222
-              Height = 350
-              ExplicitWidth = 1222
-              ExplicitHeight = 350
-            end
-            inherited Panel1: TPanel
-              Width = 1222
-              ExplicitWidth = 1222
-              inherited GroupBox3: TGroupBox
-                Width = 1138
-                ExplicitWidth = 1138
-              end
-              inherited GroupBox2: TGroupBox
-                Left = 1138
-                Width = 84
-                ExplicitLeft = 1138
-                ExplicitWidth = 84
-              end
-            end
-          end
-          inherited TSSHFrame1: TSSHFrame
-            Width = 1226
-            ExplicitWidth = 1226
-          end
-          inherited ScriptMemo: TMemo
-            Left = 346
-            Top = 328
-            ExplicitLeft = 346
-            ExplicitTop = 328
-          end
-        end
-      end
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
@@ -17485,7 +17435,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800EC0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800F40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
