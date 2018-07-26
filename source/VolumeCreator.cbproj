@@ -38,8 +38,8 @@
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=0.5.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>None</Manifest_File>
-        <ILINK_LibraryPath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <IncludePath>Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;Frames;Core;Forms;$(IncludePath)</IncludePath>
+        <ILINK_LibraryPath>P:\libs\dsl\VCL\Frames\;Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <IncludePath>P:\libs\dsl\VCL\Frames\;Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;Frames;Core;Forms;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
         <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;vclactnband.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;vclimg.lib;sbridge250.lib;dslVCLComponents.lib;dslVCLVisualComponents.lib;DcefBrowser.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
@@ -103,7 +103,6 @@
         <PostBuildEvent><![CDATA[$(SH_EXE) postbuild.sh $(OUTPUTDIR)  $(APP_RELEASES) $(OUTPUTFILENAME) $(BDSCOMMONDIR)
 $(PostBuildEvent)]]></PostBuildEvent>
         <FinalOutputDir>$(DEBUG_BCC32)\bin</FinalOutputDir>
-        <Defines>POCO_STATIC;CURL_STATICLIB;$(Defines)</Defines>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <ILINK_LibraryPath>$(DEBUG_BCC32)\lib;P:\libs\DcefBrowser\Source;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>$(DEBUG_BCC32)\include;C:\Program Files (x86)\ImageMagick-7.0.7-Q16\include;P:\libs\DcefBrowser\Source;$(IncludePath)</IncludePath>
@@ -115,6 +114,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Release>2</VerInfo_Release>
         <UWP_CppLogo44>..\resources\logo.png</UWP_CppLogo44>
         <UWP_CppLogo150>..\resources\logo.png</UWP_CppLogo150>
+        <_TCHARMapping>char</_TCHARMapping>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -147,6 +147,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <CppCompile Include="Core\atProjectManager.cpp">
             <DependentOn>Core\atProjectManager.h</DependentOn>
             <BuildOrder>26</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Core\atRemoteScripter.cpp">
+            <DependentOn>Core\atRemoteScripter.h</DependentOn>
+            <BuildOrder>27</BuildOrder>
         </CppCompile>
         <CppCompile Include="Core\atRenderBox.cpp">
             <DependentOn>Core\atRenderBox.h</DependentOn>
@@ -194,16 +198,23 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>Forms\TSelectZsForm.h</DependentOn>
             <BuildOrder>21</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Frames\TAffineTransformationFrame.cpp">
+            <Form>AffineTransformationFrame</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+            <DependentOn>Frames\TAffineTransformationFrame.h</DependentOn>
+            <BuildOrder>30</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Frames\TImageControlsFrame.cpp">
             <FormType>dfm</FormType>
             <BuildOrder>27</BuildOrder>
         </CppCompile>
-        <CppCompile Include="Frames\TParaConverterFrame.cpp">
-            <Form>ParaConverterFrame</Form>
+        <CppCompile Include="Frames\TRenderPythonRemoteScriptFrame.cpp">
+            <Form>RenderPythonRemoteScriptFrame</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
-            <DependentOn>Frames\TParaConverterFrame.h</DependentOn>
-            <BuildOrder>26</BuildOrder>
+            <DependentOn>Frames\TRenderPythonRemoteScriptFrame.h</DependentOn>
+            <BuildOrder>28</BuildOrder>
         </CppCompile>
         <CppCompile Include="ImageMagick.cpp">
             <BuildOrder>19</BuildOrder>
@@ -236,12 +247,22 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <DependentOn>P:\libs\atapi\source\vcl\frames\TSSHFrame.h</DependentOn>
             <BuildOrder>11</BuildOrder>
         </CppCompile>
-        <FormResources Include="Frames\TParaConverterFrame.dfm"/>
-        <FormResources Include="Forms\TSelectZsForm.dfm"/>
+        <None Include="P:\libs\CEF4Delphi\packages\CEF4Delphi.dproj"/>
+        <CppCompile Include="P:\libs\dsl\VCL\Frames\dslTLogMemoFrame.cpp">
+            <Form>LogMemoFrame</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+            <DependentOn>P:\libs\dsl\VCL\Frames\dslTLogMemoFrame.h</DependentOn>
+            <BuildOrder>29</BuildOrder>
+        </CppCompile>
+        <FormResources Include="Frames\TRenderPythonRemoteScriptFrame.dfm"/>
+        <FormResources Include="Frames\TAffineTransformationFrame.dfm"/>
         <FormResources Include="Forms\TImageForm.dfm"/>
         <FormResources Include="Forms\TOverlayedImage.dfm"/>
-        <FormResources Include="TMainForm.dfm"/>
+        <FormResources Include="Forms\TSelectZsForm.dfm"/>
         <FormResources Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.dfm"/>
+        <FormResources Include="P:\libs\dsl\VCL\Frames\dslTLogMemoFrame.dfm"/>
+        <FormResources Include="TMainForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -303,7 +324,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <ProjectProperties Name="VerifyPackages">False</ProjectProperties>
                     <ProjectProperties Name="IndexFiles">False</ProjectProperties>
                 </ProjectProperties>
-                <Excluded_Packages/>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="p:\build\debug\BPL\atVCLAPTVisualComponents.bpl">atVCLAPTVisualComponents</Excluded_Packages>
+                </Excluded_Packages>
             </CPlusPlusBuilder.Personality>
             <Deployment Version="3">
                 <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin\cc32c250mt.dll" Class="DependencyModule">
@@ -331,8 +354,20 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="p:\build\bin\VolumeCreator.tds" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win32">
+                        <RemoteName>VolumeCreator.tds</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile Condition="'$(DynamicRTL)'=='true'" LocalName="$(BDS)\Redist\osx32\libcgstl.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="p:\build\bin\VolumeCreator.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>VolumeCreator.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -352,14 +387,14 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'!='true'" LocalName="$(BDS)\bin\cc32250.dll" Class="DependencyModule">
+                <DeployFile LocalName="P:\libs\CEF4Delphi\packages\CEF4Delphi.dproj" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="p:\build\tokyo\bin\VolumeCreator.tds" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'!='true'" LocalName="$(BDS)\bin\cc32250.dll" Class="DependencyModule">
                     <Platform Name="Win32">
-                        <RemoteName>VolumeCreator.tds</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -372,12 +407,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <Platform Name="Win32">
                         <RemoteDir>Assets\</RemoteDir>
                         <RemoteName>Logo44x44.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="p:\build\tokyo\bin\VolumeCreator.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>VolumeCreator.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

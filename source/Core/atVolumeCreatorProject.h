@@ -36,16 +36,17 @@ VCObjectType 	toVCObjectType(const string& str);
 //!in volume creator
 //!A VolumeCreatorProject is the baseclass for such objects.
 
-class VolumeCreatorProject : public dsl::Project, public ATObject
+class VolumeCreatorProject : public dsl::Project, public at::ATObject
 {
 
     public:
                                                 VolumeCreatorProject(const string& projectName = gEmptyString);
-                                                ~VolumeCreatorProject();
+                                                VolumeCreatorProject(const VolumeCreatorProject& vp);
+        virtual                                 ~VolumeCreatorProject();
 
 		virtual bool 							isModified();
         virtual bool                            save(const string& fName = dsl::gEmptyString);
-        virtual bool                            open();
+        virtual bool                            open(const string& f = dsl::gEmptyString);
 
         virtual bool							addChild(VolumeCreatorProject* child);
 

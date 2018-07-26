@@ -21,8 +21,19 @@ mCacheRootFolder("")
 
 void FetchImageThread::setup(const string& url, const string& cacheFolder)
 {
+	mExtraParameters.clear();
 	mImageURL = url;
     mCacheRootFolder = cacheFolder;
+}
+
+void FetchImageThread::addParameter(const string& api)
+{
+	mExtraParameters.append(api);
+}
+
+void FetchImageThread::addParameters(const StringList& paras)
+{
+    mExtraParameters.appendList(paras);
 }
 
 bool FetchImageThread::setCacheRoot(const string& cr)
@@ -92,8 +103,15 @@ void FetchImageThread::worker()
             /* init the curl session */
             curl_handle = curl_easy_init();
 
+            string theURL(url);
+            for(int i = 0; i < mExtraParameters.count(); i++)
+            {
+                theURL += mExtraParameters[i];
+            }
+
+//            string theUrl(url + string("&maxTileSpecsToRender=50"));
             /* specify URL to get */
-            curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl_handle, CURLOPT_URL, theURL.c_str());
 
             /* send all data to this function  */
             curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);

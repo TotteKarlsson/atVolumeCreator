@@ -9,6 +9,7 @@
 #include "dslLogger.h"
 #include "dslPoint.h"
 #include "dslMathUtils.h"
+#include "dslFileUtils.h"
 //---------------------------------------------------------------------------
 using namespace std;
 using namespace dsl;
@@ -51,6 +52,16 @@ RenderClient::~RenderClient()
 	delete mImageMemory;
 }
 
+Idhttp::TIdHTTP* RenderClient::getConnection()
+{
+    return mC;
+}
+
+void RenderClient::assignConnection(Idhttp::TIdHTTP* c)
+{
+    mC = c;
+}
+
 void RenderClient::copyImageData(MemoryStruct chunk)
 {
 	try
@@ -65,10 +76,10 @@ void RenderClient::copyImageData(MemoryStruct chunk)
     }
 }
 
-//string RenderClient::getProjectName()
-//{
-//	return mProject.getProjectName();
-//}
+RenderProject RenderClient::getCurrentProject()
+{
+    return mProject;
+}
 
 string RenderClient::setLocalCacheFolder(const string& f)
 {
@@ -153,7 +164,7 @@ void RenderClient::assignOnImageCallback(RCCallBack cb)
 	mFetchImageThread.onImage = cb;
 }
 
-bool RenderClient::getImageInThread(int z)
+bool RenderClient::getImageInThread(int z, StringList& paras)
 {
 	mZ = z;
 
@@ -163,48 +174,9 @@ bool RenderClient::getImageInThread(int z)
     }
 
 	mFetchImageThread.setup(getURLForZ(z), mLocalCacheFolder);
+    mFetchImageThread.addParameters(paras);
 	mFetchImageThread.start(true);
     return true;
-}
-
-TMemoryStream* RenderClient::getImage(int z)
-{
-	mZ = z;
-
-	if(!mImageMemory)
-    {
-		mImageMemory = new TMemoryStream();
-    }
-
-	//First check if we already is having this data
-    if(checkCacheForCurrentURL())
-    {
-        Log(lInfo) << "Fetching from cache";
-    	mImageMemory->LoadFromFile(getImageLocalPathAndFileName().c_str());
-	    return mImageMemory;
-    }
-    else
-    {
-        Log(lInfo) << "Fetching from server";
-
-        try
-        {
-	    	mC->Get(getURLC(), mImageMemory);
-
-            //Save to cache (in a thread)
-            if(createFolder(getFilePath(getImageLocalPathAndFileName())))
-            {
-                mImageMemory->SaveToFile(getImageLocalPathAndFileName().c_str());
-            }
-            return mImageMemory;
-        }
-        catch(...)
-        {
-        	Log(lError) << "There was an uncaught ERROR!";
-            delete mImageMemory;
-            mImageMemory = NULL;
-        }
-    }
 }
 
 TMemoryStream* RenderClient::getImageMemory()
@@ -367,6 +339,7 @@ string RenderClient::getURLForZ(int z)
     sUrl << "/jpeg-image";
 	sUrl << "?minIntensity="<<mMinIntensity;
 	sUrl << "&maxIntensity="<<mMaxIntensity;
+//    sUrl << "?maxTileSpecsToRender=100000000";
 	return sUrl.str();
 }
 
@@ -384,6 +357,7 @@ string RenderClient::getURL()
     sUrl << "/jpeg-image";
 	sUrl << "?minIntensity="<<mMinIntensity;
 	sUrl << "&maxIntensity="<<mMaxIntensity;
+//    sUrl << "?maxTileSpecsToRender=100000000";
 	return sUrl.str();
 }
 

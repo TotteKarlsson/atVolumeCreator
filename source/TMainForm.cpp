@@ -5,7 +5,6 @@
 #include "dslLogger.h"
 #include <vector>
 #include "atRenderClient.h"
-//#include "dslExeFile.h"
 #include "dslMathUtils.h"
 #include "dslTMemoLogger.h"
 #include "TSelectZsForm.h"
@@ -13,37 +12,39 @@
 #include "atApplicationSupportFunctions.h"
 #include "TOverlayedImage.h"
 #include "atVolumeCreatorProject.h"
+#include "dslFileUtils.h"
+#include "Poco/Path.h"
+#include "Poco/Glob.h"
+#include "boost/filesystem.hpp"
+#include "dslStringUtils.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "dslTFloatLabeledEdit"
-#pragma link "dslTIntegerLabeledEdit"
-#pragma link "dslTSTDStringLabeledEdit"
-#pragma link "dslTIntLabel"
-#pragma link "dslTPropertyCheckBox"
 #pragma link "dslTIniFileC"
 #pragma link "dslTIntegerEdit"
-#pragma link "TSSHFrame"
+#pragma link "dslTIntegerLabeledEdit"
+#pragma link "dslTIntLabel"
+#pragma link "dslTPropertyCheckBox"
+#pragma link "dslTSTDStringLabeledEdit"
 #pragma link "TImageControlsFrame"
-#pragma link "TParaConverterFrame"
-
-#pragma link "dslTFloatLabeledEdit"
-#pragma link "dslTIniFileC"
-#pragma link "dslTIntegerEdit"
-#pragma link "dslTIntegerLabeledEdit"
-#pragma link "dslTIntLabel"
-#pragma link "dslTPropertyCheckBox"
-#pragma link "dslTSTDStringLabeledEdit"
+#pragma link "TSSHFrame"
+#pragma link "dslTSTDStringEdit"
+#pragma link "TRenderPythonRemoteScriptFrame"
+#pragma link "dslTLogMemoFrame"
+#pragma link "TAffineTransformationFrame"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
 using namespace dsl;
 using namespace std;
+using namespace Poco;
+using boost::filesystem;
+
 TImage *CurrImage;
 extern string gAppDataLocation;
 extern string gLogFileName;
 extern string gAppName;
 
-//__fastcall      TRegistryForm(const string& regRoot, const string& formName, TComponent* Owner);
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TRegistryForm(gApplicationRegistryRoot, "MainForm", Owner),
@@ -63,14 +64,15 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mGeneralProperties(shared_ptr<IniFileProperties>(new IniFileProperties)),
 	mServer1Properties(shared_ptr<IniFileProperties>(new IniFileProperties)),
 	mServer2Properties(shared_ptr<IniFileProperties>(new IniFileProperties))
-
 {
     setupIniFile();
     setupAndReadIniParameters();
-    mCreateCacheThread.setCacheRoot(mImageCacheFolderE->getValue());
+    mCreateCacheThread.setCacheRoot(ImageCacheFolderE->getValue());
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
+
+    Panel1->ControlStyle <<  csOpaque;
 }
 
 __fastcall TMainForm::~TMainForm()
@@ -78,20 +80,6 @@ __fastcall TMainForm::~TMainForm()
 	delete gImageForm;
 }
 
-//#define ThrowWandException(wand) \
-//{ \
-//  char \
-//    *description; \
-// \
-//  ExceptionType \
-//    severity; \
-// \
-//  description=MagickGetException(wand,&severity); \
-//  (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-//  description=(char *) MagickRelinquishMemory(description); \
-//  exit(-1); \
-//}
-//
 void ThrowWandException(MagickWand* wand)
 {
   	char *description;
@@ -205,7 +193,7 @@ void __fastcall TMainForm::onImage()
     	gImageForm->load(mCurrentImageFile);
     }
 
-    Image1->Repaint();
+    Image1->Refresh();//();
     Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
     this->Image1->Cursor = crDefault;
 }
@@ -222,18 +210,21 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     int z = toInt(stdstr(mZs->Items->Strings[ii]));
 
     //Fetch data using URL
-	mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
+	mRC.setLocalCacheFolder(ImageCacheFolderE->getValue());
 	mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue());
 
-    if(PageControl2->Pages[PageControl2->TabIndex] == TabSheet2)
+    if(VisualsPC->Pages[VisualsPC->TabIndex] == TabSheet2)
     {
 		this->Image1->Cursor = crHourGlass;
+
+        StringList paras;
+        paras.append(string("&maxTileSpecsToRender=") + stdstr(maxTileSpecsToRenderE->Text));
     	//Image pops up in onImage callback
-	    mRC.getImageInThread(z);
+	    mRC.getImageInThread(z, paras);
     }
     else
     {
-		OpenInNDVIZBtnClick(OpenInNDVIZBtn);
+		OpenInNDVIZBtnClick(NULL);
     }
 
     if(Sender != NULL)
@@ -324,16 +315,16 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 void __fastcall TMainForm::Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
 	TPoint p = this->Image1->ScreenToClient(Mouse->CursorPos);
-	mXC->setValue(p.X);
-	mYC->setValue(p.Y);
+//	mXC->setValue(p.X);
+//	mYC->setValue(p.Y);
 
 	//Convert to world image coords (minus offset)
     double stretchFactor = getImageStretchFactor();
     if(stretchFactor)
     {
 	    p = controlToImage(p, mScaleE->getValue(), stretchFactor);
-	  	mX->setValue(p.X);
-		mY->setValue(p.Y);
+//	  	mX->setValue(p.X);
+//		mY->setValue(p.Y);
     }
 
 	if(GetAsyncKeyState(VK_MBUTTON) < 0)
@@ -500,29 +491,46 @@ void __fastcall TMainForm::TraverseZClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mFetchSelectedZsBtnClick(TObject *Sender)
+void __fastcall TMainForm::FetchSelectedZsBtnClick(TObject *Sender)
 {
-	if(mCreateCacheThread.isRunning())
-    {
-		mCreateCacheThread.stop();
-    }
-    else
-    {
-        int z = toInt(stdstr(mZs->Items->Strings[0]));
-        RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),
-            mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue(), mImageCacheFolderE->getValue());
+    TButton* b = dynamic_cast<TButton*>(Sender);
 
-        //Create image URLs
-        StringList urls;
-        for(int i = 0; i < mZs->Count; i++)
+    if(b == FetchSelectedZsBtn)
+    {
+        if(mCreateCacheThread.isRunning())
         {
-            int	z = toInt(stdstr(mZs->Items->Strings[i]));
-            urls.append(rs.getURLForZ(z));
+            mCreateCacheThread.stop();
         }
+        else
+        {
+            int z = toInt(stdstr(mZs->Items->Strings[0]));
+            RenderClient rs(IdHTTP1, mBaseUrlE->getValue(), mCurrentOwner.getValue(), mCurrentProject.getValue(),
+                mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), MinIntensity->getValue(), MaxIntensity->getValue(), ImageCacheFolderE->getValue());
 
-        mCreateCacheThread.setup(urls, mImageCacheFolderE->getValue());
-        mCreateCacheThread.start();
-        CreateCacheTimer->Enabled = true;
+            //Create image URLs
+            StringList urls;
+            for(int i = 0; i < mZs->Count; i++)
+            {
+                int	z = toInt(stdstr(mZs->Items->Strings[i]));
+                urls.append(rs.getURLForZ(z));
+            }
+
+            mCreateCacheThread.setup(urls, ImageCacheFolderE->getValue());
+            mCreateCacheThread.start();
+            CreateCacheTimer->Enabled = true;
+        }
+    }
+    else if(b == ClearCacheBtn)
+    {
+        //Clear cache for the current owner/project/stack
+        Path p(ImageCacheFolderE->getValue());
+
+        p.append(joinPath("owner", mCurrentOwner.getValue(), "project", mCurrentProject.getValue()));
+        p.append(joinPath("stack", mCurrentStack.getValue()));
+        Log(lInfo) << "Deleting cache for stack: " << p.toString();
+
+        boost::filesystem::remove_all(p.toString());
+
     }
 }
 
@@ -683,11 +691,9 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
 
     string stack = stdstr(StackCB->Items->Strings[StackCB->ItemIndex]);
 	mCurrentStack.setValue(stack);
-
 	mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
-
    	mGetValidZsBtnClick(NULL);
-//    resetButtonClick(NULL);
+
 	ClickZ(NULL);
 
     //Update stack generation page
@@ -715,12 +721,12 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
     {
-		mFetchSelectedZsBtn->Caption = "Stop Cache Creation";
+		FetchSelectedZsBtn->Caption = "Stop Cache Creation";
     }
     else
     {
 		CreateCacheTimer->Enabled = false;
-		mFetchSelectedZsBtn->Caption = "Generate Cache";
+		FetchSelectedZsBtn->Caption = "Generate Cache";
     }
 }
 
@@ -742,7 +748,7 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
     int z = toInt(stdstr(mZs->Items->Strings[ii]));
 
     //Fetch data using URL
-    mRC.setLocalCacheFolder(mImageCacheFolderE->getValue());
+    mRC.setLocalCacheFolder(ImageCacheFolderE->getValue());
     mRC.init(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue(), "jpeg-image", z, mCurrentRB, mScaleE->getValue(), minInt, maxInt);
 
     //First check if we already is having this data
@@ -979,7 +985,6 @@ void __fastcall TMainForm::ProjectTViewClick(TObject *Sender)
 	//Get current node from the treeview
 	TTreeNode* item = ProjectTView->Selected;
 	mProjectManager.selectItem(item);
-
 }
 
 //---------------------------------------------------------------------------
@@ -992,7 +997,6 @@ void __fastcall TMainForm::CustomRotationEKeyDown(TObject *Sender, WORD &Key,
 		ClickZ(NULL);
     }
 }
-
 
 void __fastcall TMainForm::TestRenderServiceBtnClick(TObject *Sender)
 {
@@ -1007,7 +1011,6 @@ void __fastcall TMainForm::TestRenderServiceBtnClick(TObject *Sender)
     }
 }
 
-
 void __fastcall TMainForm::DcefBrowser1BeforeBrowse(ICefBrowser * const browser,
           ICefFrame * const frame, ICefRequest * const request,
           bool isRedirect, bool &Cancel)
@@ -1015,7 +1018,6 @@ void __fastcall TMainForm::DcefBrowser1BeforeBrowse(ICefBrowser * const browser,
     Log(lDebug) << "browsing..";
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TMainForm::DcefBrowser1ConsoleMessage(ICefBrowser * const browser,
           const ustring message, const ustring source, int line,
           bool &Cancel)
@@ -1028,7 +1030,131 @@ void __fastcall TMainForm::DcefBrowser1StateChange(ICefBrowser * const browser,
           const TBrowserDataChangeKind Kind, const UnicodeString Value)
 
 {
-    Log(lDebug) <<"State Change";
+//    Log(lDebug) <<"State Change: " << stdstr(DcefBrowser1->URL);
+    URLE->setValue(stdstr(DcefBrowser1->URL));
+    parseURLUpdate(stdstr(DcefBrowser1->URL));
 }
+
+bool TMainForm::parseURLUpdate(const string& url)
+{
+//     http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!
+//    {
+//    	layers:
+//    	{
+//        	Rough_Aligned_1_DAPI_1:
+//        	{
+//            	type:image_source:render://http://ibs-forrestc-ux1.corp.alleninstitute.org/6_ribbon_experiments/M321160_Ai139_smallvol/Rough_Aligned_1_DAPI_1_max:0.30518
+//          }
+//      }
+//    	_navigation:
+//        {
+//        	  pose:
+//            {
+//            	   position:
+//                {
+//                	voxelSize:[1_1_1]_voxelCoordinates:[7009.5009765625_52.7322998046875_6]
+//                }
+//            }
+//            _zoomFactor:16.487212707001284
+//        }
+//    }
+    string data(stripCharacter('\'', url));
+    StringList strings(data, '{');
+
+    for(int i = 0; i < strings.count(); i++)
+    {
+	    Log(lDebug3) << "String " << i<<"\t"<<strings[i];
+        //Get string starting with voxelSize
+        if(startsWith("voxelSize", strings[i]))
+        {
+            //Extract records
+            StringList getZ(strings[i], ']');
+            if(getZ.count() >= 2)
+            {
+                StringList voxelCoords(getZ[1], ':');
+
+                if(voxelCoords.count() ==2)
+                {
+                	StringList z(voxelCoords[1], '_');
+                    if(z.count() >= 3)
+                    {
+                        Log(lDebug3) << "Z is "<< z[2];
+
+                        if(toInt(z[2]) > -1)
+                        {
+                        	mZs->ItemIndex = toInt(z[2]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::Button1Click(TObject *Sender)
+{
+    DcefBrowser1->ReloadIgnoreCache();
+	DcefBrowser1->Refresh();
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::RenderTSEnter(TObject *Sender)
+{
+    Log(lInfo) << "Entering.";
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ScriptsPCChange(TObject *Sender)
+{
+//    if(ScriptsPC->Pages[ScriptsPC->ActivePageIndex] == RenderTS)
+//    {
+//        //Populate..
+//        TRenderPythonRemoteScriptFrame1->populate(mRC);
+//    }
+}
+
+//--------------------------------------------------------------------------
+void __fastcall TMainForm::PageControl1Change(TObject *Sender)
+{
+    if(PageControl1->Pages[PageControl1->ActivePageIndex] == RenderTab)
+    {
+        //Populate..
+        TAffineTransformationFrame1->populate(mRC, TSSHFrame1->ScSSHShell1);
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::Action1Execute(TObject *Sender)
+{
+	mCloseBottomPanelBtnClick(NULL);
+}
+
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FormMouseWheel(TObject *Sender, TShiftState Shift,
+          int WheelDelta, TPoint &MousePos, bool &Handled)
+{
+    int zIndex(mZs->ItemIndex);
+
+    if(WheelDelta > 0)
+    {
+		++zIndex;
+    }
+    else
+    {
+		--zIndex;
+    }
+
+    if(zIndex > -1 && zIndex < mZs->Count)
+    {
+		mZs->ItemIndex = zIndex;
+        ClickZ(NULL);
+    }
+//    Log(lDebug5) << "WheelDelta: " << WheelDelta;
+}
+
+
 

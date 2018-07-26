@@ -17,6 +17,9 @@ class FetchImageThread : public dsl::Thread
 		void				                setup(const string& url, const string& cacheFolder);
 		virtual void                        run();
         void				                assignUrl(const string& url);
+        void				                addParameters(const StringList& paras);
+        void				                addParameter(const string& api);
+        string                              listParameters();
 		bool				                setCacheRoot(const string& cr);
 		void				                worker();
         											//!The on Image callback is called when image data is retrieved from the server
@@ -25,8 +28,9 @@ class FetchImageThread : public dsl::Thread
 	private:
     	string								mImageURL;
         string								mCacheRootFolder;
+        StringList                          mExtraParameters;
 
-        					                //A renderclient is host, manager for this thread. Give it memory retrieved
+        					                //A renderclient is host, manager for this thread. Give it the memory that is retrieved
         RenderClient&		                mRenderClient;
 
 };

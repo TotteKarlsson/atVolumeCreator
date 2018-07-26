@@ -63,14 +63,13 @@ class RenderClient
 		StringList						            getOwners();
         StringList						            getProjectsForOwner(const string& o);
         StringList						            getStacksForProject(const string& owner, const string& p);
-
+        RenderProject                               getCurrentProject();
 		TMemoryStream*								getImageMemory();
 
 		void				                        clearImageMemory();
 		string				                        getURL();
 		const char* 		                        getURLC(){return getURL().c_str();}
-        TMemoryStream*		                        getImage(int z = 0);
-        bool				                        getImageInThread(int z = 0);
+        bool				                        getImageInThread(int z , StringList& paras);
         TMemoryStream*		                        reloadImage(int z = 0);
         string							            getURLForZ(int z);
         bool				                        checkCacheForCurrentURL();
@@ -86,9 +85,14 @@ class RenderClient
         RenderProject&					            getProject(){return mProject;}
         void										assignOnImageCallback(RCCallBack cb);
         void										copyImageData(MemoryStruct chunk);
+		Idhttp::TIdHTTP*                            getConnection();
+        void                                        assignConnection(Idhttp::TIdHTTP* c);
+
+        string                                      getBaseURL(){return mBaseURL;}
+
 
     private:
-    												//!This is the HTTP connection
+    												//!This is a HTTP connection
 		Idhttp::TIdHTTP* 	                        mC;
 
         											//!Memory to hold image data retrieved from server

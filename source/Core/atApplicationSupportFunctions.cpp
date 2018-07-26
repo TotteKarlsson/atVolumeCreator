@@ -4,6 +4,7 @@
 #include "dslLogger.h"
 #include "dslRestartApplicationUtils.h"
 #include "dslVCLUtils.h"
+#include "dslFileUtils.h"
 
 using namespace dsl;
 

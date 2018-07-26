@@ -13,8 +13,11 @@ class RenderProject : public VolumeCreatorProject
 {
 	public:
 			    	                    RenderProject(const string& name, const string& owner, const string& project, const string& stack);
+
+                                        //!Gotta think about this..
+                                        RenderProject(const RenderProject& rp);
+
 		void							setupForStack(const string& owner, const string& project, const string& stack);
-//		string							getProjectName(){return mProjectName;}
 
 		string							getProject(){return mProject;}
 		string							getProjectOwner(){return mOwner;}

@@ -7,6 +7,7 @@
 #include "atROIHistory.h"
 #include "dslRestartApplicationUtils.h"
 #include "TAboutVolumeCreatorForm.h"
+#include "dslFileUtils.h"
 //---------------------------------------------------------------------------
 
 using namespace dsl;
@@ -16,8 +17,8 @@ extern string gRestartMutexName;
 
 void __fastcall TMainForm::logMsg()
 {
-    infoMemo->Lines->Add(vclstr(mLogFileReader.getData()));
-    mLogFileReader.purge();
+//    infoMemo->Lines->Add(vclstr(mLogFileReader.getData()));
+//    mLogFileReader.purge();
 }
 
 //---------------------------------------------------------------------------
@@ -75,10 +76,10 @@ void __fastcall TMainForm::ThemesMenuClick(TObject *Sender)
 void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 {
 	//Browse for folder
-	string res = browseForFolder(mImageCacheFolderE->getValue());
+	string res = browseForFolder(ImageCacheFolderE->getValue());
     if(folderExists(res))
     {
-		mImageCacheFolderE->setValue(res);
+		ImageCacheFolderE->setValue(res);
     }
     else
     {
@@ -89,7 +90,7 @@ void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mCLearMemoClick(TObject *Sender)
 {
-	infoMemo->Clear();
+//	infoMemo->Clear();
 }
 
 //---------------------------------------------------------------------------
@@ -329,19 +330,19 @@ void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
 {
 	TButton* b = dynamic_cast<TButton*>(Sender);
 
-    if(b == OpenInNDVIZBtn)
-    {
+//    if(b == OpenInNDVIZBtn)
+//    {
 	    string   url(createNDVIZURL());
-		//ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
+//		//ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
         DcefBrowser1->Load(url.c_str());
 		return;
-    }
-
-    if(b == OpenFromNDVIZBtn)
-    {
-		ParseNDVIZURL1Click(NULL);
-		return;
-    }
+//    }
+//
+//    if(b == OpenFromNDVIZBtn)
+//    {
+//		ParseNDVIZURL1Click(NULL);
+//		return;
+//    }
 }
 
 

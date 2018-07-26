@@ -1,7 +1,7 @@
 #include <vcl.h>
 #pragma hdrstop
 #include "TMainForm.h"
-//#include "MagickWand/MagickWand.h"
+#include "MagickWand/MagickWand.h"
 //#include "ImageMagick.h"
 #include <string>
 using namespace std;

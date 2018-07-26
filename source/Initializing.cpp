@@ -5,6 +5,7 @@
 #include "dslLogger.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
+#include "dslFileUtils.h"
 //---------------------------------------------------------------------------
 
 using namespace dsl;
@@ -111,7 +112,7 @@ bool TMainForm::setupAndReadIniParameters()
     mGeneralProperties->add((BaseProperty*)  &MinIntensity->getProperty()->setup(	    "MIN_INTENSITY", 		            0));
     mGeneralProperties->add((BaseProperty*)  &MaxIntensity->getProperty()->setup(	    "MAX_INTENSITY", 		            65535));
 
-	mGeneralProperties->add((BaseProperty*)  &mImageCacheFolderE->getProperty()->setup(	"IMAGE_CACHE_FOLDER",  				"C:\\ImageCache"));
+	mGeneralProperties->add((BaseProperty*)  &ImageCacheFolderE->getProperty()->setup(	"IMAGE_CACHE_FOLDER",  				"C:\\ImageCache"));
 
     //Stack Generation
 	mGeneralProperties->add((BaseProperty*)  &VolumesFolder->getProperty()->setup(		"VOLUMES_ROOT_FOLDER",  	  		"/nas1/temp"));
@@ -131,7 +132,7 @@ bool TMainForm::setupAndReadIniParameters()
     Height->update();
 	MinIntensity->update();
 	MaxIntensity->update();
-	mImageCacheFolderE->update();
+	ImageCacheFolderE->update();
     VolumesFolder->update();
     SubFolder1->update();
     VolumesScaleE->update();

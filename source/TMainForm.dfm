@@ -3,8 +3,8 @@ object MainForm: TMainForm
   Top = 0
   AlphaBlendValue = 100
   Caption = 'Volume Creator'
-  ClientHeight = 833
-  ClientWidth = 1421
+  ClientHeight = 986
+  ClientWidth = 1442
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,122 +21,70 @@ object MainForm: TMainForm
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
+  OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 814
-    Width = 1421
+    Top = 967
+    Width = 1442
     Height = 19
     Panels = <>
   end
-  object mShowBottomPanelBtn: TButton
-    Left = 0
-    Top = 795
-    Width = 1421
-    Height = 19
-    Align = alBottom
-    Caption = '^'
-    TabOrder = 1
-    Visible = False
-    OnClick = mShowBottomPanelBtnClick
-  end
-  object ToolBar1: TToolBar
-    Left = 0
-    Top = 0
-    Width = 1421
-    Height = 22
-    AutoSize = True
-    Caption = 'ToolBar1'
-    Images = ImageList1
-    TabOrder = 2
-    object ToolButton3: TToolButton
-      Left = 0
-      Top = 0
-      Action = NewProjectA
-    end
-    object ToolButton1: TToolButton
-      Left = 23
-      Top = 0
-      Action = FileOpen1
-    end
-    object ToolButton2: TToolButton
-      Left = 46
-      Top = 0
-      Action = SaveProjectA
-    end
-  end
-  object ProjFilePathPanel: TPanel
-    Left = 0
-    Top = 22
-    Width = 1421
-    Height = 35
-    Align = alTop
-    Alignment = taLeftJustify
-    TabOrder = 3
-    object ProjFileLbl: TLabel
-      AlignWithMargins = True
-      Left = 16
-      Top = 4
-      Width = 1401
-      Height = 27
-      Margins.Left = 15
-      Align = alClient
-      Caption = '<none>'
-      Layout = tlCenter
-      ExplicitWidth = 40
-      ExplicitHeight = 13
-    end
-  end
   object MainPanel: TPanel
     Left = 0
-    Top = 57
-    Width = 1421
-    Height = 738
+    Top = 113
+    Width = 1442
+    Height = 854
     Align = alClient
-    TabOrder = 4
+    TabOrder = 1
     object Splitter2: TSplitter
       Left = 1
-      Top = 596
-      Width = 1419
-      Height = 5
+      Top = 714
+      Width = 1440
+      Height = 3
       Cursor = crVSplit
       Align = alBottom
-      ExplicitLeft = 46
-      ExplicitTop = 685
+      ExplicitLeft = 8
+      ExplicitTop = 729
+      ExplicitWidth = 1442
     end
     object PageControl1: TPageControl
       Left = 186
       Top = 1
-      Width = 1234
-      Height = 595
+      Width = 1255
+      Height = 694
       ActivePage = TabSheet1
       Align = alClient
       TabOrder = 0
+      OnChange = PageControl1Change
       object TabSheet1: TTabSheet
         Caption = 'General'
         object mLeftPanel: TPanel
           Left = 0
-          Top = 113
+          Top = 21
           Width = 385
-          Height = 454
+          Height = 645
           Align = alLeft
           TabOrder = 0
+          ExplicitTop = 0
+          ExplicitHeight = 666
           object ScrollBox1: TScrollBox
             Left = 1
             Top = 1
             Width = 287
-            Height = 452
+            Height = 643
             Align = alClient
             DoubleBuffered = True
             ParentDoubleBuffered = False
             TabOrder = 0
+            ExplicitHeight = 664
             object imageParasGB: TGroupBox
               Left = 0
               Top = 0
               Width = 283
-              Height = 161
+              Height = 225
               Align = alTop
               Caption = 'Image Parameters'
               TabOrder = 0
@@ -252,10 +200,22 @@ object MainForm: TMainForm
                 OnKeyDown = mScaleEKeyDown
                 Value = 1.000000000000000000
               end
+              object maxTileSpecsToRenderE: TIntegerLabeledEdit
+                Left = 17
+                Top = 176
+                Width = 121
+                Height = 21
+                EditLabel.Width = 121
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Max # of Tiles To Render'
+                TabOrder = 9
+                Text = '150'
+                Value = 150
+              end
             end
             object PostProcessingGB: TGroupBox
               Left = 0
-              Top = 161
+              Top = 225
               Width = 283
               Height = 198
               Align = alTop
@@ -321,20 +281,29 @@ object MainForm: TMainForm
             end
             object CacheGB: TGroupBox
               Left = 0
-              Top = 359
+              Top = 423
               Width = 283
               Height = 77
               Align = alTop
               Caption = 'Local Cache'
               TabOrder = 2
-              object mFetchSelectedZsBtn: TButton
+              object FetchSelectedZsBtn: TButton
                 Left = 16
-                Top = 21
-                Width = 153
+                Top = 19
+                Width = 113
                 Height = 50
                 Caption = 'Generate'
                 TabOrder = 0
-                OnClick = mFetchSelectedZsBtnClick
+                OnClick = FetchSelectedZsBtnClick
+              end
+              object ClearCacheBtn: TButton
+                Left = 144
+                Top = 19
+                Width = 97
+                Height = 50
+                Caption = 'Clear Cache'
+                TabOrder = 1
+                OnClick = FetchSelectedZsBtnClick
               end
             end
           end
@@ -342,281 +311,54 @@ object MainForm: TMainForm
             Left = 288
             Top = 1
             Width = 96
-            Height = 452
+            Height = 643
             Align = alRight
             Caption = 'Sections'
             TabOrder = 1
+            ExplicitHeight = 664
             object mZs: TCheckListBox
               Left = 2
               Top = 15
               Width = 92
-              Height = 435
+              Height = 626
               Align = alClient
               ItemHeight = 13
               PopupMenu = ZsPopUpMenu
               TabOrder = 0
               OnClick = ClickZ
+              ExplicitHeight = 647
             end
           end
         end
-        object Panel5: TPanel
-          Left = 0
-          Top = 0
-          Width = 1226
-          Height = 113
-          Align = alTop
-          TabOrder = 1
-          object Splitter1: TSplitter
-            Left = 593
-            Top = 1
-            Width = 2
-            Height = 111
-          end
-          object GroupBox8: TGroupBox
-            Left = 595
-            Top = 1
-            Width = 144
-            Height = 111
-            Align = alLeft
-            Caption = 'Image/Mouse properties'
-            TabOrder = 0
-            object mX: TIntLabel
-              Left = 16
-              Top = 43
-              Width = 10
-              Height = 13
-              Caption = '-1'
-              Transparent = True
-              Value = -1
-              TheFont.Charset = DEFAULT_CHARSET
-              TheFont.Color = clWindowText
-              TheFont.Height = -11
-              TheFont.Name = 'Tahoma'
-              TheFont.Style = []
-            end
-            object mXC: TIntLabel
-              Left = 16
-              Top = 19
-              Width = 10
-              Height = 13
-              Caption = '-1'
-              Transparent = True
-              Value = -1
-              TheFont.Charset = DEFAULT_CHARSET
-              TheFont.Color = clWindowText
-              TheFont.Height = -11
-              TheFont.Name = 'Tahoma'
-              TheFont.Style = []
-            end
-            object mY: TIntLabel
-              Left = 65
-              Top = 43
-              Width = 10
-              Height = 13
-              Caption = '-1'
-              Transparent = True
-              Value = -1
-              TheFont.Charset = DEFAULT_CHARSET
-              TheFont.Color = clWindowText
-              TheFont.Height = -11
-              TheFont.Name = 'Tahoma'
-              TheFont.Style = []
-            end
-            object mYC: TIntLabel
-              Left = 65
-              Top = 19
-              Width = 10
-              Height = 13
-              Caption = '-1'
-              Transparent = True
-              Value = -1
-              TheFont.Charset = DEFAULT_CHARSET
-              TheFont.Color = clWindowText
-              TheFont.Height = -11
-              TheFont.Name = 'Tahoma'
-              TheFont.Style = []
-            end
-          end
-          object GroupBox9: TGroupBox
-            Left = 739
-            Top = 1
-            Width = 184
-            Height = 111
-            Align = alLeft
-            Caption = 'Zoom'
-            TabOrder = 1
-            DesignSize = (
-              184
-              111)
-            object mHistoryBackBtn: TButton
-              Left = 11
-              Top = 56
-              Width = 75
-              Height = 25
-              Anchors = [akTop, akRight]
-              Caption = '<'
-              TabOrder = 0
-              OnClick = historyBtnClick
-            end
-            object mHistoryFFW: TButton
-              Left = 92
-              Top = 56
-              Width = 78
-              Height = 25
-              Anchors = [akTop, akRight]
-              Caption = '>'
-              TabOrder = 1
-              OnClick = historyBtnClick
-            end
-            object mZoomFactor: TIntegerEdit
-              Left = 44
-              Top = 29
-              Width = 89
-              Height = 21
-              Anchors = [akTop, akRight]
-              NumbersOnly = True
-              TabOrder = 2
-              Text = '10'
-              Value = 10
-            end
-            object mZoomInBtn: TButton
-              Left = 140
-              Top = 25
-              Width = 26
-              Height = 25
-              Anchors = [akTop, akRight]
-              Caption = '+'
-              TabOrder = 3
-              OnClick = mZoomBtnClick
-            end
-            object mZoomOutBtn: TButton
-              Left = 11
-              Top = 25
-              Width = 26
-              Height = 25
-              Anchors = [akTop, akRight]
-              Caption = '-'
-              TabOrder = 4
-              OnClick = mZoomBtnClick
-            end
-          end
-          object GroupBox1: TGroupBox
-            Left = 1
-            Top = 1
-            Width = 592
-            Height = 111
-            Align = alLeft
-            Caption = 'Project Selection'
-            TabOrder = 2
-            DesignSize = (
-              592
-              111)
-            object Label1: TLabel
-              Left = 16
-              Top = 21
-              Width = 32
-              Height = 13
-              Caption = 'Owner'
-            end
-            object Label2: TLabel
-              Left = 247
-              Top = 21
-              Width = 34
-              Height = 13
-              Caption = 'Project'
-            end
-            object Label3: TLabel
-              Left = 16
-              Top = 66
-              Width = 31
-              Height = 13
-              Caption = 'Stacks'
-            end
-            object OwnerCB: TComboBox
-              Left = 16
-              Top = 34
-              Width = 225
-              Height = 21
-              Style = csDropDownList
-              TabOrder = 0
-              OnChange = OwnerCBChange
-            end
-            object ProjectCB: TComboBox
-              Left = 247
-              Top = 34
-              Width = 339
-              Height = 21
-              Style = csDropDownList
-              Anchors = [akLeft, akTop, akRight]
-              DropDownCount = 25
-              TabOrder = 1
-              OnChange = ProjectCBChange
-            end
-            object StackCB: TComboBox
-              Left = 16
-              Top = 80
-              Width = 570
-              Height = 21
-              Anchors = [akLeft, akTop, akRight]
-              DropDownCount = 25
-              TabOrder = 2
-              OnChange = StackCBChange
-            end
-          end
-          object GroupBox2: TGroupBox
-            Left = 923
-            Top = 1
-            Width = 302
-            Height = 111
-            Align = alClient
-            Caption = 'Misc'
-            TabOrder = 3
-            object OpenInNDVIZBtn: TButton
-              Left = 22
-              Top = 25
-              Width = 139
-              Height = 25
-              Caption = 'Open in NeuroData VIZ'
-              TabOrder = 0
-              OnClick = OpenInNDVIZBtnClick
-            end
-            object OpenFromNDVIZBtn: TButton
-              Left = 22
-              Top = 56
-              Width = 139
-              Height = 25
-              Caption = 'Open from NeuroData VIZ'
-              TabOrder = 1
-              OnClick = OpenInNDVIZBtnClick
-            end
-          end
-        end
-        object PageControl2: TPageControl
+        object VisualsPC: TPageControl
           Left = 385
-          Top = 113
-          Width = 841
-          Height = 454
-          ActivePage = TabSheet5
+          Top = 21
+          Width = 862
+          Height = 645
+          ActivePage = TabSheet2
           Align = alClient
-          TabOrder = 2
+          TabOrder = 1
+          ExplicitTop = 0
+          ExplicitHeight = 666
           object TabSheet2: TTabSheet
             Caption = 'Local Explorer'
+            ExplicitHeight = 638
             object Panel1: TPanel
               Left = 0
               Top = 0
-              Width = 833
-              Height = 426
+              Width = 854
+              Height = 617
               Align = alClient
+              DoubleBuffered = True
+              FullRepaint = False
+              ParentDoubleBuffered = False
               TabOrder = 0
-              ExplicitLeft = 385
-              ExplicitTop = 113
-              ExplicitWidth = 841
-              ExplicitHeight = 454
+              ExplicitHeight = 638
               object PaintBox1: TPaintBox
                 Left = 1
                 Top = 1
-                Width = 831
-                Height = 407
+                Width = 852
+                Height = 598
                 Align = alClient
                 Color = clRed
                 ParentColor = False
@@ -628,8 +370,8 @@ object MainForm: TMainForm
               object Image1: TImage
                 Left = 1
                 Top = 1
-                Width = 831
-                Height = 407
+                Width = 852
+                Height = 598
                 Align = alClient
                 AutoSize = True
                 Picture.Data = {
@@ -16648,8 +16390,8 @@ object MainForm: TMainForm
               end
               object HeaderControl1: THeaderControl
                 Left = 1
-                Top = 408
-                Width = 831
+                Top = 599
+                Width = 852
                 Height = 17
                 Align = alBottom
                 Sections = <
@@ -16658,19 +16400,19 @@ object MainForm: TMainForm
                     Text = 'Misc'
                     Width = 50
                   end>
-                ExplicitTop = 436
-                ExplicitWidth = 839
+                ExplicitTop = 620
               end
             end
           end
           object TabSheet5: TTabSheet
             Caption = 'NDViz'
             ImageIndex = 1
+            ExplicitHeight = 638
             object DcefBrowser1: TDcefBrowser
               Left = 0
               Top = 0
-              Width = 833
-              Height = 426
+              Width = 854
+              Height = 617
               TabOrder = 0
               Align = alClient
               DefaultURL = 'about:blank'
@@ -16680,288 +16422,53 @@ object MainForm: TMainForm
               OnStateChange = DcefBrowser1StateChange
               OnBeforeBrowse = DcefBrowser1BeforeBrowse
               OnConsoleMessage = DcefBrowser1ConsoleMessage
-              ExplicitLeft = 112
-              ExplicitTop = 80
-              ExplicitWidth = 100
-              ExplicitHeight = 41
+              ExplicitHeight = 638
+            end
+            object Button1: TButton
+              Left = 16
+              Top = 16
+              Width = 75
+              Height = 25
+              Caption = 'Button1'
+              TabOrder = 1
+              OnClick = Button1Click
             end
           end
+        end
+        object URLE: TSTDStringEdit
+          Left = 0
+          Top = 0
+          Width = 1247
+          Height = 21
+          Align = alTop
+          TabOrder = 2
+          Text = 'URLE'
+          Value = 'URLE'
+          ExplicitLeft = 1
+          ExplicitTop = 1
+          ExplicitWidth = 852
         end
       end
       object TabSheet4: TTabSheet
-        Caption = 'Stack Creation'
+        Caption = 'Volume Creation'
         ImageIndex = 3
-        object StackGenerationGB: TGroupBox
+        object ScriptsPC: TPageControl
           Left = 0
-          Top = 70
-          Width = 1226
-          Height = 227
-          Align = alTop
-          Caption = 'Stack Output Settings'
-          TabOrder = 0
-          object Label4: TLabel
-            Left = 282
-            Top = 51
-            Width = 55
-            Height = 13
-            Caption = 'Image type'
-          end
-          object BoundsCB: TPropertyCheckBox
-            Left = 282
-            Top = 28
-            Width = 97
-            Height = 17
-            Caption = 'Static Bounds'
-            Checked = True
-            Enabled = False
-            State = cbChecked
-            TabOrder = 0
-            Value = True
-          end
-          object CreateTIFFStackCB: TPropertyCheckBox
-            Left = 281
-            Top = 170
-            Width = 212
-            Height = 17
-            Caption = 'Create TIFFSTACK (max size ~ 4GB)'
-            TabOrder = 1
-            OnClick = CreateTIFFStackCBClick
-          end
-          object DeleteTempTiffsCB: TPropertyCheckBox
-            Left = 301
-            Top = 193
-            Width = 146
-            Height = 17
-            Caption = 'Delete temporary TIFFS'
-            Enabled = False
-            TabOrder = 2
-          end
-          object JobCreationGB: TGroupBox
-            Left = 500
-            Top = 13
-            Width = 280
-            Height = 102
-            Caption = 'Server Job Creation'
-            TabOrder = 3
-            object ZBatchSizeE: TIntegerLabeledEdit
-              Left = 16
-              Top = 32
-              Width = 105
-              Height = 21
-              EditLabel.Width = 58
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Z Batch Size'
-              TabOrder = 0
-              Text = '10'
-              Value = 10
-            end
-            object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
-              Left = 16
-              Top = 72
-              Width = 105
-              Height = 21
-              EditLabel.Width = 104
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Number of jobs (max)'
-              TabOrder = 1
-              Text = '10'
-              Value = 10
-            end
-            object NicenessE: TIntegerLabeledEdit
-              Left = 144
-              Top = 32
-              Width = 97
-              Height = 21
-              Hint = '-20 is highest priority and 19 is lowest priority'
-              EditLabel.Width = 99
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Niceness (-20 -> 19)'
-              TabOrder = 2
-              Text = '0'
-            end
-          end
-          object PadFileNamesWithZeroesCB: TPropertyCheckBox
-            Left = 282
-            Top = 147
-            Width = 178
-            Height = 17
-            Caption = 'Pad File Names with Zeroes'
-            Checked = True
-            Enabled = False
-            State = cbChecked
-            TabOrder = 4
-            Value = True
-          end
-          object Run: TButton
-            Left = 812
-            Top = 24
-            Width = 119
-            Height = 78
-            Caption = 'Run'
-            TabOrder = 5
-            OnClick = RunClick
-          end
-          object SubFolder1: TSTDStringLabeledEdit
-            Left = 15
-            Top = 93
-            Width = 182
-            Height = 21
-            EditLabel.Width = 55
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Subfolder 1'
-            TabOrder = 6
-            Text = 'Test'
-            Value = 'Test'
-          end
-          object VolumesFolder: TSTDStringLabeledEdit
-            Left = 15
-            Top = 42
-            Width = 182
-            Height = 21
-            EditLabel.Width = 93
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Output Root Folder'
-            TabOrder = 7
-            Text = '/nas4/volumes'
-            Value = '/nas4/volumes'
-          end
-          object VolumesScaleE: TFloatLabeledEdit
-            Left = 215
-            Top = 42
-            Width = 45
-            Height = 21
-            EditLabel.Width = 25
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Scale'
-            TabOrder = 8
-            Text = '0.5000'
-            Value = 0.500000000000000000
-          end
-          object ImageTypeCB: TComboBox
-            Left = 282
-            Top = 70
-            Width = 145
-            Height = 21
-            Style = csDropDownList
-            ItemIndex = 0
-            TabOrder = 9
-            Text = '24 bit (RGB)'
-            Items.Strings = (
-              '24 bit (RGB)'
-              '16 bit'
-              '8 bit')
-          end
-        end
-        inline TSSHFrame1: TSSHFrame
-          Left = 0
-          Top = 0
-          Width = 1226
-          Height = 70
-          Align = alTop
-          AutoSize = True
-          TabOrder = 3
-          ExplicitWidth = 1226
-          inherited GroupBox1: TGroupBox
-            inherited edSSHPassword: TSTDStringLabeledEdit
-              Text = ''
-              Value = ''
-            end
-          end
-          inherited ScFileStorage: TScFileStorage
-            Left = 24
-            Top = 160
-          end
-          inherited ScSSHShell1: TScSSHShell
-            OnAsyncReceive = TSSHFrame1ScSSHShell1AsyncReceive
-            Left = 232
-            Top = 192
-          end
-          inherited ScSSHChannel: TScSSHChannel
-            Left = 136
-            Top = 176
-          end
-          inherited ScSSHClient: TScSSHClient
-            AfterConnect = TSSHFrame1ScSSHClientAfterConnect
-            AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
-            Left = 24
-            Top = 144
-          end
-        end
-        object TestSSHGB: TGroupBox
-          Left = 527
-          Top = 0
-          Width = 217
-          Height = 70
-          Caption = 'Remote Command'
-          TabOrder = 2
-          object CMDButton: TButton
-            Left = 175
-            Top = 24
-            Width = 27
-            Height = 25
-            Caption = '->'
-            TabOrder = 0
-            OnClick = CMDButtonClick
-          end
-          object mCMD: TEdit
-            Left = 16
-            Top = 26
-            Width = 153
-            Height = 21
-            TabOrder = 1
-            Text = 'ls'
-          end
-        end
-        object MultiStackCreationGB: TGroupBox
-          Left = 0
-          Top = 297
-          Width = 1226
-          Height = 270
+          Top = 129
+          Width = 1247
+          Height = 537
+          ActivePage = TabSheet6
           Align = alClient
-          Caption = 'Select Stacks'
-          TabOrder = 1
-          object StacksForProjectCB: TCheckListBox
-            AlignWithMargins = True
-            Left = 17
-            Top = 18
-            Width = 335
-            Height = 247
-            Margins.Left = 15
-            Align = alLeft
-            ItemHeight = 13
-            TabOrder = 0
-          end
-          object GroupBox3: TGroupBox
-            Left = 354
-            Top = 18
-            Width = 223
-            Height = 97
-            Caption = 'Filters'
-            TabOrder = 1
-            object CustomFilterCB: TPropertyCheckBox
-              Left = 13
-              Top = 24
-              Width = 80
-              Height = 17
-              Caption = 'Custom'
-              TabOrder = 0
-              OnClick = StackFilterCBClick
-            end
-            object CustomFilterE: TEdit
-              Left = 83
-              Top = 24
-              Width = 121
-              Height = 21
-              TabOrder = 1
-              Text = 'ALI'
-              OnKeyDown = CustomFilterEKeyDown
-            end
+          TabOrder = 0
+          OnChange = ScriptsPCChange
+          object TabSheet6: TTabSheet
+            Caption = 'Stack Creation'
           end
         end
         object BashScriptMemo: TMemo
-          Left = 380
-          Top = 472
-          Width = 604
+          Left = 424
+          Top = 327
+          Width = 336
           Height = 273
           Lines.Strings = (
             '#! /bin/bash'
@@ -17138,26 +16645,291 @@ object MainForm: TMainForm
             'echo "mxplutx"'
             'echo "This job ended on: "`date` >> $info')
           ReadOnly = True
-          TabOrder = 4
+          TabOrder = 1
           Visible = False
           WordWrap = False
+        end
+        object MultiStackCreationGB: TGroupBox
+          Left = 0
+          Top = 129
+          Width = 1247
+          Height = 537
+          Align = alClient
+          Caption = 'Select Stacks'
+          TabOrder = 2
+          object StacksForProjectCB: TCheckListBox
+            AlignWithMargins = True
+            Left = 17
+            Top = 18
+            Width = 335
+            Height = 514
+            Margins.Left = 15
+            Align = alLeft
+            ItemHeight = 13
+            TabOrder = 0
+          end
+          object GroupBox3: TGroupBox
+            Left = 354
+            Top = 18
+            Width = 223
+            Height = 97
+            Caption = 'Filters'
+            TabOrder = 1
+            object CustomFilterCB: TPropertyCheckBox
+              Left = 13
+              Top = 24
+              Width = 80
+              Height = 17
+              Caption = 'Custom'
+              TabOrder = 0
+              OnClick = StackFilterCBClick
+            end
+            object CustomFilterE: TEdit
+              Left = 83
+              Top = 24
+              Width = 121
+              Height = 21
+              TabOrder = 1
+              Text = 'ALI'
+              OnKeyDown = CustomFilterEKeyDown
+            end
+          end
+        end
+        object StackGenerationGB: TGroupBox
+          Left = 0
+          Top = 0
+          Width = 1247
+          Height = 129
+          Align = alTop
+          Caption = 'Stack Output Settings'
+          TabOrder = 3
+          DesignSize = (
+            1247
+            129)
+          object Label4: TLabel
+            Left = 282
+            Top = 51
+            Width = 55
+            Height = 13
+            Caption = 'Image type'
+          end
+          object BoundsCB: TPropertyCheckBox
+            Left = 282
+            Top = 28
+            Width = 97
+            Height = 17
+            Caption = 'Static Bounds'
+            Checked = True
+            Enabled = False
+            State = cbChecked
+            TabOrder = 0
+            Value = True
+          end
+          object CreateTIFFStackCB: TPropertyCheckBox
+            Left = 453
+            Top = 51
+            Width = 212
+            Height = 17
+            Caption = 'Create TIFFSTACK (max size ~ 4GB)'
+            TabOrder = 1
+            OnClick = CreateTIFFStackCBClick
+          end
+          object DeleteTempTiffsCB: TPropertyCheckBox
+            Left = 469
+            Top = 74
+            Width = 146
+            Height = 17
+            Caption = 'Delete temporary TIFFS'
+            Enabled = False
+            TabOrder = 2
+          end
+          object JobCreationGB: TGroupBox
+            Left = 820
+            Top = 13
+            Width = 280
+            Height = 102
+            Anchors = [akTop, akRight]
+            Caption = 'Server Job Creation'
+            TabOrder = 3
+            object ZBatchSizeE: TIntegerLabeledEdit
+              Left = 16
+              Top = 32
+              Width = 105
+              Height = 21
+              EditLabel.Width = 58
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Z Batch Size'
+              TabOrder = 0
+              Text = '10'
+              Value = 10
+            end
+            object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
+              Left = 16
+              Top = 72
+              Width = 105
+              Height = 21
+              EditLabel.Width = 104
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Number of jobs (max)'
+              TabOrder = 1
+              Text = '10'
+              Value = 10
+            end
+            object NicenessE: TIntegerLabeledEdit
+              Left = 144
+              Top = 32
+              Width = 97
+              Height = 21
+              Hint = '-20 is highest priority and 19 is lowest priority'
+              EditLabel.Width = 99
+              EditLabel.Height = 13
+              EditLabel.Caption = 'Niceness (-20 -> 19)'
+              TabOrder = 2
+              Text = '0'
+            end
+          end
+          object PadFileNamesWithZeroesCB: TPropertyCheckBox
+            Left = 453
+            Top = 28
+            Width = 178
+            Height = 17
+            Caption = 'Pad File Names with Zeroes'
+            Checked = True
+            Enabled = False
+            State = cbChecked
+            TabOrder = 4
+            Value = True
+          end
+          object Run: TButton
+            Left = 1116
+            Top = 28
+            Width = 119
+            Height = 78
+            Anchors = [akTop, akRight]
+            Caption = 'Run'
+            TabOrder = 5
+            OnClick = RunClick
+          end
+          object SubFolder1: TSTDStringLabeledEdit
+            Left = 15
+            Top = 93
+            Width = 182
+            Height = 21
+            EditLabel.Width = 55
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Subfolder 1'
+            TabOrder = 6
+            Text = 'Test'
+            Value = 'Test'
+          end
+          object VolumesFolder: TSTDStringLabeledEdit
+            Left = 15
+            Top = 42
+            Width = 182
+            Height = 21
+            EditLabel.Width = 93
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Output Root Folder'
+            TabOrder = 7
+            Text = '/nas4/volumes'
+            Value = '/nas4/volumes'
+          end
+          object VolumesScaleE: TFloatLabeledEdit
+            Left = 215
+            Top = 42
+            Width = 45
+            Height = 21
+            EditLabel.Width = 25
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Scale'
+            TabOrder = 8
+            Text = '0.5000'
+            Value = 0.500000000000000000
+          end
+          object ImageTypeCB: TComboBox
+            Left = 282
+            Top = 70
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemIndex = 1
+            TabOrder = 9
+            Text = '16 bit'
+            Items.Strings = (
+              '24 bit (RGB)'
+              '16 bit'
+              '8 bit')
+          end
+        end
+      end
+      object RenderTab: TTabSheet
+        Caption = 'Transforms'
+        ImageIndex = 3
+        inline TAffineTransformationFrame1: TAffineTransformationFrame
+          Left = 0
+          Top = 0
+          Width = 1247
+          Height = 666
+          Align = alClient
+          TabOrder = 0
+          ExplicitWidth = 1247
+          ExplicitHeight = 666
+          inherited GroupBox1: TGroupBox
+            Width = 1247
+            ExplicitWidth = 1247
+            inherited RenderClientScriptsFolderE: TSTDStringLabeledEdit
+              EditLabel.ExplicitWidth = 130
+            end
+            inherited RenderHostPortE: TIntegerLabeledEdit
+              EditLabel.ExplicitWidth = 51
+            end
+            inherited ExecuteBtn: TButton
+              Left = 1116
+              ExplicitLeft = 1116
+            end
+          end
+          inherited Panel2: TPanel
+            Width = 1247
+            Height = 497
+            ExplicitWidth = 1247
+            ExplicitHeight = 497
+            inherited StacksGB: TGroupBox
+              Height = 495
+              ExplicitHeight = 495
+              inherited StacksForProjectCB: TCheckListBox
+                Height = 472
+                ExplicitHeight = 472
+              end
+            end
+            inherited GroupBox2: TGroupBox
+              Width = 1060
+              Height = 495
+              ExplicitWidth = 1060
+              ExplicitHeight = 495
+            end
+          end
         end
       end
       object TabSheet3: TTabSheet
         Caption = 'Settings'
         ImageIndex = 2
         object GroupBox6: TGroupBox
-          Left = 19
-          Top = 25
-          Width = 222
-          Height = 129
+          Left = 0
+          Top = 0
+          Width = 1247
+          Height = 67
+          Align = alTop
           Caption = 'General'
           TabOrder = 0
-          object mImageCacheFolderE: TSTDStringLabeledEdit
-            Left = 19
-            Top = 40
-            Width = 121
+          DesignSize = (
+            1247
+            67)
+          object ImageCacheFolderE: TSTDStringLabeledEdit
+            Left = 9
+            Top = 33
+            Width = 1196
             Height = 21
+            Anchors = [akLeft, akTop, akRight]
             EditLabel.Width = 102
             EditLabel.Height = 13
             EditLabel.Caption = 'Root folder for cache'
@@ -17166,27 +16938,33 @@ object MainForm: TMainForm
             Value = 'c:\ImageCache'
           end
           object mBrowseForCacheFolder: TButton
-            Left = 152
-            Top = 38
+            Left = 1211
+            Top = 31
             Width = 33
             Height = 25
+            Anchors = [akTop, akRight]
             Caption = '...'
             TabOrder = 1
             OnClick = mBrowseForCacheFolderClick
           end
         end
         object GroupBox4: TGroupBox
-          Left = 19
-          Top = 171
-          Width = 646
-          Height = 94
+          Left = 0
+          Top = 67
+          Width = 1247
+          Height = 88
+          Align = alTop
           Caption = 'Render Service Settings'
           TabOrder = 1
+          DesignSize = (
+            1247
+            88)
           object mBaseUrlE: TSTDStringLabeledEdit
             Left = 13
-            Top = 34
-            Width = 444
+            Top = 42
+            Width = 1144
             Height = 21
+            Anchors = [akLeft, akTop, akRight]
             EditLabel.Width = 45
             EditLabel.Height = 13
             EditLabel.Caption = 'Base URL'
@@ -17199,69 +16977,82 @@ object MainForm: TMainForm
               '1'
           end
           object TestRenderServiceBtn: TButton
-            Left = 472
-            Top = 32
+            Left = 1163
+            Top = 40
             Width = 75
             Height = 25
+            Anchors = [akTop, akRight]
             Caption = 'Test'
             TabOrder = 1
             OnClick = TestRenderServiceBtnClick
+          end
+        end
+        object TestSSHGB: TGroupBox
+          Left = 0
+          Top = 155
+          Width = 1247
+          Height = 70
+          Align = alTop
+          Caption = 'Remote Command'
+          TabOrder = 2
+          DesignSize = (
+            1247
+            70)
+          object CMDButton: TButton
+            Left = 1207
+            Top = 24
+            Width = 27
+            Height = 25
+            Anchors = [akTop, akRight]
+            Caption = '->'
+            TabOrder = 0
+            OnClick = CMDButtonClick
+          end
+          object mCMD: TEdit
+            Left = 16
+            Top = 26
+            Width = 1185
+            Height = 21
+            Anchors = [akLeft, akTop, akRight]
+            TabOrder = 1
+            Text = 'ls'
           end
         end
       end
     end
     object mBottomPanel: TPanel
       Left = 1
-      Top = 601
-      Width = 1419
+      Top = 717
+      Width = 1440
       Height = 136
       Align = alBottom
+      PopupMenu = PopupMenu1
       TabOrder = 1
-      object mLogPanel: TPanel
+      inline TLogMemoFrame1: TLogMemoFrame
         Left = 1
         Top = 1
-        Width = 1417
+        Width = 1438
         Height = 134
         Align = alClient
         TabOrder = 0
-        object infoMemo: TMemo
-          Left = 1
-          Top = 42
-          Width = 1415
-          Height = 91
-          Align = alClient
-          ScrollBars = ssBoth
-          TabOrder = 0
-          WordWrap = False
-        end
-        object Panel2: TPanel
-          Left = 1
-          Top = 1
-          Width = 1415
-          Height = 41
-          Align = alTop
-          TabOrder = 1
-          DesignSize = (
-            1415
-            41)
-          object mCLearMemo: TButton
-            Left = 9
-            Top = 10
-            Width = 75
-            Height = 25
-            Caption = 'Clear'
-            TabOrder = 0
-            OnClick = mCLearMemoClick
+        ExplicitLeft = 1
+        ExplicitTop = 1
+        ExplicitWidth = 1438
+        ExplicitHeight = 134
+        inherited Panel1: TPanel
+          Width = 1438
+          Height = 134
+          ExplicitWidth = 1438
+          ExplicitHeight = 134
+          inherited GroupBox1: TGroupBox
+            Width = 1436
+            ExplicitWidth = 1436
           end
-          object mCloseBottomPanelBtn: TButton
-            Left = 1376
-            Top = 5
-            Width = 29
-            Height = 25
-            Anchors = [akTop, akRight]
-            Caption = 'x'
-            TabOrder = 1
-            OnClick = mCloseBottomPanelBtnClick
+          inherited infoMemo: TMemo
+            Width = 1436
+            Height = 82
+            ExplicitWidth = 1436
+            ExplicitHeight = 82
           end
         end
       end
@@ -17270,7 +17061,7 @@ object MainForm: TMainForm
       Left = 1
       Top = 1
       Width = 185
-      Height = 595
+      Height = 694
       Align = alLeft
       TabOrder = 2
       Visible = False
@@ -17278,7 +17069,7 @@ object MainForm: TMainForm
         Left = 1
         Top = 1
         Width = 183
-        Height = 593
+        Height = 692
         Align = alClient
         Indent = 19
         PopupMenu = ProjTreeViewPopup
@@ -17288,6 +17079,241 @@ object MainForm: TMainForm
         OnContextPopup = ProjectTViewContextPopup
         OnEdited = ProjectTViewEdited
         OnEditing = ProjectTViewEditing
+      end
+    end
+    object mShowBottomPanelBtn: TButton
+      Left = 1
+      Top = 695
+      Width = 1440
+      Height = 19
+      Align = alBottom
+      Caption = '^'
+      TabOrder = 3
+      Visible = False
+      OnClick = mShowBottomPanelBtnClick
+    end
+  end
+  object TopPanel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 1442
+    Height = 113
+    Align = alTop
+    TabOrder = 2
+    inline TSSHFrame1: TSSHFrame
+      Left = 920
+      Top = 1
+      Width = 521
+      Height = 111
+      Align = alRight
+      AutoSize = True
+      TabOrder = 0
+      ExplicitLeft = 920
+      ExplicitTop = 1
+      ExplicitWidth = 521
+      ExplicitHeight = 111
+      inherited GroupBox1: TGroupBox
+        Height = 111
+        Align = alClient
+        Caption = 'SSH Connection'
+        ExplicitHeight = 111
+        inherited ConnectBtn: TButton
+          Top = 32
+          Height = 24
+          ExplicitTop = 32
+          ExplicitHeight = 24
+        end
+        inherited edSSHPassword: TSTDStringLabeledEdit
+          Text = ''
+          Value = ''
+        end
+      end
+      inherited ScFileStorage: TScFileStorage
+        Top = 160
+      end
+      inherited ScSSHShell1: TScSSHShell
+        OnAsyncReceive = TSSHFrame1ScSSHShell1AsyncReceive
+        Left = 240
+        Top = 120
+      end
+      inherited ScSSHChannel: TScSSHChannel
+        Left = 144
+        Top = 136
+      end
+      inherited ScSSHClient: TScSSHClient
+        AfterConnect = TSSHFrame1ScSSHClientAfterConnect
+        AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
+        Left = 32
+        Top = 88
+      end
+    end
+    object Panel3: TPanel
+      Left = 1
+      Top = 1
+      Width = 86
+      Height = 111
+      Align = alLeft
+      TabOrder = 1
+      object ToolBar1: TToolBar
+        Left = 1
+        Top = 1
+        Width = 84
+        Height = 22
+        AutoSize = True
+        Caption = 'ToolBar1'
+        Images = ImageList1
+        List = True
+        AllowTextButtons = True
+        TabOrder = 0
+        object ToolButton3: TToolButton
+          Left = 0
+          Top = 0
+          Action = NewProjectA
+        end
+        object ToolButton1: TToolButton
+          Left = 24
+          Top = 0
+          Action = FileOpen1
+        end
+        object ToolButton2: TToolButton
+          Left = 48
+          Top = 0
+          Action = SaveProjectA
+        end
+      end
+    end
+    object Panel5: TPanel
+      Left = 87
+      Top = 1
+      Width = 833
+      Height = 111
+      Align = alClient
+      TabOrder = 2
+      object GroupBox9: TGroupBox
+        Left = 648
+        Top = 1
+        Width = 184
+        Height = 109
+        Align = alRight
+        Caption = 'Zoom'
+        TabOrder = 0
+        DesignSize = (
+          184
+          109)
+        object mHistoryBackBtn: TButton
+          Left = 11
+          Top = 56
+          Width = 75
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '<'
+          TabOrder = 0
+          OnClick = historyBtnClick
+        end
+        object mHistoryFFW: TButton
+          Left = 92
+          Top = 56
+          Width = 78
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '>'
+          TabOrder = 1
+          OnClick = historyBtnClick
+        end
+        object mZoomFactor: TIntegerEdit
+          Left = 44
+          Top = 29
+          Width = 89
+          Height = 21
+          Anchors = [akTop, akRight]
+          NumbersOnly = True
+          TabOrder = 2
+          Text = '10'
+          Value = 10
+        end
+        object mZoomInBtn: TButton
+          Left = 140
+          Top = 25
+          Width = 26
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '+'
+          TabOrder = 3
+          OnClick = mZoomBtnClick
+        end
+        object mZoomOutBtn: TButton
+          Left = 11
+          Top = 25
+          Width = 26
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = '-'
+          TabOrder = 4
+          OnClick = mZoomBtnClick
+        end
+      end
+      object GroupBox1: TGroupBox
+        Left = 1
+        Top = 1
+        Width = 647
+        Height = 109
+        Align = alClient
+        Caption = 'Project Selection'
+        TabOrder = 1
+        DesignSize = (
+          647
+          109)
+        object Label1: TLabel
+          Left = 16
+          Top = 21
+          Width = 32
+          Height = 13
+          Caption = 'Owner'
+        end
+        object Label2: TLabel
+          Left = 247
+          Top = 21
+          Width = 34
+          Height = 13
+          Caption = 'Project'
+        end
+        object Label3: TLabel
+          Left = 16
+          Top = 66
+          Width = 31
+          Height = 13
+          Caption = 'Stacks'
+        end
+        object OwnerCB: TComboBox
+          Left = 16
+          Top = 34
+          Width = 225
+          Height = 21
+          Style = csDropDownList
+          TabOrder = 0
+          OnChange = OwnerCBChange
+        end
+        object ProjectCB: TComboBox
+          Left = 247
+          Top = 34
+          Width = 394
+          Height = 21
+          Style = csDropDownList
+          Anchors = [akLeft, akTop, akRight]
+          DropDownCount = 25
+          TabOrder = 1
+          OnChange = ProjectCBChange
+        end
+        object StackCB: TComboBox
+          Left = 16
+          Top = 80
+          Width = 625
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          DropDownCount = 25
+          TabOrder = 2
+          OnChange = StackCBChange
+        end
       end
     end
   end
@@ -17305,8 +17331,8 @@ object MainForm: TMainForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 1048
-    Top = 360
+    Left = 1072
+    Top = 328
   end
   object mShutDownTimer: TTimer
     Enabled = False
@@ -17343,8 +17369,8 @@ object MainForm: TMainForm
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 240
-    Top = 24
+    Left = 272
+    Top = 8
     object File1: TMenuItem
       Caption = 'File'
       object New1: TMenuItem
@@ -17397,8 +17423,8 @@ object MainForm: TMainForm
   object CreateCacheTimer: TTimer
     Interval = 150
     OnTimer = CreateCacheTimerTimer
-    Left = 1048
-    Top = 424
+    Left = 736
+    Top = 304
   end
   object ImagePopup: TPopupMenu
     Left = 912
@@ -17465,6 +17491,10 @@ object MainForm: TMainForm
       Caption = 'EditViewNode'
       OnExecute = EditViewNodeExecute
     end
+    object Action1: TAction
+      Caption = 'Hide LogWindow'
+      OnExecute = Action1Execute
+    end
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'vc'
@@ -17476,7 +17506,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800F40010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800280110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17887,6 +17917,13 @@ object MainForm: TMainForm
     end
     object Close2: TMenuItem
       Action = CloseProjectA
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 385
+    Top = 840
+    object Action11: TMenuItem
+      Action = Action1
     end
   end
 end

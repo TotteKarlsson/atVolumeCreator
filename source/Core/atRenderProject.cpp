@@ -17,6 +17,15 @@ mStack(stack)
 	mVCObjectType = (vcoRenderProject);
 }
 
+RenderProject::RenderProject(const RenderProject& rp)
+: VolumeCreatorProject(rp)
+{
+    mInfo	 	= rp.mInfo;
+    mOwner		= rp.mOwner;
+    mProject	= rp.mProject;
+    mStack		= rp.mStack;
+    mStacks		= rp.mStacks;
+}
 
 void RenderProject::setupForStack(const string& owner, const string& project, const string& stack)
 {

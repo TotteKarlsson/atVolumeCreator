@@ -26,6 +26,13 @@ mVCObjectType(vcoBaseType)
 	resetXML();
 }
 
+VolumeCreatorProject::VolumeCreatorProject(const VolumeCreatorProject& vp)
+: Project(vp)
+{
+    mVCObjectType = vp.mVCObjectType;
+    mChilds = vp.mChilds;
+}
+
 VolumeCreatorProject::~VolumeCreatorProject()
 {}
 
@@ -140,7 +147,7 @@ bool VolumeCreatorProject::save(const string& fName)
     return saveToFile(fName);
 }
 
-bool VolumeCreatorProject::open()
+bool VolumeCreatorProject::open(const string& projFileName)
 {
     try
     {

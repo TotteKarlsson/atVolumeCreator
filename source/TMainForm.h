@@ -22,7 +22,6 @@
 #include "dslTPropertyCheckBox.h"
 #include "atRenderClient.h"
 #include "atROIHistory.h"
-//#include "dslProcess.h"
 #include "dslIniFileProperties.h"
 #include "dslRegistryProperties.h"
 #include "dslTIniFileC.h"
@@ -35,7 +34,7 @@
 #include "MagickWand/MagickWand.h"
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
-#include "TParaConverterFrame.h"
+
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.StdActns.hpp>
@@ -54,6 +53,10 @@
 #include "dslTPropertyCheckBox.h"
 #include "dslTSTDStringLabeledEdit.h"
 #include "DcefB.Core.DcefBrowser.hpp"
+#include "dslTSTDStringEdit.h"
+#include "TRenderPythonRemoteScriptFrame.h"
+#include "dslTLogMemoFrame.h"
+#include "TAffineTransformationFrame.h"
 class TImageForm;
 //using dsl::Process;
 //---------------------------------------------------------------------------
@@ -71,14 +74,12 @@ class TMainForm : public TRegistryForm
 {
 __published:	// IDE-managed Components
 	TImage *Image1;
-	TMemo *infoMemo;
 	TIdHTTP *IdHTTP1;
 	TTimer *mShutDownTimer;
 	TPageControl *PageControl1;
 	TTabSheet *TabSheet1;
 	TGroupBox *Zs_GB;
 	TFloatLabeledEdit *mScaleE;
-	TSplitter *Splitter1;
 	TPanel *mBottomPanel;
 	TGroupBox *imageParasGB;
 	TButton *mResetButton;
@@ -87,9 +88,6 @@ __published:	// IDE-managed Components
 	TPanel *mLeftPanel;
 	TPaintBox *PaintBox1;
 	TIniFileC *mIniFileC;
-	TPanel *Panel2;
-	TButton *mCLearMemo;
-	TSplitter *Splitter2;
 	TPopupMenu *ZsPopUpMenu;
 	TMenuItem *CopyValidZs1;
 	TButton *mZoomOutBtn;
@@ -98,23 +96,14 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *Height;
 	TIntegerLabeledEdit *XCoord;
 	TIntegerLabeledEdit *YCoord;
-	TButton *mCloseBottomPanelBtn;
 	TIntegerEdit *mZoomFactor;
-	TButton *mShowBottomPanelBtn;
 	TTabSheet *TabSheet3;
 	TButton *mBrowseForCacheFolder;
-	TSTDStringLabeledEdit *mImageCacheFolderE;
+	TSTDStringLabeledEdit *ImageCacheFolderE;
 	TGroupBox *GroupBox6;
-	TPanel *mLogPanel;
 	TPanel *Panel5;
-	TIntLabel *mXC;
-	TIntLabel *mYC;
-	TIntLabel *mX;
-	TIntLabel *mY;
-	TGroupBox *GroupBox8;
 	TGroupBox *GroupBox9;
-	TButton *mFetchSelectedZsBtn;
-	TSSHFrame *TSSHFrame1;
+	TButton *FetchSelectedZsBtn;
 	TTabSheet *TabSheet4;
 	TGroupBox *StackGenerationGB;
 	TButton *Run;
@@ -132,9 +121,6 @@ __published:	// IDE-managed Components
 	TComboBox *OwnerCB;
 	TComboBox *ProjectCB;
 	TComboBox *StackCB;
-	TGroupBox *TestSSHGB;
-	TButton *CMDButton;
-	TEdit *mCMD;
 	TTimer *CreateCacheTimer;
 	TIntegerLabeledEdit *MaxIntensity;
 	TIntegerLabeledEdit *MinIntensity;
@@ -148,11 +134,8 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *VolumesScaleE;
 	TSTDStringLabeledEdit *VolumesFolder;
 	TSTDStringLabeledEdit *SubFolder1;
-	TGroupBox *GroupBox2;
-	TButton *OpenInNDVIZBtn;
 	TPopupMenu *ImagePopup;
 	TMenuItem *ParseNDVIZURL1;
-	TButton *OpenFromNDVIZBtn;
 	TCheckListBox *mZs;
 	TMenuItem *CheckAll1;
 	TMenuItem *UncheckAll1;
@@ -200,8 +183,6 @@ __published:	// IDE-managed Components
 	TMenuItem *Reopen;
 	TMenuItem *N3;
 	TTreeView *ProjectTView;
-	TPanel *ProjFilePathPanel;
-	TLabel *ProjFileLbl;
 	TPopupMenu *ProjTreeViewPopup;
 	TAction *AddRenderProject;
 	TMenuItem *AddRenderProject1;
@@ -214,10 +195,30 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *ScaleConstantE;
 	TFloatLabeledEdit *CustomRotationE;
 	TButton *TestRenderServiceBtn;
-	TPageControl *PageControl2;
+	TPageControl *VisualsPC;
 	TTabSheet *TabSheet2;
 	TTabSheet *TabSheet5;
 	TDcefBrowser *DcefBrowser1;
+	TIntegerLabeledEdit *maxTileSpecsToRenderE;
+	TButton *ClearCacheBtn;
+	TButton *Button1;
+	TPageControl *ScriptsPC;
+	TTabSheet *TabSheet6;
+	TSSHFrame *TSSHFrame1;
+	TPanel *TopPanel2;
+	TPanel *Panel3;
+	TGroupBox *TestSSHGB;
+	TButton *CMDButton;
+	TEdit *mCMD;
+	TTabSheet *RenderTab;
+	TLogMemoFrame *TLogMemoFrame1;
+	TButton *mShowBottomPanelBtn;
+	TSplitter *Splitter2;
+	TPopupMenu *PopupMenu1;
+	TAction *Action1;
+	TMenuItem *Action11;
+	TAffineTransformationFrame *TAffineTransformationFrame1;
+	TSTDStringEdit *URLE;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -231,7 +232,7 @@ __published:	// IDE-managed Components
 	void __fastcall resetButtonClick(TObject *Sender);
 	void __fastcall historyBtnClick(TObject *Sender);
 	void __fastcall TraverseZClick(TObject *Sender);
-	void __fastcall mFetchSelectedZsBtnClick(TObject *Sender);
+	void __fastcall FetchSelectedZsBtnClick(TObject *Sender);
 	void __fastcall mGetValidZsBtnClick(TObject *Sender);
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
 	void __fastcall mCLearMemoClick(TObject *Sender);
@@ -293,10 +294,15 @@ __published:	// IDE-managed Components
           const ustring source, int line, bool &Cancel);
 	void __fastcall DcefBrowser1StateChange(ICefBrowser * const browser, const TBrowserDataChangeKind Kind,
           const UnicodeString Value);
+	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall RenderTSEnter(TObject *Sender);
+	void __fastcall ScriptsPCChange(TObject *Sender);
+	void __fastcall PageControl1Change(TObject *Sender);
+	void __fastcall Action1Execute(TObject *Sender);
+	void __fastcall FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
+          TPoint &MousePos, bool &Handled);
 
-
-
-	private:	// User declarations
+	private:
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
         RenderClient									mRC;
         int												getCurrentZ();
@@ -361,6 +367,7 @@ __published:	// IDE-managed Components
 		int __fastcall 									saveProjectAs();
 		int __fastcall 									closeProject();
 		VolumeCreatorProject* __fastcall 				createNewProject();
+		bool									        parseURLUpdate(const string& url);
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);

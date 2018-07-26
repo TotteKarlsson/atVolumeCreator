@@ -3,10 +3,7 @@
         <ProjectGuid>{D5D51B14-8ED2-4DFA-9A66-B5F682AEEF42}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="P:\libs\dsl\builds\dslCommon\dslCommon.cbproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="P:\libs\dsl\builds\dslMath\dslMath.cbproj">
+        <Projects Include="P:\libs\dsl\Builds\dslFoundation\dslFoundation.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\dsl\builds\dslVCLCommon\dslVCLCommon.cbproj">
@@ -18,13 +15,10 @@
         <Projects Include="P:\libs\dsl\builds\dslVCLVisualComponents\dslVCLVisualComponents.cbproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="P:\libs\atapi\builds\atCore\atCore.cbproj">
+        <Projects Include="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="P:\libs\atapi\builds\atSounds\atSounds.cbproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="P:\libs\atapi\builds\atDataBase\atDatabase.cbproj">
+        <Projects Include="P:\libs\atapi\builds\atFoundation\atFoundation.cbproj">
             <Dependencies/>
         </Projects>
         <Projects Include="P:\libs\atapi\builds\atVCLCommon\atVCLCommon.cbproj">
@@ -39,6 +33,9 @@
         <Projects Include="P:\libs\atapi\builds\atVCLVisualComponents\atVCLVisualComponents.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="P:\libs\DcefBrowser\packages\DcefBrowser.cbproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="..\source\VolumeCreator.cbproj">
             <Dependencies/>
         </Projects>
@@ -50,23 +47,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="dslCommon">
-        <MSBuild Projects="P:\libs\dsl\builds\dslCommon\dslCommon.cbproj"/>
+    <Target Name="dslFoundation">
+        <MSBuild Projects="P:\libs\dsl\Builds\dslFoundation\dslFoundation.cbproj"/>
     </Target>
-    <Target Name="dslCommon:Clean">
-        <MSBuild Projects="P:\libs\dsl\builds\dslCommon\dslCommon.cbproj" Targets="Clean"/>
+    <Target Name="dslFoundation:Clean">
+        <MSBuild Projects="P:\libs\dsl\Builds\dslFoundation\dslFoundation.cbproj" Targets="Clean"/>
     </Target>
-    <Target Name="dslCommon:Make">
-        <MSBuild Projects="P:\libs\dsl\builds\dslCommon\dslCommon.cbproj" Targets="Make"/>
-    </Target>
-    <Target Name="dslMath">
-        <MSBuild Projects="P:\libs\dsl\builds\dslMath\dslMath.cbproj"/>
-    </Target>
-    <Target Name="dslMath:Clean">
-        <MSBuild Projects="P:\libs\dsl\builds\dslMath\dslMath.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="dslMath:Make">
-        <MSBuild Projects="P:\libs\dsl\builds\dslMath\dslMath.cbproj" Targets="Make"/>
+    <Target Name="dslFoundation:Make">
+        <MSBuild Projects="P:\libs\dsl\Builds\dslFoundation\dslFoundation.cbproj" Targets="Make"/>
     </Target>
     <Target Name="dslVCLCommon">
         <MSBuild Projects="P:\libs\dsl\builds\dslVCLCommon\dslVCLCommon.cbproj"/>
@@ -95,32 +83,23 @@
     <Target Name="dslVCLVisualComponents:Make">
         <MSBuild Projects="P:\libs\dsl\builds\dslVCLVisualComponents\dslVCLVisualComponents.cbproj" Targets="Make"/>
     </Target>
-    <Target Name="atCore">
-        <MSBuild Projects="P:\libs\atapi\builds\atCore\atCore.cbproj"/>
+    <Target Name="atSSI">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj"/>
     </Target>
-    <Target Name="atCore:Clean">
-        <MSBuild Projects="P:\libs\atapi\builds\atCore\atCore.cbproj" Targets="Clean"/>
+    <Target Name="atSSI:Clean">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj" Targets="Clean"/>
     </Target>
-    <Target Name="atCore:Make">
-        <MSBuild Projects="P:\libs\atapi\builds\atCore\atCore.cbproj" Targets="Make"/>
+    <Target Name="atSSI:Make">
+        <MSBuild Projects="P:\libs\atapi\thirdparty\ssidll\atSSI.cbproj" Targets="Make"/>
     </Target>
-    <Target Name="atSounds">
-        <MSBuild Projects="P:\libs\atapi\builds\atSounds\atSounds.cbproj"/>
+    <Target Name="atFoundation">
+        <MSBuild Projects="P:\libs\atapi\builds\atFoundation\atFoundation.cbproj"/>
     </Target>
-    <Target Name="atSounds:Clean">
-        <MSBuild Projects="P:\libs\atapi\builds\atSounds\atSounds.cbproj" Targets="Clean"/>
+    <Target Name="atFoundation:Clean">
+        <MSBuild Projects="P:\libs\atapi\builds\atFoundation\atFoundation.cbproj" Targets="Clean"/>
     </Target>
-    <Target Name="atSounds:Make">
-        <MSBuild Projects="P:\libs\atapi\builds\atSounds\atSounds.cbproj" Targets="Make"/>
-    </Target>
-    <Target Name="atDatabase">
-        <MSBuild Projects="P:\libs\atapi\builds\atDataBase\atDatabase.cbproj"/>
-    </Target>
-    <Target Name="atDatabase:Clean">
-        <MSBuild Projects="P:\libs\atapi\builds\atDataBase\atDatabase.cbproj" Targets="Clean"/>
-    </Target>
-    <Target Name="atDatabase:Make">
-        <MSBuild Projects="P:\libs\atapi\builds\atDataBase\atDatabase.cbproj" Targets="Make"/>
+    <Target Name="atFoundation:Make">
+        <MSBuild Projects="P:\libs\atapi\builds\atFoundation\atFoundation.cbproj" Targets="Make"/>
     </Target>
     <Target Name="atVCLCommon">
         <MSBuild Projects="P:\libs\atapi\builds\atVCLCommon\atVCLCommon.cbproj"/>
@@ -158,6 +137,15 @@
     <Target Name="atVCLVisualComponents:Make">
         <MSBuild Projects="P:\libs\atapi\builds\atVCLVisualComponents\atVCLVisualComponents.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="DcefBrowser">
+        <MSBuild Projects="P:\libs\DcefBrowser\packages\DcefBrowser.cbproj"/>
+    </Target>
+    <Target Name="DcefBrowser:Clean">
+        <MSBuild Projects="P:\libs\DcefBrowser\packages\DcefBrowser.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DcefBrowser:Make">
+        <MSBuild Projects="P:\libs\DcefBrowser\packages\DcefBrowser.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="VolumeCreator">
         <MSBuild Projects="..\source\VolumeCreator.cbproj"/>
     </Target>
@@ -168,13 +156,13 @@
         <MSBuild Projects="..\source\VolumeCreator.cbproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="dslCommon;dslMath;dslVCLCommon;dslVCLComponents;dslVCLVisualComponents;atCore;atSounds;atDatabase;atVCLCommon;atVCLComponents;atVCLDataModules;atVCLVisualComponents;VolumeCreator"/>
+        <CallTarget Targets="dslFoundation;dslVCLCommon;dslVCLComponents;dslVCLVisualComponents;atSSI;atFoundation;atVCLCommon;atVCLComponents;atVCLDataModules;atVCLVisualComponents;DcefBrowser;VolumeCreator"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="dslCommon:Clean;dslMath:Clean;dslVCLCommon:Clean;dslVCLComponents:Clean;dslVCLVisualComponents:Clean;atCore:Clean;atSounds:Clean;atDatabase:Clean;atVCLCommon:Clean;atVCLComponents:Clean;atVCLDataModules:Clean;atVCLVisualComponents:Clean;VolumeCreator:Clean"/>
+        <CallTarget Targets="dslFoundation:Clean;dslVCLCommon:Clean;dslVCLComponents:Clean;dslVCLVisualComponents:Clean;atSSI:Clean;atFoundation:Clean;atVCLCommon:Clean;atVCLComponents:Clean;atVCLDataModules:Clean;atVCLVisualComponents:Clean;DcefBrowser:Clean;VolumeCreator:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="dslCommon:Make;dslMath:Make;dslVCLCommon:Make;dslVCLComponents:Make;dslVCLVisualComponents:Make;atCore:Make;atSounds:Make;atDatabase:Make;atVCLCommon:Make;atVCLComponents:Make;atVCLDataModules:Make;atVCLVisualComponents:Make;VolumeCreator:Make"/>
+        <CallTarget Targets="dslFoundation:Make;dslVCLCommon:Make;dslVCLComponents:Make;dslVCLVisualComponents:Make;atSSI:Make;atFoundation:Make;atVCLCommon:Make;atVCLComponents:Make;atVCLDataModules:Make;atVCLVisualComponents:Make;DcefBrowser:Make;VolumeCreator:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
