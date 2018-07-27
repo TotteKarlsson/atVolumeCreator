@@ -185,10 +185,10 @@ string TMainForm::createRemoteCommand(const string& remoteScript, const string& 
     {
     	//Pass bounds, xmin, xmax, ymin,ymax
         cmd <<" '"
-        	<<XCoord->getValue()<<","
-        	<<XCoord->getValue() + Width->getValue()<<","
-            <<YCoord->getValue()<<","
-            <<YCoord->getValue() + Height->getValue()<<"'";
+        	<<XCoordE->getValue()<<","
+        	<<XCoordE->getValue() + Width->getValue()<<","
+            <<YCoordE->getValue()<<","
+            <<YCoordE->getValue() + Height->getValue()<<"'";
     }
     else
     {

@@ -66,6 +66,7 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 	mIniFileC->clear();
 	Log(lInfo) << "In main forms destructor";
 
+	mLogLevel.setValue(gLogger.getLogLevel());
 	if(gImageForm)
     {
 		gImageForm->mPrepareForDeletion = true;
@@ -73,7 +74,7 @@ void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
     }
 
 	//Save project history
-	mBottomPanelHeight = mBottomPanel->Height;
+	mBottomPanelHeight = BottomPanel->Height;
 
 	mGeneralProperties->write();
 	mServer1Properties->write();

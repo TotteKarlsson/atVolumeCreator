@@ -20,6 +20,7 @@ __fastcall TRenderPythonRemoteScriptFrame::TRenderPythonRemoteScriptFrame(const 
 {
 }
 
+//---------------------------------------------------------------------------
 void TRenderPythonRemoteScriptFrame::populate(RenderClient& rc, TScSSHShell* shell)
 {
     try
@@ -61,4 +62,4 @@ void TRenderPythonRemoteScriptFrame::populate(RenderClient& rc, TScSSHShell* she
     }
 }
 
-//---------------------------------------------------------------------------
+

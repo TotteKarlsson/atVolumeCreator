@@ -119,7 +119,7 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
 {
-	mBottomPanel->Visible = false;
+	BottomPanel->Visible = false;
     mShowBottomPanelBtn->Top = StatusBar1->Top - 1;
     Splitter2->Visible = false;
     mShowBottomPanelBtn->Visible = true;
@@ -128,11 +128,11 @@ void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
 {
-	mBottomPanel->Visible = true;
+	BottomPanel->Visible = true;
     Splitter2->Visible = true;
     mShowBottomPanelBtn->Visible = false;
-    Splitter2->Top = mBottomPanel->Top - 1;
-    StatusBar1->Top = mBottomPanel->Top + mBottomPanel->Height + 1;
+    Splitter2->Top = BottomPanel->Top - 1;
+    StatusBar1->Top = BottomPanel->Top + BottomPanel->Height + 1;
 }
 
 //---------------------------------------------------------------------------
@@ -287,8 +287,8 @@ void __fastcall TMainForm::ParseNDVIZURL1Click(TObject *Sender)
 	StackCB->ItemIndex = i;
     StackCB->OnChange(NULL);
 
-    XCoord->setValue(x);
-    YCoord->setValue(y);
+    XCoordE->setValue(x);
+    YCoordE->setValue(y);
 
     i = mZs->Items->IndexOf(dsl::toString(z).c_str());
     if(i < 0)
@@ -313,8 +313,8 @@ string TMainForm::createNDVIZURL()
 	string URL("http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!{'layers':{'STACK':{'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/OWNER/PROJECT/STACK'_'max':MAX_INTENSITY}}_'navigation':{'pose':{'position':{'voxelSize':[1_1_1]_'voxelCoordinates':[X_CENTER_Y_CENTER_Z_VALUE]}}_'zoomFactor':ZOOM_FACTOR}}");
     Log(lInfo) << URL;
 
-    double xCenter = XCoord->getValue() + Width->getValue()/2.;
-	double yCenter = YCoord->getValue() + Height->getValue()/2.;
+    double xCenter = XCoordE->getValue() + Width->getValue()/2.;
+	double yCenter = YCoordE->getValue() + Height->getValue()/2.;
     URL = replaceSubstring("STACK", 	        stdstr(StackCB->Text), 	                                URL);
     URL = replaceSubstring("OWNER", 	        stdstr(OwnerCB->Text), 	                                URL);
     URL = replaceSubstring("PROJECT", 	        stdstr(ProjectCB->Text), 	                                URL);

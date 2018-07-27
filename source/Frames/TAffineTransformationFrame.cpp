@@ -27,15 +27,12 @@ __fastcall TAffineTransformationFrame::TAffineTransformationFrame(TComponent* Ow
 void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
 {
     //Create command string for current UI parameters
-
     StringList stacks = getCheckedItems(StacksForProjectCB);
     if(!stacks.count())
     {
         Log(lError) << "You must select at least one stack to transform";
         return;
     }
-
-    string inputStack(stacks[0]);
 
     stringstream cmd;
     mScripter.setRemoteCommand("docker exec renderapps_develop python -m");
@@ -47,20 +44,36 @@ void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
 	mScripter.addArgument("--render.project " 	        + RenderProjectE->getValue());
 	mScripter.addArgument("--render.client_scripts " 	+ RenderClientScriptsFolderE->getValue());
 
+//    stringstream stacksArg;
+//    stacksArg << "[";
+//
+//
+//    for(int i = 0; i < stacks.count(); i++)
+//    {
+//        stacksArg << "\"" << stacks[i] << "\"";
+//        if(i < stacks.count() - 1)
+//        {
+//            stacksArg << ",";
+//        }
+//    }
+//
+//    stacksArg << "]";
 
-	mScripter.addArgument("--input_stack " 				+ inputStack);
+//	mScripter.addArgument("--input_stacks " 				+ stacksArg.str());
+	mScripter.addArgument("--input_stack " 				+ stacks[0]);
 
     if(AppendToCurrentStackCB->Checked)
     {
-		mScripter.addArgument("--output_stack " 	   	+ inputStack);
+   		mScripter.addArgument("--output_stack " 	   	+ stacks[0]);
     }
     else
     {
-		mScripter.addArgument("--output_stack " 	   	+ inputStack + "_Rotated");
+		mScripter.addArgument("--output_stack " 	   	+ stacks[0] + "_Rotated");
     }
 
-	mScripter.addArgument("--transformId " 				+ TransformID->getValue());
-	mScripter.addArgument("--pool_size " 				+ dsl::toString(PoolSizeE->getValue()));
+    string dateTime(getFormattedDateTimeString("Affine_%Y_%b_%d_%R:%S"));
+	mScripter.addArgument("--transformId " 				+ dateTime);
+	mScripter.addArgument("--pool_size " 				+ dsl::toString(stacks.count()));
 	mScripter.addArgument("--B0 " 						+ dsl::toString(TranslateXE->getValue()));
 	mScripter.addArgument("--B1 " 						+ dsl::toString(TranslateYE->getValue()));
 

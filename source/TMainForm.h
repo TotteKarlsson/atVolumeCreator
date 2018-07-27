@@ -80,7 +80,7 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheet1;
 	TGroupBox *Zs_GB;
 	TFloatLabeledEdit *mScaleE;
-	TPanel *mBottomPanel;
+	TPanel *BottomPanel;
 	TGroupBox *imageParasGB;
 	TButton *mResetButton;
 	TButton *mHistoryBackBtn;
@@ -94,14 +94,13 @@ __published:	// IDE-managed Components
 	TButton *mZoomInBtn;
 	TIntegerLabeledEdit *Width;
 	TIntegerLabeledEdit *Height;
-	TIntegerLabeledEdit *XCoord;
-	TIntegerLabeledEdit *YCoord;
+	TIntegerLabeledEdit *XCoordE;
+	TIntegerLabeledEdit *YCoordE;
 	TIntegerEdit *mZoomFactor;
 	TTabSheet *TabSheet3;
 	TButton *mBrowseForCacheFolder;
 	TSTDStringLabeledEdit *ImageCacheFolderE;
 	TGroupBox *GroupBox6;
-	TPanel *Panel5;
 	TGroupBox *GroupBox9;
 	TButton *FetchSelectedZsBtn;
 	TTabSheet *TabSheet4;
@@ -120,7 +119,6 @@ __published:	// IDE-managed Components
 	TLabel *Label3;
 	TComboBox *OwnerCB;
 	TComboBox *ProjectCB;
-	TComboBox *StackCB;
 	TTimer *CreateCacheTimer;
 	TIntegerLabeledEdit *MaxIntensity;
 	TIntegerLabeledEdit *MinIntensity;
@@ -135,7 +133,6 @@ __published:	// IDE-managed Components
 	TSTDStringLabeledEdit *VolumesFolder;
 	TSTDStringLabeledEdit *SubFolder1;
 	TPopupMenu *ImagePopup;
-	TMenuItem *ParseNDVIZURL1;
 	TCheckListBox *mZs;
 	TMenuItem *CheckAll1;
 	TMenuItem *UncheckAll1;
@@ -153,7 +150,6 @@ __published:	// IDE-managed Components
 	TCheckBox *FlipImageLeftCB;
 	THeaderControl *HeaderControl1;
 	TPanel *Panel1;
-	TMenuItem *AddOverlayedImage1;
 	TPropertyCheckBox *CreateTIFFStackCB;
 	TPropertyCheckBox *DeleteTempTiffsCB;
 	TIntegerLabeledEdit *ZBatchSizeE;
@@ -201,16 +197,14 @@ __published:	// IDE-managed Components
 	TDcefBrowser *DcefBrowser1;
 	TIntegerLabeledEdit *maxTileSpecsToRenderE;
 	TButton *ClearCacheBtn;
-	TButton *Button1;
+	TButton *ClearBrowserCacheBtn;
 	TPageControl *ScriptsPC;
 	TTabSheet *TabSheet6;
-	TSSHFrame *TSSHFrame1;
 	TPanel *TopPanel2;
 	TPanel *Panel3;
 	TGroupBox *TestSSHGB;
 	TButton *CMDButton;
 	TEdit *mCMD;
-	TTabSheet *RenderTab;
 	TLogMemoFrame *TLogMemoFrame1;
 	TButton *mShowBottomPanelBtn;
 	TSplitter *Splitter2;
@@ -219,6 +213,17 @@ __published:	// IDE-managed Components
 	TMenuItem *Action11;
 	TAffineTransformationFrame *TAffineTransformationFrame1;
 	TSTDStringEdit *URLE;
+	TLabel *XE;
+	TLabel *YE;
+	TSSHFrame *TSSHFrame1;
+	TPageControl *PageControl2;
+	TTabSheet *TabSheet7;
+	TTabSheet *TransformsTab;
+	TToolButton *ToolButton4;
+	TToolButton *ToolButton5;
+	TMenuItem *openInChrome;
+	TCheckListBox *StacksLB;
+	TComboBox *StackCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);
@@ -294,13 +299,16 @@ __published:	// IDE-managed Components
           const ustring source, int line, bool &Cancel);
 	void __fastcall DcefBrowser1StateChange(ICefBrowser * const browser, const TBrowserDataChangeKind Kind,
           const UnicodeString Value);
-	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall ClearBrowserCacheBtnClick(TObject *Sender);
 	void __fastcall RenderTSEnter(TObject *Sender);
 	void __fastcall ScriptsPCChange(TObject *Sender);
 	void __fastcall PageControl1Change(TObject *Sender);
 	void __fastcall Action1Execute(TObject *Sender);
 	void __fastcall FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
           TPoint &MousePos, bool &Handled);
+	void __fastcall OpenInChromeBtnClick(TObject *Sender);
+	void __fastcall TSSHFrame1ConnectBtnClick(TObject *Sender);
+
 
 	private:
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);

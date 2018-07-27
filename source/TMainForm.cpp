@@ -17,6 +17,7 @@
 #include "Poco/Glob.h"
 #include "boost/filesystem.hpp"
 #include "dslStringUtils.h"
+#include "dslTimer.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "dslTFloatLabeledEdit"
@@ -39,6 +40,9 @@ using namespace dsl;
 using namespace std;
 using namespace Poco;
 using boost::filesystem;
+using Poco::Timestamp;
+using Poco::Timespan;
+
 
 TImage *CurrImage;
 extern string gAppDataLocation;
@@ -227,6 +231,8 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
 		OpenInNDVIZBtnClick(NULL);
     }
 
+    URLE->setValue(createNDVIZURL());
+
     if(Sender != NULL)
     {
 		mROIHistory.clear();
@@ -239,7 +245,7 @@ void __fastcall TMainForm::mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftStat
 {
 	if(Key == VK_RETURN)
     {
-        mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
+        mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
 		ClickZ(Sender);
     }
 }
@@ -286,15 +292,12 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 	double stretchFactor = getImageStretchFactor();
 	if(Button == TMouseButton::mbMiddle)
     {
-    	//Open popup
        	Screen->Cursor = crSize;
-    	//Open popup
 		mTopLeftSelCorner = Mouse->CursorPos;
 		mTopLeftSelCorner = this->Image1->ScreenToClient(mTopLeftSelCorner);
 
 		//Convert to world image coords (minus offset)
 	    mTopLeftSelCorner = controlToImage(mTopLeftSelCorner, mScaleE->getValue(), stretchFactor);
-//        Image1->Align = alNone;
         return;
     }
 
@@ -315,8 +318,12 @@ void __fastcall TMainForm::FormMouseDown(TObject *Sender, TMouseButton Button,
 void __fastcall TMainForm::Image1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
 	TPoint p = this->Image1->ScreenToClient(Mouse->CursorPos);
-//	mXC->setValue(p.X);
-//	mYC->setValue(p.Y);
+
+    double stretchF = getImageStretchFactor();
+	XE->Caption = IntToStr((int) (p.X * stretchF) + XCoordE->getValue()) ;
+	YE->Caption = IntToStr((int) (p.Y * stretchF) + YCoordE->getValue());
+//    ImageWidthL->Caption = IntToStr((int) Image1->Width);
+//    ImageHeightL->Caption = IntToStr((int) Image1->Height);
 
 	//Convert to world image coords (minus offset)
     double stretchFactor = getImageStretchFactor();
@@ -348,10 +355,10 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 	    p2 = controlToImage(p2, mScaleE->getValue(), stretchFactor);
 
 		//Convert to world image coords (minus offset)
-		XCoord->setValue(XCoord->getValue() + (mTopLeftSelCorner.X - p2.X));
-		YCoord->setValue(YCoord->getValue() + (mTopLeftSelCorner.Y - p2.Y));
+		XCoordE->setValue(XCoordE->getValue() + (mTopLeftSelCorner.X - p2.X));
+		YCoordE->setValue(YCoordE->getValue() + (mTopLeftSelCorner.Y - p2.Y));
 
-		mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
+		mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
        	ClickZ(Sender);
     }
 
@@ -375,8 +382,8 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
 		return;
     }
 
-	XCoord->setValue(XCoord->getValue() + mTopLeftSelCorner.X);
-	YCoord->setValue(YCoord->getValue() + mTopLeftSelCorner.Y);
+	XCoordE->setValue(XCoordE->getValue() + mTopLeftSelCorner.X);
+	YCoordE->setValue(YCoordE->getValue() + mTopLeftSelCorner.Y);
 
     Width->setValue(mBottomRightSelCorner.X - mTopLeftSelCorner.X);
     Height->setValue(mBottomRightSelCorner.Y - mTopLeftSelCorner.Y);
@@ -384,7 +391,7 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     updateScale();
 
     //Add to render history
-    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
+    mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
     mROIHistory.insert(mCurrentRB);
 
     //Undo any flipping
@@ -446,8 +453,8 @@ void TMainForm::render(RenderBox* box)
 	if(box)
     {
         mCurrentRB = *(box);
-        XCoord->setValue(mCurrentRB.getX1());
-        YCoord->setValue(mCurrentRB.getY1());
+        XCoordE->setValue(mCurrentRB.getX1());
+        YCoordE->setValue(mCurrentRB.getY1());
         Width->setValue(mCurrentRB.getWidth());
         Height->setValue(mCurrentRB.getHeight());
         mScaleE->setValue(mCurrentRB.getScale());
@@ -595,11 +602,11 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
     }
 
 	//Modify bounding box with x%
-    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
+    mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue());
     mCurrentRB.zoom(zoomFactor);
 
-	XCoord->setValue(mCurrentRB.getX1());
-    YCoord->setValue(mCurrentRB.getY1());
+	XCoordE->setValue(mCurrentRB.getX1());
+    YCoordE->setValue(mCurrentRB.getY1());
     Width->setValue( mCurrentRB.getWidth());
     Height->setValue(mCurrentRB.getHeight());
 
@@ -610,7 +617,7 @@ void __fastcall TMainForm::mZoomBtnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TMainForm::updateScale()
 {
-    mCurrentRB = RenderBox(XCoord->getValue(), YCoord->getValue(), Width->getValue(), Height->getValue());
+    mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue());
 
     //Scale the scaling
     double scale  = (double) Image1->Height / (double) mCurrentRB.getHeight();
@@ -1094,10 +1101,10 @@ bool TMainForm::parseURLUpdate(const string& url)
 
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::Button1Click(TObject *Sender)
+void __fastcall TMainForm::ClearBrowserCacheBtnClick(TObject *Sender)
 {
     DcefBrowser1->ReloadIgnoreCache();
-	DcefBrowser1->Refresh();
+
 }
 
 //---------------------------------------------------------------------------
@@ -1119,7 +1126,7 @@ void __fastcall TMainForm::ScriptsPCChange(TObject *Sender)
 //--------------------------------------------------------------------------
 void __fastcall TMainForm::PageControl1Change(TObject *Sender)
 {
-    if(PageControl1->Pages[PageControl1->ActivePageIndex] == RenderTab)
+    if(PageControl2->Pages[PageControl2->ActivePageIndex] == TransformsTab)
     {
         //Populate..
         TAffineTransformationFrame1->populate(mRC, TSSHFrame1->ScSSHShell1);
@@ -1132,11 +1139,16 @@ void __fastcall TMainForm::Action1Execute(TObject *Sender)
 	mCloseBottomPanelBtnClick(NULL);
 }
 
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormMouseWheel(TObject *Sender, TShiftState Shift,
           int WheelDelta, TPoint &MousePos, bool &Handled)
 {
+    //Don' scroll z's if mouse is over Logmemo
+	TPoint MyPoint = BottomPanel->ScreenToClient(Mouse->CursorPos);
+	if(PtInRect(BottomPanel->ClientRect, MyPoint))
+    {
+        return;
+    }
     int zIndex(mZs->ItemIndex);
 
     if(WheelDelta > 0)
@@ -1153,8 +1165,20 @@ void __fastcall TMainForm::FormMouseWheel(TObject *Sender, TShiftState Shift,
 		mZs->ItemIndex = zIndex;
         ClickZ(NULL);
     }
-//    Log(lDebug5) << "WheelDelta: " << WheelDelta;
+    Log(lDebug5) << "WheelDelta: " << WheelDelta;
+    Handled = true;
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OpenInChromeBtnClick(TObject *Sender)
+{
+	ShellExecuteA(0,0, "chrome.exe", URLE->getValue().c_str(), 0, SW_SHOWMAXIMIZED);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TSSHFrame1ConnectBtnClick(TObject *Sender)
+{
+  TSSHFrame1->ConnectBtnClick(Sender);
+}
 
 

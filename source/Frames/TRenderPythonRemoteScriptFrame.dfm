@@ -12,9 +12,6 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
     Align = alTop
     Caption = 'Render Parameters'
     TabOrder = 0
-    DesignSize = (
-      699
-      169)
     object RenderHostE: TSTDStringLabeledEdit
       Left = 16
       Top = 38
@@ -73,15 +70,6 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
       Text = '80'
       Value = 80
     end
-    object ExecuteBtn: TButton
-      Left = 568
-      Top = 50
-      Width = 115
-      Height = 73
-      Anchors = [akTop, akRight]
-      Caption = 'Execute'
-      TabOrder = 5
-    end
   end
   object Panel2: TPanel
     Left = 0
@@ -90,9 +78,6 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
     Height = 407
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 185
-    ExplicitWidth = 643
-    ExplicitHeight = 363
     object StacksGB: TGroupBox
       Left = 1
       Top = 1
@@ -101,7 +86,6 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
       Align = alLeft
       Caption = 'Stacks'
       TabOrder = 0
-      ExplicitHeight = 361
       object StacksForProjectCB: TCheckListBox
         AlignWithMargins = True
         Left = 17
@@ -112,7 +96,6 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
         Align = alClient
         ItemHeight = 13
         TabOrder = 0
-        ExplicitHeight = 338
       end
     end
     object GroupBox2: TGroupBox
@@ -123,10 +106,18 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
       Align = alClient
       Caption = 'Parameters'
       TabOrder = 1
-      ExplicitLeft = 400
-      ExplicitTop = 48
-      ExplicitWidth = 129
-      ExplicitHeight = 73
+      DesignSize = (
+        512
+        405)
+      object ExecuteBtn: TButton
+        Left = 29
+        Top = 274
+        Width = 115
+        Height = 73
+        Anchors = [akTop]
+        Caption = 'Execute'
+        TabOrder = 0
+      end
     end
   end
 end

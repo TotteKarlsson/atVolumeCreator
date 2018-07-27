@@ -18,8 +18,6 @@ class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
 {
     __published:	// IDE-managed Components
         TPropertyCheckBox *AppendToCurrentStackCB;
-        TSTDStringLabeledEdit *TransformID;
-	TIntegerLabeledEdit *PoolSizeE;
 	TFloatLabeledEdit *RotationE;
 	TIntegerLabeledEdit *TranslateXE;
 	TIntegerLabeledEdit *TranslateYE;
