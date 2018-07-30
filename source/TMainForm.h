@@ -97,13 +97,11 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *XCoordE;
 	TIntegerLabeledEdit *YCoordE;
 	TIntegerEdit *mZoomFactor;
-	TTabSheet *TabSheet3;
 	TButton *mBrowseForCacheFolder;
 	TSTDStringLabeledEdit *ImageCacheFolderE;
 	TGroupBox *GroupBox6;
 	TGroupBox *GroupBox9;
 	TButton *FetchSelectedZsBtn;
-	TTabSheet *TabSheet4;
 	TGroupBox *StackGenerationGB;
 	TButton *Run;
 	TMainMenu *MainMenu1;
@@ -223,6 +221,9 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton5;
 	TMenuItem *openInChrome;
 	TComboBox *StackCB;
+	TTabSheet *TabSheet8;
+	TTabSheet *TabSheet9;
+	TPanel *Panel2;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall mShutDownTimerTimer(TObject *Sender);

@@ -12,6 +12,7 @@ object RenderPythonRemoteScriptFrame: TRenderPythonRemoteScriptFrame
     Align = alTop
     Caption = 'Render Parameters'
     TabOrder = 0
+    Visible = False
     object RenderHostE: TSTDStringLabeledEdit
       Left = 16
       Top = 38

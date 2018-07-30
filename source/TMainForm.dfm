@@ -16633,582 +16633,612 @@ object MainForm: TMainForm
               end
             end
           end
-        end
-      end
-      object TabSheet4: TTabSheet
-        Caption = 'Volume Creation'
-        ImageIndex = 3
-        object ScriptsPC: TPageControl
-          Left = 0
-          Top = 129
-          Width = 1328
-          Height = 692
-          ActivePage = TabSheet6
-          Align = alClient
-          TabOrder = 0
-          OnChange = ScriptsPCChange
-          object TabSheet6: TTabSheet
-            Caption = 'Stack Creation'
-          end
-        end
-        object BashScriptMemo: TMemo
-          Left = 424
-          Top = 327
-          Width = 336
-          Height = 273
-          Lines.Strings = (
-            '#! /bin/bash'
-            'args=("$@")'
-            'nrOfSections=${args[0]}'
-            'sections_str=${args[1]}'
-            'rootOutPutFolder=${args[2]}'
-            'customFolder=${args[3]}'
-            'stack=${args[4]}'
-            'owner=${args[5]}'
-            'proj=${args[6]}'
-            'scale=${args[7]}'
-            'create_tiff_stack=${args[8]}'
-            'delete_individual_tiffs=${args[9]}'
-            'z_batch_size=${args[10]}'
-            'max_number_of_jobs=${args[11]}'
-            'job_niceness=${args[12]}'
-            'imageType=${args[13]}'
-            'padFileNamesWithZeroes=${args[14]}'
-            'use_bounds=${args[15]}'
-            'bounds=${args[16]}'
-            ''
-            'fmt='#39'tiff'#39
-            'filter='#39'false'#39
-            'baseDataURL='#39'http://ibs-forrestc-ux1:8988/render-ws/v1'#39
-            ''
-            '#Write run info to file'
-            'info=$rootOutPutFolder/$customFolder/$stack"_info.txt"'
-            'echo "This job was started on: "`date` > $info'
-            'echo "Owner: "$owner >> $info'
-            'echo "Project: "$proj >> $info'
-            'echo "StackName: "$stack >> $info'
-            'echo "Outputfolder: "$customFolder >> $info'
-            'echo "Custom Output Folder: "$stack >> $info'
-            'echo "Scale: "$scale >> $info'
-            'echo "Format: "$fmt >> $info'
-            'echo "Filter: "$filter >> $info'
-            'echo "BaseDataURL: "$baseDataURL >> $info'
-            'echo "Using static bounds: "$use_bounds >> $info'
-            'echo "Number of Z'#39's: "$nrOfSections >> $info'
-            'echo "Create tiffstack: "$create_tiff_stack >> $info'
-            
-              'echo "Delete individual TIFFs: "$delete_individual_tiffs >> $inf' +
-              'o'
-            'echo "Z Batch Size: "$z_batch_size >> $info'
-            'echo "Max number of jobs: "$max_number_of_jobs >> $info'
-            'echo "Job niceness: "$job_niceness >> $info'
-            'echo "Zs: "$sections_str >> $info'
-            'echo "Image type (bits): "$imageType >> $info'
-            
-              'echo "Pad Filenames with Zeroes: "$padFileNamesWithZeroes >> $in' +
-              'fo'
-            'if [ "$use_bounds"  == "true" ]; then'
-            '   echo "Using bounds:" $bounds >> $info'
-            'fi'
-            ''
-            '#JAVA CLIENT SETTINGS'
-            '#Class path'
-            
-              'classpath='#39' /nas4/getVolume/render/render-ws-java-client/target/' +
-              'render-ws-java-client-2.0.1-SNAPSHOT-standalone.jar'#39
-            ''
-            '#Java class'
-            'jc='#39'org.janelia.render.client.RenderSectionClient'#39
-            'script_name=`basename "$0"`'
-            'script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"'
-            'running_from=`pwd -P`'
-            ''
-            '#echo "This script file name is:"$script_name'
-            '#echo "Located in folder: "$script_path'
-            '#echo "Running from folder: "$running_from'
-            ''
-            'mkdir -p $rootOutPutFolder/$customFolder/$stack'
-            ''
-            
-              '#Create job inputs =============================================' +
-              '='
-            'echo "Parsing z'#39's"'
-            'read -r -a sections <<<"$sections_str"'
-            'for ((i=0; i<${#sections[@]}; i+=z_batch_size)); do'
-            '  current_pieces=( "${sections[@]:i:z_batch_size}" )'
-            '  z_batch+=( "${current_pieces[*]}" )'
-            '  #echo $i'
-            '  if (( $i > $nrOfSections ))'
-            '  then'
-            '     break'
-            '  fi'
-            'done'
-            ''
-            'echo "Starting jobs"'
-            'jobs=0'
-            'for ((i=0; i<${#z_batch[@]}; i+=1)); do'
-            '    jobs=$jobs+1'
-            '    echo "Starting job# $i"'
-            '    echo ${z_batch[$i]}'
-            ''
-            '    if [ "$use_bounds"  == "false" ]; then'
-            
-              '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
-              'ectory $rootOutPutFolder --customOutputFolder '
-            
-              '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
-              'wner --padFileNamesWithZeroes '
-            '$padFileNamesWithZeroes'
-            
-              '--imageType $imageType --doFilter false --fillWithNoise false --' +
-              'baseDataUrl $baseDataURL --format $fmt --project $proj'
-            '${z_batch[$i]}"'
-            '    else'
-            
-              '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
-              'ectory $rootOutPutFolder --customOutputFolder '
-            
-              '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
-              'wner --padFileNamesWithZeroes '
-            '$padFileNamesWithZeroes'
-            
-              '--imageType $imageType --doFilter false --fillWithNoise false --' +
-              'baseDataUrl $baseDataURL --format $fmt --project $proj'
-            '${z_batch[$i]}'
-            '--bounds $bounds"'
-            '    fi'
-            '    eval nice -n $job_niceness java $java_args &'
-            '    if (( $jobs >= $max_number_of_jobs ))'
-            '    then'
-            '      echo "Waiting for jobs to finish..."'
-            '      wait'
-            '      jobs=0'
-            '    fi'
-            'done'
-            ''
-            '#Wait for the jobs to finish..'
-            'FAIL=0'
-            'for job in `jobs -p`'
-            'do'
-            'echo $job'
-            '    wait $job || let "FAIL+=1"'
-            'done'
-            ''
-            'if [ "$create_tiff_stack"  == "true" ]; then'
-            '  #Create a tiff stack here'
-            
-              '  stackFileName=$rootOutPutFolder/$customFolder/$stack"_stack.ti' +
-              'ff"'
-            '  echo "Creating stack file: "$stackFileName >> $info'
-            ''
-            '  #Empty outpurfile'
-            '  > $stackFileName'
-            ''
-            '  for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
-            #9'echo $file >> $info'
-            #9'nice -n $job_niceness tiffcp -a $file $stackFileName'
-            '  done'
-            ''
-            '  if [ "$delete_individual_tiffs"  == "true" ]; then'
-            
-              '        for file in $rootOutPutFolder/$customFolder/$stack/*.tif' +
-              'f; do'
-            '                echo "Removing file: $file" >> $info'
-            '                rm $file'
-            '          done'
-            '  fi'
-            'fi'
-            ''
-            ''
-            'if [ "$FAIL" == "0" ];'
-            'then'
-            
-              'echo "===============  FINISHED STACK CREATION SCRIPT ==========' +
-              '===="'
-            'else'
-            'echo "FAIL! ($FAIL)"'
-            'fi'
-            'echo "mxplutx"'
-            'echo "This job ended on: "`date` >> $info')
-          ReadOnly = True
-          TabOrder = 1
-          Visible = False
-          WordWrap = False
-        end
-        object MultiStackCreationGB: TGroupBox
-          Left = 0
-          Top = 129
-          Width = 1328
-          Height = 692
-          Align = alClient
-          Caption = 'Select Stacks'
-          TabOrder = 2
-          object StacksForProjectCB: TCheckListBox
-            AlignWithMargins = True
-            Left = 17
-            Top = 18
-            Width = 335
-            Height = 669
-            Margins.Left = 15
-            Align = alLeft
-            ItemHeight = 13
-            TabOrder = 0
-          end
-          object GroupBox3: TGroupBox
-            Left = 354
-            Top = 18
-            Width = 223
-            Height = 97
-            Caption = 'Filters'
-            TabOrder = 1
-            object CustomFilterCB: TPropertyCheckBox
-              Left = 13
-              Top = 24
-              Width = 80
-              Height = 17
-              Caption = 'Custom'
+          object TabSheet8: TTabSheet
+            Caption = 'Volume Creation'
+            ImageIndex = 2
+            object ScriptsPC: TPageControl
+              Left = 0
+              Top = 329
+              Width = 385
+              Height = 277
+              ActivePage = TabSheet6
+              Align = alClient
               TabOrder = 0
-              OnClick = StackFilterCBClick
+              OnChange = ScriptsPCChange
+              ExplicitTop = 0
+              ExplicitHeight = 793
+              object TabSheet6: TTabSheet
+                Caption = 'Stack Creation'
+                ExplicitHeight = 765
+              end
             end
-            object CustomFilterE: TEdit
-              Left = 83
-              Top = 24
-              Width = 121
-              Height = 21
+            object StackGenerationGB: TGroupBox
+              Left = 0
+              Top = 0
+              Width = 385
+              Height = 329
+              Align = alTop
+              Caption = 'Stack Output Settings'
               TabOrder = 1
-              Text = 'ALI'
-              OnKeyDown = CustomFilterEKeyDown
+              ExplicitWidth = 953
+              object Label4: TLabel
+                Left = 15
+                Top = 155
+                Width = 55
+                Height = 13
+                Caption = 'Image type'
+              end
+              object BoundsCB: TPropertyCheckBox
+                Left = 15
+                Top = 132
+                Width = 97
+                Height = 17
+                Caption = 'Static Bounds'
+                Checked = True
+                Enabled = False
+                State = cbChecked
+                TabOrder = 0
+                Value = True
+              end
+              object CreateTIFFStackCB: TPropertyCheckBox
+                Left = 13
+                Top = 267
+                Width = 212
+                Height = 17
+                Caption = 'Create TIFFSTACK (max size ~ 4GB)'
+                TabOrder = 1
+                OnClick = CreateTIFFStackCBClick
+              end
+              object DeleteTempTiffsCB: TPropertyCheckBox
+                Left = 29
+                Top = 290
+                Width = 146
+                Height = 17
+                Caption = 'Delete temporary TIFFS'
+                Enabled = False
+                TabOrder = 2
+              end
+              object PadFileNamesWithZeroesCB: TPropertyCheckBox
+                Left = 13
+                Top = 244
+                Width = 178
+                Height = 17
+                Caption = 'Pad File Names with Zeroes'
+                Checked = True
+                Enabled = False
+                State = cbChecked
+                TabOrder = 3
+                Value = True
+              end
+              object SubFolder1: TSTDStringLabeledEdit
+                Left = 15
+                Top = 93
+                Width = 182
+                Height = 21
+                EditLabel.Width = 55
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Subfolder 1'
+                TabOrder = 4
+                Text = 'Test'
+                Value = 'Test'
+              end
+              object VolumesFolder: TSTDStringLabeledEdit
+                Left = 15
+                Top = 42
+                Width = 182
+                Height = 21
+                EditLabel.Width = 93
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Output Root Folder'
+                TabOrder = 5
+                Text = '/nas4/volumes'
+                Value = '/nas4/volumes'
+              end
+              object VolumesScaleE: TFloatLabeledEdit
+                Left = 15
+                Top = 218
+                Width = 145
+                Height = 21
+                EditLabel.Width = 25
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Scale'
+                TabOrder = 6
+                Text = '0.5000'
+                Value = 0.500000000000000000
+              end
+              object ImageTypeCB: TComboBox
+                Left = 15
+                Top = 174
+                Width = 145
+                Height = 21
+                Style = csDropDownList
+                ItemIndex = 1
+                TabOrder = 7
+                Text = '16 bit'
+                Items.Strings = (
+                  '24 bit (RGB)'
+                  '16 bit'
+                  '8 bit')
+              end
             end
-          end
-        end
-        object StackGenerationGB: TGroupBox
-          Left = 0
-          Top = 0
-          Width = 1328
-          Height = 129
-          Align = alTop
-          Caption = 'Stack Output Settings'
-          TabOrder = 3
-          DesignSize = (
-            1328
-            129)
-          object Label4: TLabel
-            Left = 282
-            Top = 51
-            Width = 55
-            Height = 13
-            Caption = 'Image type'
-          end
-          object BoundsCB: TPropertyCheckBox
-            Left = 282
-            Top = 28
-            Width = 97
-            Height = 17
-            Caption = 'Static Bounds'
-            Checked = True
-            Enabled = False
-            State = cbChecked
-            TabOrder = 0
-            Value = True
-          end
-          object CreateTIFFStackCB: TPropertyCheckBox
-            Left = 453
-            Top = 51
-            Width = 212
-            Height = 17
-            Caption = 'Create TIFFSTACK (max size ~ 4GB)'
-            TabOrder = 1
-            OnClick = CreateTIFFStackCBClick
-          end
-          object DeleteTempTiffsCB: TPropertyCheckBox
-            Left = 469
-            Top = 74
-            Width = 146
-            Height = 17
-            Caption = 'Delete temporary TIFFS'
-            Enabled = False
-            TabOrder = 2
-          end
-          object JobCreationGB: TGroupBox
-            Left = 901
-            Top = 13
-            Width = 280
-            Height = 102
-            Anchors = [akTop, akRight]
-            Caption = 'Server Job Creation'
-            TabOrder = 3
-            object ZBatchSizeE: TIntegerLabeledEdit
-              Left = 16
-              Top = 32
-              Width = 105
-              Height = 21
-              EditLabel.Width = 58
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Z Batch Size'
-              TabOrder = 0
-              Text = '10'
-              Value = 10
-            end
-            object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
-              Left = 16
-              Top = 72
-              Width = 105
-              Height = 21
-              EditLabel.Width = 104
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Number of jobs (max)'
-              TabOrder = 1
-              Text = '10'
-              Value = 10
-            end
-            object NicenessE: TIntegerLabeledEdit
-              Left = 144
-              Top = 32
-              Width = 97
-              Height = 21
-              Hint = '-20 is highest priority and 19 is lowest priority'
-              EditLabel.Width = 99
-              EditLabel.Height = 13
-              EditLabel.Caption = 'Niceness (-20 -> 19)'
+            object BashScriptMemo: TMemo
+              Left = 49
+              Top = 327
+              Width = 336
+              Height = 273
+              Lines.Strings = (
+                '#! /bin/bash'
+                'args=("$@")'
+                'nrOfSections=${args[0]}'
+                'sections_str=${args[1]}'
+                'rootOutPutFolder=${args[2]}'
+                'customFolder=${args[3]}'
+                'stack=${args[4]}'
+                'owner=${args[5]}'
+                'proj=${args[6]}'
+                'scale=${args[7]}'
+                'create_tiff_stack=${args[8]}'
+                'delete_individual_tiffs=${args[9]}'
+                'z_batch_size=${args[10]}'
+                'max_number_of_jobs=${args[11]}'
+                'job_niceness=${args[12]}'
+                'imageType=${args[13]}'
+                'padFileNamesWithZeroes=${args[14]}'
+                'use_bounds=${args[15]}'
+                'bounds=${args[16]}'
+                ''
+                'fmt='#39'tiff'#39
+                'filter='#39'false'#39
+                'baseDataURL='#39'http://ibs-forrestc-ux1:8988/render-ws/v1'#39
+                ''
+                '#Write run info to file'
+                'info=$rootOutPutFolder/$customFolder/$stack"_info.txt"'
+                'echo "This job was started on: "`date` > $info'
+                'echo "Owner: "$owner >> $info'
+                'echo "Project: "$proj >> $info'
+                'echo "StackName: "$stack >> $info'
+                'echo "Outputfolder: "$customFolder >> $info'
+                'echo "Custom Output Folder: "$stack >> $info'
+                'echo "Scale: "$scale >> $info'
+                'echo "Format: "$fmt >> $info'
+                'echo "Filter: "$filter >> $info'
+                'echo "BaseDataURL: "$baseDataURL >> $info'
+                'echo "Using static bounds: "$use_bounds >> $info'
+                'echo "Number of Z'#39's: "$nrOfSections >> $info'
+                'echo "Create tiffstack: "$create_tiff_stack >> $info'
+                
+                  'echo "Delete individual TIFFs: "$delete_individual_tiffs >> $inf' +
+                  'o'
+                'echo "Z Batch Size: "$z_batch_size >> $info'
+                'echo "Max number of jobs: "$max_number_of_jobs >> $info'
+                'echo "Job niceness: "$job_niceness >> $info'
+                'echo "Zs: "$sections_str >> $info'
+                'echo "Image type (bits): "$imageType >> $info'
+                
+                  'echo "Pad Filenames with Zeroes: "$padFileNamesWithZeroes >> $in' +
+                  'fo'
+                'if [ "$use_bounds"  == "true" ]; then'
+                '   echo "Using bounds:" $bounds >> $info'
+                'fi'
+                ''
+                '#JAVA CLIENT SETTINGS'
+                '#Class path'
+                
+                  'classpath='#39' /nas4/getVolume/render/render-ws-java-client/target/' +
+                  'render-ws-java-client-2.0.1-SNAPSHOT-standalone.jar'#39
+                ''
+                '#Java class'
+                'jc='#39'org.janelia.render.client.RenderSectionClient'#39
+                'script_name=`basename "$0"`'
+                'script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"'
+                'running_from=`pwd -P`'
+                ''
+                '#echo "This script file name is:"$script_name'
+                '#echo "Located in folder: "$script_path'
+                '#echo "Running from folder: "$running_from'
+                ''
+                'mkdir -p $rootOutPutFolder/$customFolder/$stack'
+                ''
+                
+                  '#Create job inputs =============================================' +
+                  '='
+                'echo "Parsing z'#39's"'
+                'read -r -a sections <<<"$sections_str"'
+                'for ((i=0; i<${#sections[@]}; i+=z_batch_size)); do'
+                '  current_pieces=( "${sections[@]:i:z_batch_size}" )'
+                '  z_batch+=( "${current_pieces[*]}" )'
+                '  #echo $i'
+                '  if (( $i > $nrOfSections ))'
+                '  then'
+                '     break'
+                '  fi'
+                'done'
+                ''
+                'echo "Starting jobs"'
+                'jobs=0'
+                'for ((i=0; i<${#z_batch[@]}; i+=1)); do'
+                '    jobs=$jobs+1'
+                '    echo "Starting job# $i"'
+                '    echo ${z_batch[$i]}'
+                ''
+                '    if [ "$use_bounds"  == "false" ]; then'
+                
+                  '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
+                  'ectory $rootOutPutFolder --customOutputFolder '
+                
+                  '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
+                  'wner --padFileNamesWithZeroes '
+                '$padFileNamesWithZeroes'
+                
+                  '--imageType $imageType --doFilter false --fillWithNoise false --' +
+                  'baseDataUrl $baseDataURL --format $fmt --project $proj'
+                '${z_batch[$i]}"'
+                '    else'
+                
+                  '        java_args="  -cp $classpath $jc --stack $stack --rootDir' +
+                  'ectory $rootOutPutFolder --customOutputFolder '
+                
+                  '$customFolder --customSubFolder $stack --scale $scale --owner $o' +
+                  'wner --padFileNamesWithZeroes '
+                '$padFileNamesWithZeroes'
+                
+                  '--imageType $imageType --doFilter false --fillWithNoise false --' +
+                  'baseDataUrl $baseDataURL --format $fmt --project $proj'
+                '${z_batch[$i]}'
+                '--bounds $bounds"'
+                '    fi'
+                '    eval nice -n $job_niceness java $java_args &'
+                '    if (( $jobs >= $max_number_of_jobs ))'
+                '    then'
+                '      echo "Waiting for jobs to finish..."'
+                '      wait'
+                '      jobs=0'
+                '    fi'
+                'done'
+                ''
+                '#Wait for the jobs to finish..'
+                'FAIL=0'
+                'for job in `jobs -p`'
+                'do'
+                'echo $job'
+                '    wait $job || let "FAIL+=1"'
+                'done'
+                ''
+                'if [ "$create_tiff_stack"  == "true" ]; then'
+                '  #Create a tiff stack here'
+                
+                  '  stackFileName=$rootOutPutFolder/$customFolder/$stack"_stack.ti' +
+                  'ff"'
+                '  echo "Creating stack file: "$stackFileName >> $info'
+                ''
+                '  #Empty outpurfile'
+                '  > $stackFileName'
+                ''
+                '  for file in $rootOutPutFolder/$customFolder/$stack/*.tiff; do'
+                #9'echo $file >> $info'
+                #9'nice -n $job_niceness tiffcp -a $file $stackFileName'
+                '  done'
+                ''
+                '  if [ "$delete_individual_tiffs"  == "true" ]; then'
+                
+                  '        for file in $rootOutPutFolder/$customFolder/$stack/*.tif' +
+                  'f; do'
+                '                echo "Removing file: $file" >> $info'
+                '                rm $file'
+                '          done'
+                '  fi'
+                'fi'
+                ''
+                ''
+                'if [ "$FAIL" == "0" ];'
+                'then'
+                
+                  'echo "===============  FINISHED STACK CREATION SCRIPT ==========' +
+                  '===="'
+                'else'
+                'echo "FAIL! ($FAIL)"'
+                'fi'
+                'echo "mxplutx"'
+                'echo "This job ended on: "`date` >> $info')
+              ReadOnly = True
               TabOrder = 2
-              Text = '0'
+              Visible = False
+              WordWrap = False
+            end
+            object MultiStackCreationGB: TGroupBox
+              Left = 0
+              Top = 329
+              Width = 385
+              Height = 277
+              Align = alClient
+              Caption = 'Select Stacks'
+              TabOrder = 3
+              ExplicitTop = 129
+              ExplicitHeight = 664
+              object StacksForProjectCB: TCheckListBox
+                AlignWithMargins = True
+                Left = 2
+                Top = 76
+                Width = 378
+                Height = 196
+                Margins.Left = 0
+                Align = alClient
+                ItemHeight = 13
+                TabOrder = 0
+                ExplicitLeft = 17
+                ExplicitTop = 18
+                ExplicitWidth = 200
+                ExplicitHeight = 641
+              end
+              object GroupBox3: TGroupBox
+                Left = 2
+                Top = 15
+                Width = 381
+                Height = 58
+                Align = alTop
+                Caption = 'Filters'
+                TabOrder = 1
+                object CustomFilterCB: TPropertyCheckBox
+                  Left = 13
+                  Top = 24
+                  Width = 80
+                  Height = 17
+                  Caption = 'Custom'
+                  TabOrder = 0
+                  OnClick = StackFilterCBClick
+                end
+                object CustomFilterE: TEdit
+                  Left = 83
+                  Top = 24
+                  Width = 121
+                  Height = 21
+                  TabOrder = 1
+                  Text = 'ALI'
+                  OnKeyDown = CustomFilterEKeyDown
+                end
+              end
+            end
+            object Panel2: TPanel
+              Left = 0
+              Top = 606
+              Width = 385
+              Height = 187
+              Align = alBottom
+              TabOrder = 4
+              ExplicitWidth = 953
+              object JobCreationGB: TGroupBox
+                Left = 1
+                Top = 1
+                Width = 383
+                Height = 185
+                Align = alClient
+                Caption = 'Server Job Creation'
+                TabOrder = 0
+                ExplicitLeft = 5
+                ExplicitTop = 37
+                ExplicitWidth = 388
+                ExplicitHeight = 132
+                DesignSize = (
+                  383
+                  185)
+                object ZBatchSizeE: TIntegerLabeledEdit
+                  Left = 16
+                  Top = 32
+                  Width = 105
+                  Height = 21
+                  EditLabel.Width = 58
+                  EditLabel.Height = 13
+                  EditLabel.Caption = 'Z Batch Size'
+                  TabOrder = 0
+                  Text = '10'
+                  Value = 10
+                end
+                object MaxNumberOfRemoteJobsE: TIntegerLabeledEdit
+                  Left = 16
+                  Top = 76
+                  Width = 105
+                  Height = 21
+                  EditLabel.Width = 104
+                  EditLabel.Height = 13
+                  EditLabel.Caption = 'Number of jobs (max)'
+                  TabOrder = 1
+                  Text = '10'
+                  Value = 10
+                end
+                object NicenessE: TIntegerLabeledEdit
+                  Left = 16
+                  Top = 120
+                  Width = 97
+                  Height = 21
+                  Hint = '-20 is highest priority and 19 is lowest priority'
+                  EditLabel.Width = 99
+                  EditLabel.Height = 13
+                  EditLabel.Caption = 'Niceness (-20 -> 19)'
+                  TabOrder = 2
+                  Text = '0'
+                end
+                object Run: TButton
+                  Left = 250
+                  Top = 40
+                  Width = 119
+                  Height = 129
+                  Anchors = [akTop, akRight]
+                  Caption = 'Run'
+                  TabOrder = 3
+                  OnClick = RunClick
+                end
+              end
             end
           end
-          object PadFileNamesWithZeroesCB: TPropertyCheckBox
-            Left = 453
-            Top = 28
-            Width = 178
-            Height = 17
-            Caption = 'Pad File Names with Zeroes'
-            Checked = True
-            Enabled = False
-            State = cbChecked
-            TabOrder = 4
-            Value = True
-          end
-          object Run: TButton
-            Left = 1197
-            Top = 28
-            Width = 119
-            Height = 78
-            Anchors = [akTop, akRight]
-            Caption = 'Run'
-            TabOrder = 5
-            OnClick = RunClick
-          end
-          object SubFolder1: TSTDStringLabeledEdit
-            Left = 15
-            Top = 93
-            Width = 182
-            Height = 21
-            EditLabel.Width = 55
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Subfolder 1'
-            TabOrder = 6
-            Text = 'Test'
-            Value = 'Test'
-          end
-          object VolumesFolder: TSTDStringLabeledEdit
-            Left = 15
-            Top = 42
-            Width = 182
-            Height = 21
-            EditLabel.Width = 93
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Output Root Folder'
-            TabOrder = 7
-            Text = '/nas4/volumes'
-            Value = '/nas4/volumes'
-          end
-          object VolumesScaleE: TFloatLabeledEdit
-            Left = 215
-            Top = 42
-            Width = 45
-            Height = 21
-            EditLabel.Width = 25
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Scale'
-            TabOrder = 8
-            Text = '0.5000'
-            Value = 0.500000000000000000
-          end
-          object ImageTypeCB: TComboBox
-            Left = 282
-            Top = 70
-            Width = 145
-            Height = 21
-            Style = csDropDownList
-            ItemIndex = 1
-            TabOrder = 9
-            Text = '16 bit'
-            Items.Strings = (
-              '24 bit (RGB)'
-              '16 bit'
-              '8 bit')
-          end
-        end
-      end
-      object TabSheet3: TTabSheet
-        Caption = 'Settings'
-        ImageIndex = 2
-        object GroupBox6: TGroupBox
-          Left = 0
-          Top = 0
-          Width = 1328
-          Height = 67
-          Align = alTop
-          Caption = 'General'
-          TabOrder = 0
-          DesignSize = (
-            1328
-            67)
-          object ImageCacheFolderE: TSTDStringLabeledEdit
-            Left = 9
-            Top = 33
-            Width = 1277
-            Height = 21
-            Anchors = [akLeft, akTop, akRight]
-            EditLabel.Width = 102
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Root folder for cache'
-            TabOrder = 0
-            Text = 'c:\ImageCache'
-            Value = 'c:\ImageCache'
-          end
-          object mBrowseForCacheFolder: TButton
-            Left = 1292
-            Top = 31
-            Width = 33
-            Height = 25
-            Anchors = [akTop, akRight]
-            Caption = '...'
-            TabOrder = 1
-            OnClick = mBrowseForCacheFolderClick
-          end
-        end
-        object GroupBox4: TGroupBox
-          Left = 0
-          Top = 67
-          Width = 1328
-          Height = 88
-          Align = alTop
-          Caption = 'Render Service Settings'
-          TabOrder = 1
-          DesignSize = (
-            1328
-            88)
-          object mBaseUrlE: TSTDStringLabeledEdit
-            Left = 13
-            Top = 42
-            Width = 1225
-            Height = 21
-            Anchors = [akLeft, akTop, akRight]
-            EditLabel.Width = 45
-            EditLabel.Height = 13
-            EditLabel.Caption = 'Base URL'
-            TabOrder = 0
-            Text = 
-              'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
-              '1'
-            Value = 
-              'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
-              '1'
-          end
-          object TestRenderServiceBtn: TButton
-            Left = 1244
-            Top = 40
-            Width = 75
-            Height = 25
-            Anchors = [akTop, akRight]
-            Caption = 'Test'
-            TabOrder = 1
-            OnClick = TestRenderServiceBtnClick
-          end
-        end
-        object TestSSHGB: TGroupBox
-          Left = 0
-          Top = 155
-          Width = 1328
-          Height = 70
-          Align = alTop
-          Caption = 'Remote Command'
-          TabOrder = 2
-          DesignSize = (
-            1328
-            70)
-          object CMDButton: TButton
-            Left = 1288
-            Top = 24
-            Width = 27
-            Height = 25
-            Anchors = [akTop, akRight]
-            Caption = '->'
-            TabOrder = 0
-            OnClick = CMDButtonClick
-          end
-          object mCMD: TEdit
-            Left = 16
-            Top = 26
-            Width = 1266
-            Height = 21
-            Anchors = [akLeft, akTop, akRight]
-            TabOrder = 1
-            Text = 'ls'
-          end
-        end
-        inline TSSHFrame1: TSSHFrame
-          Left = 0
-          Top = 225
-          Width = 1328
-          Height = 72
-          Align = alTop
-          TabOrder = 3
-          ExplicitTop = 225
-          ExplicitWidth = 1328
-          ExplicitHeight = 72
-          inherited GroupBox1: TGroupBox
-            Width = 1328
-            Height = 72
-            Align = alClient
-            Caption = 'SSH Connection'
-            ExplicitWidth = 1328
-            ExplicitHeight = 72
-            inherited ConnectBtn: TButton
-              Top = 32
-              Height = 24
-              OnClick = TSSHFrame1ConnectBtnClick
-              ExplicitTop = 32
-              ExplicitHeight = 24
+          object TabSheet9: TTabSheet
+            Caption = 'Settings'
+            ImageIndex = 3
+            object GroupBox6: TGroupBox
+              Left = 0
+              Top = 277
+              Width = 385
+              Height = 67
+              Align = alTop
+              Caption = 'General'
+              TabOrder = 0
+              ExplicitTop = 230
+              DesignSize = (
+                385
+                67)
+              object ImageCacheFolderE: TSTDStringLabeledEdit
+                Left = 9
+                Top = 33
+                Width = 334
+                Height = 21
+                Anchors = [akLeft, akTop, akRight]
+                EditLabel.Width = 102
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Root folder for cache'
+                TabOrder = 0
+                Text = 'c:\ImageCache'
+                Value = 'c:\ImageCache'
+              end
+              object mBrowseForCacheFolder: TButton
+                Left = 349
+                Top = 31
+                Width = 33
+                Height = 25
+                Anchors = [akTop, akRight]
+                Caption = '...'
+                TabOrder = 1
+                OnClick = mBrowseForCacheFolderClick
+              end
             end
-            inherited edSSHHost: TSTDStringLabeledEdit
-              EditLabel.Width = 22
-              EditLabel.Caption = 'Host'
-              EditLabel.ExplicitLeft = 16
-              EditLabel.ExplicitTop = 18
-              EditLabel.ExplicitWidth = 22
+            object GroupBox4: TGroupBox
+              Left = 0
+              Top = 189
+              Width = 385
+              Height = 88
+              Align = alTop
+              Caption = 'Render Service Settings'
+              TabOrder = 1
+              ExplicitTop = 142
+              DesignSize = (
+                385
+                88)
+              object mBaseUrlE: TSTDStringLabeledEdit
+                Left = 13
+                Top = 42
+                Width = 282
+                Height = 21
+                Anchors = [akLeft, akTop, akRight]
+                EditLabel.Width = 45
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Base URL'
+                TabOrder = 0
+                Text = 
+                  'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
+                  '1'
+                Value = 
+                  'http://ibs-forrestc-ux1.corp.alleninstitute.org:8082/render-ws/v' +
+                  '1'
+              end
+              object TestRenderServiceBtn: TButton
+                Left = 301
+                Top = 40
+                Width = 75
+                Height = 25
+                Anchors = [akTop, akRight]
+                Caption = 'Test'
+                TabOrder = 1
+                OnClick = TestRenderServiceBtnClick
+              end
             end
-            inherited edSSHPassword: TSTDStringLabeledEdit
-              Text = ''
-              Value = ''
+            object TestSSHGB: TGroupBox
+              Left = 0
+              Top = 119
+              Width = 385
+              Height = 70
+              Align = alTop
+              Caption = 'Remote Command'
+              TabOrder = 2
+              ExplicitTop = 72
+              DesignSize = (
+                385
+                70)
+              object CMDButton: TButton
+                Left = 345
+                Top = 24
+                Width = 27
+                Height = 25
+                Anchors = [akTop, akRight]
+                Caption = '->'
+                TabOrder = 0
+                OnClick = CMDButtonClick
+              end
+              object mCMD: TEdit
+                Left = 16
+                Top = 26
+                Width = 323
+                Height = 21
+                Anchors = [akLeft, akTop, akRight]
+                TabOrder = 1
+                Text = 'ls'
+              end
             end
-          end
-          inherited ScFileStorage: TScFileStorage
-            Top = 160
-          end
-          inherited ScSSHShell1: TScSSHShell
-            OnAsyncReceive = TSSHFrame1ScSSHShell1AsyncReceive
-            Left = 240
-            Top = 120
-          end
-          inherited ScSSHChannel: TScSSHChannel
-            Left = 144
-            Top = 136
-          end
-          inherited ScSSHClient: TScSSHClient
-            AfterConnect = TSSHFrame1ScSSHClientAfterConnect
-            AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
-            Left = 32
-            Top = 88
+            inline TSSHFrame1: TSSHFrame
+              Left = 0
+              Top = 0
+              Width = 385
+              Height = 119
+              Align = alTop
+              TabOrder = 3
+              ExplicitWidth = 385
+              ExplicitHeight = 119
+              inherited GroupBox1: TGroupBox
+                Width = 385
+                Height = 119
+                Align = alClient
+                Caption = 'SSH Connection'
+                ExplicitWidth = 385
+                ExplicitHeight = 72
+                inherited ConnectBtn: TButton
+                  Left = 296
+                  Top = 78
+                  Width = 77
+                  Height = 24
+                  OnClick = TSSHFrame1ConnectBtnClick
+                  ExplicitLeft = 296
+                  ExplicitTop = 78
+                  ExplicitWidth = 77
+                  ExplicitHeight = 24
+                end
+                inherited edSSHHost: TSTDStringLabeledEdit
+                  EditLabel.Width = 22
+                  EditLabel.Caption = 'Host'
+                  EditLabel.ExplicitLeft = 16
+                  EditLabel.ExplicitTop = 18
+                  EditLabel.ExplicitWidth = 22
+                end
+                inherited edSSHPassword: TSTDStringLabeledEdit
+                  Text = ''
+                  Value = ''
+                end
+              end
+              inherited ScFileStorage: TScFileStorage
+                Top = 160
+              end
+              inherited ScSSHShell1: TScSSHShell
+                OnAsyncReceive = TSSHFrame1ScSSHShell1AsyncReceive
+                Left = 240
+                Top = 120
+              end
+              inherited ScSSHChannel: TScSSHChannel
+                Left = 144
+                Top = 136
+              end
+              inherited ScSSHClient: TScSSHClient
+                AfterConnect = TSSHFrame1ScSSHClientAfterConnect
+                AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
+                Left = 32
+                Top = 88
+              end
+            end
           end
         end
       end
@@ -17529,7 +17559,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800380110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101080018003C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
