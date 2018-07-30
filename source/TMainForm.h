@@ -222,7 +222,6 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
 	TMenuItem *openInChrome;
-	TCheckListBox *StacksLB;
 	TComboBox *StackCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);

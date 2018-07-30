@@ -69,11 +69,8 @@ object MainForm: TMainForm
           ActivePage = TabSheet2
           Align = alClient
           TabOrder = 0
-          ExplicitTop = 25
-          ExplicitHeight = 796
           object TabSheet2: TTabSheet
             Caption = 'Local Explorer'
-            ExplicitHeight = 768
             object Panel1: TPanel
               Left = 0
               Top = 0
@@ -84,7 +81,6 @@ object MainForm: TMainForm
               FullRepaint = False
               ParentDoubleBuffered = False
               TabOrder = 0
-              ExplicitHeight = 768
               object PaintBox1: TPaintBox
                 Left = 1
                 Top = 1
@@ -16145,7 +16141,6 @@ object MainForm: TMainForm
                     Text = 'Misc'
                     Width = 50
                   end>
-                ExplicitTop = 750
               end
             end
             object URLE: TSTDStringEdit
@@ -16162,7 +16157,6 @@ object MainForm: TMainForm
           object TabSheet5: TTabSheet
             Caption = 'NDViz'
             ImageIndex = 1
-            ExplicitHeight = 768
             object DcefBrowser1: TDcefBrowser
               Left = 0
               Top = 0
@@ -16177,7 +16171,6 @@ object MainForm: TMainForm
               OnStateChange = DcefBrowser1StateChange
               OnBeforeBrowse = DcefBrowser1BeforeBrowse
               OnConsoleMessage = DcefBrowser1ConsoleMessage
-              ExplicitHeight = 768
             end
             object ClearBrowserCacheBtn: TButton
               Left = 16
@@ -16199,11 +16192,8 @@ object MainForm: TMainForm
           Align = alLeft
           TabOrder = 1
           OnChange = PageControl1Change
-          ExplicitTop = 25
-          ExplicitHeight = 796
           object TabSheet7: TTabSheet
             Caption = 'Project'
-            ExplicitHeight = 768
             object mLeftPanel: TPanel
               Left = 0
               Top = 0
@@ -16211,7 +16201,6 @@ object MainForm: TMainForm
               Height = 793
               Align = alLeft
               TabOrder = 0
-              ExplicitHeight = 768
               object ScrollBox1: TScrollBox
                 Left = 1
                 Top = 1
@@ -16223,14 +16212,12 @@ object MainForm: TMainForm
                 TabOrder = 0
                 object imageParasGB: TGroupBox
                   Left = 0
-                  Top = 409
-                  Width = 266
+                  Top = 185
+                  Width = 283
                   Height = 296
                   Align = alTop
                   Caption = 'Image Parameters'
                   TabOrder = 0
-                  ExplicitTop = 177
-                  ExplicitWidth = 283
                   object mScaleE: TFloatLabeledEdit
                     Left = 16
                     Top = 34
@@ -16359,17 +16346,16 @@ object MainForm: TMainForm
                   object GroupBox9: TGroupBox
                     Left = 2
                     Top = 205
-                    Width = 262
+                    Width = 279
                     Height = 89
                     Align = alBottom
                     Caption = 'Zoom'
                     TabOrder = 10
-                    ExplicitWidth = 279
                     DesignSize = (
-                      262
+                      279
                       89)
                     object mHistoryBackBtn: TButton
-                      Left = 11
+                      Left = 28
                       Top = 53
                       Width = 75
                       Height = 25
@@ -16377,10 +16363,9 @@ object MainForm: TMainForm
                       Caption = '<'
                       TabOrder = 0
                       OnClick = historyBtnClick
-                      ExplicitLeft = 28
                     end
                     object mHistoryFFW: TButton
-                      Left = 92
+                      Left = 109
                       Top = 53
                       Width = 78
                       Height = 25
@@ -16388,10 +16373,9 @@ object MainForm: TMainForm
                       Caption = '>'
                       TabOrder = 1
                       OnClick = historyBtnClick
-                      ExplicitLeft = 109
                     end
                     object mZoomFactor: TIntegerEdit
-                      Left = 44
+                      Left = 61
                       Top = 26
                       Width = 89
                       Height = 21
@@ -16400,10 +16384,9 @@ object MainForm: TMainForm
                       TabOrder = 2
                       Text = '10'
                       Value = 10
-                      ExplicitLeft = 61
                     end
                     object mZoomInBtn: TButton
-                      Left = 140
+                      Left = 157
                       Top = 22
                       Width = 26
                       Height = 25
@@ -16411,10 +16394,9 @@ object MainForm: TMainForm
                       Caption = '+'
                       TabOrder = 3
                       OnClick = mZoomBtnClick
-                      ExplicitLeft = 157
                     end
                     object mZoomOutBtn: TButton
-                      Left = 11
+                      Left = 28
                       Top = 22
                       Width = 26
                       Height = 25
@@ -16422,20 +16404,17 @@ object MainForm: TMainForm
                       Caption = '-'
                       TabOrder = 4
                       OnClick = mZoomBtnClick
-                      ExplicitLeft = 28
                     end
                   end
                 end
                 object PostProcessingGB: TGroupBox
                   Left = 0
-                  Top = 705
-                  Width = 266
+                  Top = 481
+                  Width = 283
                   Height = 198
                   Align = alTop
                   Caption = 'Post Processing'
                   TabOrder = 1
-                  ExplicitTop = 473
-                  ExplicitWidth = 283
                   object IMContrastControl: TCheckBox
                     Left = 17
                     Top = 47
@@ -16457,7 +16436,7 @@ object MainForm: TMainForm
                   object ColorRG: TRadioGroup
                     Left = 2
                     Top = 144
-                    Width = 262
+                    Width = 279
                     Height = 52
                     Align = alBottom
                     Caption = 'Color'
@@ -16471,7 +16450,6 @@ object MainForm: TMainForm
                       'Magenta')
                     TabOrder = 2
                     OnClick = ColorRGClick
-                    ExplicitWidth = 279
                   end
                   object FlipImageLeftCB: TCheckBox
                     Left = 17
@@ -16497,14 +16475,12 @@ object MainForm: TMainForm
                 end
                 object CacheGB: TGroupBox
                   Left = 0
-                  Top = 903
-                  Width = 266
+                  Top = 679
+                  Width = 283
                   Height = 77
                   Align = alTop
                   Caption = 'Local Cache'
                   TabOrder = 2
-                  ExplicitTop = 671
-                  ExplicitWidth = 283
                   object FetchSelectedZsBtn: TButton
                     Left = 16
                     Top = 19
@@ -16527,14 +16503,14 @@ object MainForm: TMainForm
                 object GroupBox1: TGroupBox
                   Left = 0
                   Top = 0
-                  Width = 266
-                  Height = 409
+                  Width = 283
+                  Height = 185
                   Align = alTop
                   Caption = 'Project Selection'
                   TabOrder = 3
                   DesignSize = (
-                    266
-                    409)
+                    283
+                    185)
                   object Label1: TLabel
                     Left = 16
                     Top = 22
@@ -16565,7 +16541,6 @@ object MainForm: TMainForm
                     Anchors = [akLeft, akTop, akRight]
                     TabOrder = 0
                     OnChange = OwnerCBChange
-                    ExplicitWidth = 241
                   end
                   object ProjectCB: TComboBox
                     Left = 16
@@ -16577,24 +16552,13 @@ object MainForm: TMainForm
                     DropDownCount = 25
                     TabOrder = 1
                     OnChange = ProjectCBChange
-                    ExplicitWidth = 242
-                  end
-                  object StacksLB: TCheckListBox
-                    AlignWithMargins = True
-                    Left = 15
-                    Top = 216
-                    Width = 224
-                    Height = 187
-                    Margins.Left = 15
-                    ItemHeight = 13
-                    TabOrder = 2
                   end
                   object StackCB: TComboBox
                     Left = 17
                     Top = 146
                     Width = 224
                     Height = 21
-                    TabOrder = 3
+                    TabOrder = 2
                     Text = 'StackCB'
                     OnChange = StackCBChange
                   end
@@ -16608,7 +16572,6 @@ object MainForm: TMainForm
                 Align = alRight
                 Caption = 'Sections'
                 TabOrder = 1
-                ExplicitHeight = 766
                 object mZs: TCheckListBox
                   Left = 2
                   Top = 15
@@ -16619,7 +16582,6 @@ object MainForm: TMainForm
                   PopupMenu = ZsPopUpMenu
                   TabOrder = 0
                   OnClick = ClickZ
-                  ExplicitHeight = 749
                 end
               end
             end
@@ -16627,7 +16589,6 @@ object MainForm: TMainForm
           object TransformsTab: TTabSheet
             Caption = 'Transforms'
             ImageIndex = 1
-            ExplicitHeight = 768
             inline TAffineTransformationFrame1: TAffineTransformationFrame
               Left = 0
               Top = 0
@@ -16636,7 +16597,7 @@ object MainForm: TMainForm
               Align = alClient
               TabOrder = 0
               ExplicitWidth = 385
-              ExplicitHeight = 768
+              ExplicitHeight = 793
               inherited GroupBox1: TGroupBox
                 Width = 385
                 ExplicitWidth = 385
@@ -16651,20 +16612,20 @@ object MainForm: TMainForm
                 Width = 385
                 Height = 624
                 ExplicitWidth = 385
-                ExplicitHeight = 599
+                ExplicitHeight = 624
                 inherited StacksGB: TGroupBox
                   Height = 622
-                  ExplicitHeight = 597
+                  ExplicitHeight = 622
                   inherited StacksForProjectCB: TCheckListBox
                     Height = 599
-                    ExplicitHeight = 574
+                    ExplicitHeight = 599
                   end
                 end
                 inherited GroupBox2: TGroupBox
                   Width = 198
                   Height = 622
                   ExplicitWidth = 198
-                  ExplicitHeight = 597
+                  ExplicitHeight = 622
                   inherited AppendToCurrentStackCB: TPropertyCheckBox
                     Caption = 'Append Transform to Current Stacks'
                   end
@@ -17244,6 +17205,8 @@ object MainForm: TMainForm
             Top = 136
           end
           inherited ScSSHClient: TScSSHClient
+            AfterConnect = TSSHFrame1ScSSHClientAfterConnect
+            AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
             Left = 32
             Top = 88
           end
@@ -17566,7 +17529,7 @@ object MainForm: TMainForm
     Left = 408
     Top = 8
     Bitmap = {
-      494C010108001800300110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800380110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

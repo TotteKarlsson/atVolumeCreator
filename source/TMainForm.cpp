@@ -109,6 +109,7 @@ void __fastcall TMainForm::onImage()
         return;
     }
 
+
     string pic = mRC.getImageLocalPathAndFileName().c_str();
 
     if(	IMContrastControl->Checked  ||

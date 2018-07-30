@@ -41,19 +41,17 @@ $SRC_DIR/*.ico
 $OUTPUTDIR/$OUTPUTFILENAME                       
 
 #DS Binaries
-$OUTPUTDIR/dslCommon.dll                         
-$OUTPUTDIR/dslIPC.dll                            
-$OUTPUTDIR/dslMath.dll                           
-$OUTPUTDIR/dslPlugins.dll                        
+$OUTPUTDIR/dslFoundation.dll                         
 $OUTPUTDIR/dslVCLCommon.dll                      
 $OUTPUTDIR/atCore.dll                      
 $OUTPUTDIR/atResources.dll                       
-$OUTPUTDIR/atBarcodeReader.dll                   
-$OUTPUTDIR/atArrayBotCore.dll                    
-$OUTPUTDIR/atVCLCommon.dll                       
 $OUTPUTDIR/atSSI.dll                             
+$OUTPUTDIR/atFoundation.dll                   
+$OUTPUTDIR/atVCLCommon.dll                       
 $OUTPUTDIR/poco_foundation.dll
 $OUTPUTDIR/tinyxml2.dll
+$OUTPUTDIR/sqlite.dll
+$OUTPUTDIR/navusbapi.dll
 $BDSCOMMONDIR/BPL/dslVCLComponents.bpl          
 $BDSCOMMONDIR/BPL/dslVCLVisualComponents.bpl    
 $BDSCOMMONDIR/BPL/atVCLComponents.bpl               
@@ -83,7 +81,6 @@ $CG_REDIST/vcldb$suffix
 $CG_REDIST/IndySystem$suffix     
 $CG_REDIST/IndyProtocols$suffix 
 $CG_REDIST/IndyCore$suffix     
-
 $miscRedist/dbexppgsql40.dll                                     
 )
 
@@ -93,6 +90,8 @@ do
     cp $file $dest
 done
 
+echo "Copying dcef browser files" 
+cp -r -v /p/build/bin/*.dll                                            $dest
 ##instead of using local bin folder
 cp $SRC_DIR/../*.txt                                                $OUTPUTDIR
 cp $SRC_DIR/*.ico                                                   $OUTPUTDIR
