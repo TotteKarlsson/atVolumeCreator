@@ -15,12 +15,6 @@ extern string gAppName;
 extern string gApplicationStyle;
 extern string gRestartMutexName;
 
-void __fastcall TMainForm::logMsg()
-{
-//    infoMemo->Lines->Add(vclstr(mLogFileReader.getData()));
-//    mLogFileReader.purge();
-}
-
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::About1Click(TObject *Sender)
 {
@@ -335,6 +329,9 @@ void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
 	    string   url(createNDVIZURL());
 //		//ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
         DcefBrowser1->Load(url.c_str());
+//        DcefBrowser1->OnKeyEvent
+
+
 		return;
 //    }
 //

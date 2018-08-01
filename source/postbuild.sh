@@ -6,14 +6,14 @@ echo "Arg2: "$2
 echo "Arg3: "$3
 echo "Arg4: "$4
 
-#OUTPUTDIR=`cygpath $1`
-OUTPUTDIR=$1
+#BUILD_FOLDER=`cygpath $1`
+BUILD_FOLDER=$1
 #APP_RELEASES=`cygpath $2`
 APP_RELEASES=$2
 OUTPUTFILENAME=$3
 BDSCOMMONDIR=$4
 
-echo "OUTPUTDIR: "$OUTPUTDIR
+echo "BUILD_FOLDER: "$BUILD_FOLDER
 echo "AppReleases: "$APP_RELEASES
 echo "Outputfilename: "$OUTPUTFILENAME
 echo "BDSCOMMONDIR: "$BDSCOMMONDIR
@@ -24,7 +24,7 @@ APPNAME=VolumeCreator
 echo "Copy stuff"
 mkdir $APP_RELEASES/$APPNAME
 
-dest=$APP_RELEASES/$APPNAME
+AppReleaseFolder=$APP_RELEASES/$APPNAME
 SRC_DIR="."
 
 #Borland Packages and dll's
@@ -38,20 +38,20 @@ miscRedist="/p/redist"
 files=(
 $SRC_DIR/../*.txt                                
 $SRC_DIR/*.ico                      
-$OUTPUTDIR/$OUTPUTFILENAME                       
+$BUILD_FOLDER/$OUTPUTFILENAME                       
 
 #DS Binaries
-$OUTPUTDIR/dslFoundation.dll                         
-$OUTPUTDIR/dslVCLCommon.dll                      
-$OUTPUTDIR/atCore.dll                      
-$OUTPUTDIR/atResources.dll                       
-$OUTPUTDIR/atSSI.dll                             
-$OUTPUTDIR/atFoundation.dll                   
-$OUTPUTDIR/atVCLCommon.dll                       
-$OUTPUTDIR/poco_foundation.dll
-$OUTPUTDIR/tinyxml2.dll
-$OUTPUTDIR/sqlite.dll
-$OUTPUTDIR/navusbapi.dll
+$BUILD_FOLDER/dslFoundation.dll                         
+$BUILD_FOLDER/dslVCLCommon.dll                      
+$BUILD_FOLDER/atCore.dll                      
+$BUILD_FOLDER/atResources.dll                       
+$BUILD_FOLDER/atSSI.dll                             
+$BUILD_FOLDER/atFoundation.dll                   
+$BUILD_FOLDER/atVCLCommon.dll                       
+$BUILD_FOLDER/poco_foundation.dll
+$BUILD_FOLDER/tinyxml2.dll
+$BUILD_FOLDER/sqlite.dll
+$BUILD_FOLDER/navusbapi.dll
 $BDSCOMMONDIR/BPL/dslVCLComponents.bpl          
 $BDSCOMMONDIR/BPL/dslVCLVisualComponents.bpl    
 $BDSCOMMONDIR/BPL/atVCLComponents.bpl               
@@ -86,12 +86,13 @@ $miscRedist/dbexppgsql40.dll
 
 for file in "${files[@]}"
 do 
-    echo "Copying file: $file to $dest" 
-    cp $file $dest
+    echo "Copying file: $file to $AppReleaseFolder" 
+    cp $file $AppReleaseFolder
 done
 
 echo "Copying dcef browser files" 
-cp -r -v /p/build/bin/*.dll                                            $dest
+cp -r -v /p/libs/DcefBrowser/bin/Win32/*                            $AppReleaseFolder
+cp -r -v /p/libs/DcefBrowser/bin/Win32/*                            $BUILD_FOLDER
 ##instead of using local bin folder
-cp $SRC_DIR/../*.txt                                                $OUTPUTDIR
-cp $SRC_DIR/*.ico                                                   $OUTPUTDIR
+cp $SRC_DIR/../*.txt                                                $BUILD_FOLDER
+cp $SRC_DIR/*.ico                                                   $BUILD_FOLDER

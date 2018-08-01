@@ -14,9 +14,9 @@ void __fastcall TMainForm::Exit1Click(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
+void __fastcall TMainForm::ShutDownTimerTimer(TObject *Sender)
 {
-	mShutDownTimer->Enabled = false;
+	ShutDownTimer->Enabled = false;
 
     VolumeCreatorProject* mCurrentVCProject = mProjectManager.getCurrentProject();
 	if(mCurrentVCProject && mCurrentVCProject->isNeverSaved() == true)
@@ -44,12 +44,6 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
     mCurrentVCProject = NULL;
 
 
-	if(mLogFileReader.isRunning())
-	{
-		Log(lDebug) << "Shutting down log file reader";
-		mLogFileReader.stop();
-	}
-
 	if(TSSHFrame1->isConnected())
     {
 		TSSHFrame1->disconnect();
@@ -60,7 +54,6 @@ void __fastcall TMainForm::mShutDownTimerTimer(TObject *Sender)
 
 void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
-
     IdHTTP1->Disconnect();
 	Log(lInfo) << "In FormClose";
 	mIniFileC->clear();
@@ -91,11 +84,7 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
 
     VolumeCreatorProject* mCurrentVCProject = mProjectManager.getCurrentProject();
 	//Check if we can close.. abort all threads..
-	if(mLogFileReader.isRunning())
-    {
-    	CanClose = false;
-    }
-	else if(TSSHFrame1->isConnected())
+	if(TSSHFrame1->isConnected())
     {
 		CanClose = false;
     }
@@ -107,7 +96,7 @@ void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
 
 	if(CanClose == false)
 	{
-		mShutDownTimer->Enabled = true;
+		ShutDownTimer->Enabled = true;
 	}
 }
 

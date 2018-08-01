@@ -427,6 +427,19 @@ vector<int> RenderClient::getValidZs()
     }
 }
 
+bool RenderClient::renameStack(const string& currentStackName, const string& newName)
+{
+	stringstream sUrl;
+    sUrl << mBaseURL;
+    sUrl << "/owner/"    << mProject.getProjectOwner();
+    sUrl << "/project/" << 	mProject.getProject();
+    sUrl << "/stack/"	<<	mProject.getCurrentStackName();
+
+    TStringStream* strings = new TStringStream;;
+//    mC->Put()
+
+}
+
 RenderBox RenderClient::parseBoundsResponse(const string& _s)
 {
 	RenderBox bounds; //XminXMaxYMinYMax

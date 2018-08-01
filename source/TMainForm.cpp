@@ -43,17 +43,14 @@ using boost::filesystem;
 using Poco::Timestamp;
 using Poco::Timespan;
 
-
 TImage *CurrImage;
 extern string gAppDataLocation;
-extern string gLogFileName;
 extern string gAppName;
 
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TRegistryForm(gApplicationRegistryRoot, "MainForm", Owner),
     mLogLevel(lAny),
-    mLogFileReader(joinPath(gAppDataLocation, gLogFileName), logMsg),
     mBottomPanelHeight(205),
 	mCreateCacheThread(),
     mRC(IdHTTP1),
@@ -67,7 +64,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mAppProperties(gAppName, gApplicationRegistryRoot, ""),
     mGeneralProperties(shared_ptr<IniFileProperties>(new IniFileProperties)),
 	mServer1Properties(shared_ptr<IniFileProperties>(new IniFileProperties)),
-	mServer2Properties(shared_ptr<IniFileProperties>(new IniFileProperties))
+	mServer2Properties(shared_ptr<IniFileProperties>(new IniFileProperties)),
+    mImageGrid(Image1, PaintBox1->Canvas)
 {
     setupIniFile();
     setupAndReadIniParameters();
@@ -75,8 +73,9 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
   	TMemoLogger::mMemoIsEnabled = true;
 	CurrImage = Image1;
     mRC.assignOnImageCallback(onImage);
-
     Panel1->ControlStyle <<  csOpaque;
+    PaintBox1->BringToFront();
+    DcefBrowser1->CloseAllBrowser(false);
 }
 
 __fastcall TMainForm::~TMainForm()
@@ -112,66 +111,66 @@ void __fastcall TMainForm::onImage()
 
     string pic = mRC.getImageLocalPathAndFileName().c_str();
 
-    if(	IMContrastControl->Checked  ||
-    	FlipImageRightCB->Checked   ||
-        FlipImageLeftCB->Checked    ||
-        ColorRG->ItemIndex > 0		||
-		CustomRotationE->getValue() != 0
-        )
-    {
-        //Read imageMagick image from file
-        MagickWand* image_wand;
-        MagickWandGenesis();
-        image_wand = NewMagickWand();
-        MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
-
-        if (status == MagickFalse)
-        {
-            ThrowWandException(image_wand);
-        }
-
-        if(IMContrastControl->Checked)
-        {
-            applyContrastControl(image_wand);
-        }
-
-        if(FlipImageRightCB->Checked)
-        {
-            flipImage(image_wand, 90);
-        }
-
-        if(FlipImageLeftCB->Checked)
-        {
-            flipImage(image_wand, -90);
-        }
-
-        if(CustomRotationE->getValue() != 0)
-        {
-		    flipImage(image_wand, CustomRotationE->getValue());
-        }
-
-        if(ColorRG->ItemIndex > 0)
-        {
-            colorImage(image_wand, ColorRG->ItemIndex);
-        }
-
-        string newFName(createProcessedImageFileName(pic));
-
-
-        /*    Write the image then destroy it.    */
-        string procImageFName(createProcessedImageFileName(pic));
-        status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
-        if (status == MagickFalse)
-        {
-            ThrowWandException(image_wand);
-        }
-
-        // Release Wand handle
-        DestroyMagickWand(image_wand);
-        Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
-        mCurrentImageFile = newFName;
-    }
-    else
+//    if(	IMContrastControl->Checked  ||
+//    	FlipImageRightCB->Checked   ||
+//        FlipImageLeftCB->Checked    ||
+//        ColorRG->ItemIndex > 0		||
+//		CustomRotationE->getValue() != 0
+//        )
+//    {
+//        //Read imageMagick image from file
+//        MagickWand* image_wand;
+//        MagickWandGenesis();
+//        image_wand = NewMagickWand();
+//        MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
+//
+//        if (status == MagickFalse)
+//        {
+//            ThrowWandException(image_wand);
+//        }
+//
+//        if(IMContrastControl->Checked)
+//        {
+//            applyContrastControl(image_wand);
+//        }
+//
+//        if(FlipImageRightCB->Checked)
+//        {
+//            flipImage(image_wand, 90);
+//        }
+//
+//        if(FlipImageLeftCB->Checked)
+//        {
+//            flipImage(image_wand, -90);
+//        }
+//
+//        if(CustomRotationE->getValue() != 0)
+//        {
+//		    flipImage(image_wand, CustomRotationE->getValue());
+//        }
+//
+//        if(ColorRG->ItemIndex > 0)
+//        {
+//            colorImage(image_wand, ColorRG->ItemIndex);
+//        }
+//
+//        string newFName(createProcessedImageFileName(pic));
+//
+//
+//        /*    Write the image then destroy it.    */
+//        string procImageFName(createProcessedImageFileName(pic));
+//        status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
+//        if (status == MagickFalse)
+//        {
+//            ThrowWandException(image_wand);
+//        }
+//
+//        // Release Wand handle
+//        DestroyMagickWand(image_wand);
+//        Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
+//        mCurrentImageFile = newFName;
+//    }
+//    else
     {
         try
         {
@@ -396,8 +395,8 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     mROIHistory.insert(mCurrentRB);
 
     //Undo any flipping
-    FlipImageRightCB->Checked = false;
-    FlipImageLeftCB->Checked = false;
+//    FlipImageRightCB->Checked = false;
+//    FlipImageLeftCB->Checked = false;
 	ClickZ(NULL);
 }
 
@@ -729,12 +728,12 @@ void __fastcall TMainForm::CreateCacheTimerTimer(TObject *Sender)
 {
 	if(mCreateCacheThread.isRunning())
     {
-		FetchSelectedZsBtn->Caption = "Stop Cache Creation";
+		FetchSelectedZsBtn->Caption = "Stop";
     }
     else
     {
 		CreateCacheTimer->Enabled = false;
-		FetchSelectedZsBtn->Caption = "Generate Cache";
+		FetchSelectedZsBtn->Caption = "Generate";
     }
 }
 
@@ -902,15 +901,6 @@ void __fastcall TMainForm::ClickImageProcCB(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::ColorRGClick(TObject *Sender)
-{
-	if(ColorRG->ItemIndex != -1)
-    {
-		ClickZ(NULL);
-    }
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Key != VK_RETURN)
@@ -941,14 +931,6 @@ void __fastcall TMainForm::OpenaClone1Click(TObject *Sender)
     }
 
 	gImageForm->Show();
-}
-
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::AddOverlayedImage1Click(TObject *Sender)
-{
-	TOverlayedImage* f = new TOverlayedImage(NULL);
-    f->Show();
 }
 
 //---------------------------------------------------------------------------
@@ -1105,7 +1087,6 @@ bool TMainForm::parseURLUpdate(const string& url)
 void __fastcall TMainForm::ClearBrowserCacheBtnClick(TObject *Sender)
 {
     DcefBrowser1->ReloadIgnoreCache();
-
 }
 
 //---------------------------------------------------------------------------
@@ -1127,7 +1108,7 @@ void __fastcall TMainForm::ScriptsPCChange(TObject *Sender)
 //--------------------------------------------------------------------------
 void __fastcall TMainForm::PageControl1Change(TObject *Sender)
 {
-    if(PageControl2->Pages[PageControl2->ActivePageIndex] == TransformsTab)
+    if(ControlsPC->Pages[ControlsPC->ActivePageIndex] == TransformsTab)
     {
         //Populate..
         TAffineTransformationFrame1->populate(mRC, TSSHFrame1->ScSSHShell1);
@@ -1179,7 +1160,46 @@ void __fastcall TMainForm::OpenInChromeBtnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::TSSHFrame1ConnectBtnClick(TObject *Sender)
 {
-  TSSHFrame1->ConnectBtnClick(Sender);
+	TSSHFrame1->ConnectBtnClick(Sender);
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::VisualsPCChange(TObject *Sender)
+{
+    if(VisualsPC->Pages[VisualsPC->ActivePageIndex] == NdVizTS)
+    {
+        //Populate..
+        OpenInNDVIZBtnClick(NULL);
+    }
+    else
+    {
+	    ClickZ(Sender);
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::PaintBox1Paint(TObject *Sender)
+{
+    if(ShowImageGridCB->Checked)
+    {
+        mImageGrid.paint();
+    }
+    else
+    {
+//	 	PaintBox1->Invalidate();
+    }
+
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ShowImageGridCBClick(TObject *Sender)
+{
+	PaintBox1Paint(NULL);
+}
+
+void __fastcall TMainForm::Timer1Timer(TObject *Sender)
+{
+    Close();
+}
+//---------------------------------------------------------------------------
 

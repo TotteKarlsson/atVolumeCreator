@@ -90,3 +90,33 @@ void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
     mScripter.run();
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TAffineTransformationFrame::DeleteStackAExecute(TObject *Sender)
+{
+
+	if(StacksForProjectCB->ItemIndex != -1)
+    {
+	    //Just append _hidden to stack name
+	    string currentStackName(stdstr(StacksForProjectCB->Items->Strings[StacksForProjectCB->ItemIndex]));
+        Log(lInfo) << "Deleting stack: " << currentStackName;
+	    string newStackName("HIDDEN_" + currentStackName);
+	    mRC.renameStack(currentStackName, newStackName);
+
+    }
+    else
+    {
+        Log(lWarning) << "No stack is selected";
+    }
+
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TAffineTransformationFrame::StacksPopupPopup(TObject *Sender)
+
+{
+    //Figure wich item was clicked
+    //Only opup if an item is selected
+
+}
+
+

@@ -15,7 +15,6 @@
 #include <IdHTTP.hpp>
 #include <IdTCPClient.hpp>
 #include <IdTCPConnection.hpp>
-#include "dslLogFileReader.h"
 #include "dslLogLevel.h"
 #include <Vcl.ComCtrls.hpp>
 #include "dslTIntLabel.h"
@@ -31,7 +30,6 @@
 #include "dslTIntegerEdit.h"
 #include "TSSHFrame.h"
 #include "TImageControlsFrame.h"
-#include "MagickWand/MagickWand.h"
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 
@@ -57,13 +55,16 @@
 #include "TRenderPythonRemoteScriptFrame.h"
 #include "dslTLogMemoFrame.h"
 #include "TAffineTransformationFrame.h"
+#include "MagickWand/MagickWand.h"
+#include "atImageGrid.h"
 class TImageForm;
-//using dsl::Process;
+
 //---------------------------------------------------------------------------
 using dsl::IniFileProperties;
 using dsl::TRegistryProperties;
 using dsl::ApplicationProperties;
 using dsl::shared_ptr;
+using at::ImageGrid;
 extern string gApplicationRegistryRoot;
 void brightnessContrast(TImage *imageSelected);
 string createProcessedImageFileName(const string& fname);
@@ -75,9 +76,7 @@ class TMainForm : public TRegistryForm
 __published:	// IDE-managed Components
 	TImage *Image1;
 	TIdHTTP *IdHTTP1;
-	TTimer *mShutDownTimer;
-	TPageControl *PageControl1;
-	TTabSheet *TabSheet1;
+	TTimer *ShutDownTimer;
 	TGroupBox *Zs_GB;
 	TFloatLabeledEdit *mScaleE;
 	TPanel *BottomPanel;
@@ -122,8 +121,6 @@ __published:	// IDE-managed Components
 	TIntegerLabeledEdit *MinIntensity;
 	TScrollBox *ScrollBox1;
 	TGroupBox *CacheGB;
-	TGroupBox *PostProcessingGB;
-	TCheckBox *IMContrastControl;
 	TCheckListBox *StacksForProjectCB;
 	TGroupBox *MultiStackCreationGB;
 	TPropertyCheckBox *BoundsCB;
@@ -139,13 +136,10 @@ __published:	// IDE-managed Components
 	TGroupBox *GroupBox3;
 	TMenuItem *Options1;
 	TMenuItem *ThemesMenu;
-	TCheckBox *FlipImageRightCB;
-	TRadioGroup *ColorRG;
 	TStatusBar *StatusBar1;
 	TPropertyCheckBox *CustomFilterCB;
 	TEdit *CustomFilterE;
 	TMenuItem *OpenaClone1;
-	TCheckBox *FlipImageLeftCB;
 	THeaderControl *HeaderControl1;
 	TPanel *Panel1;
 	TPropertyCheckBox *CreateTIFFStackCB;
@@ -187,11 +181,10 @@ __published:	// IDE-managed Components
 	TComboBox *ImageTypeCB;
 	TLabel *Label4;
 	TFloatLabeledEdit *ScaleConstantE;
-	TFloatLabeledEdit *CustomRotationE;
 	TButton *TestRenderServiceBtn;
 	TPageControl *VisualsPC;
 	TTabSheet *TabSheet2;
-	TTabSheet *TabSheet5;
+	TTabSheet *NdVizTS;
 	TDcefBrowser *DcefBrowser1;
 	TIntegerLabeledEdit *maxTileSpecsToRenderE;
 	TButton *ClearCacheBtn;
@@ -214,7 +207,7 @@ __published:	// IDE-managed Components
 	TLabel *XE;
 	TLabel *YE;
 	TSSHFrame *TSSHFrame1;
-	TPageControl *PageControl2;
+	TPageControl *ControlsPC;
 	TTabSheet *TabSheet7;
 	TTabSheet *TransformsTab;
 	TToolButton *ToolButton4;
@@ -224,9 +217,12 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheet8;
 	TTabSheet *TabSheet9;
 	TPanel *Panel2;
+	TPanel *CenterPanel;
+	TPanel *ZsPanel;
+	TCheckBox *ShowImageGridCB;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
-	void __fastcall mShutDownTimerTimer(TObject *Sender);
+	void __fastcall ShutDownTimerTimer(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall mScaleEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -270,10 +266,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ThemesMenuClick(TObject *Sender);
 	void __fastcall ClickImageProcCB(TObject *Sender);
-	void __fastcall ColorRGClick(TObject *Sender);
 	void __fastcall CustomFilterEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall OpenaClone1Click(TObject *Sender);
-	void __fastcall AddOverlayedImage1Click(TObject *Sender);
 	void __fastcall CreateTIFFStackCBClick(TObject *Sender);
 	void __fastcall NewProjectAExecute(TObject *Sender);
 	void __fastcall ProjectStatusTimerTimer(TObject *Sender);
@@ -308,16 +302,18 @@ __published:	// IDE-managed Components
           TPoint &MousePos, bool &Handled);
 	void __fastcall OpenInChromeBtnClick(TObject *Sender);
 	void __fastcall TSSHFrame1ConnectBtnClick(TObject *Sender);
-
+	void __fastcall VisualsPCChange(TObject *Sender);
+	void __fastcall PaintBox1Paint(TObject *Sender);
+	void __fastcall ShowImageGridCBClick(TObject *Sender);
+	void __fastcall Timer1Timer(TObject *Sender);
 
 	private:
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
         RenderClient									mRC;
         int												getCurrentZ();
 		bool        									mRenderEnabled;
+        ImageGrid                                       mImageGrid;
 
-        void __fastcall                                 logMsg();
-		LogFileReader                                   mLogFileReader;
 		bool          									mIsStyleMenuPopulated;
         ApplicationProperties                           mAppProperties;
         shared_ptr<IniFileProperties>              		mGeneralProperties;
@@ -360,8 +356,8 @@ __published:	// IDE-managed Components
 		bool                							populateRemoteScript(const string& script);
         void 											runJob(const string& job);
         void											applyContrastControl(MagickWand *image_wand);
-		void 											flipImage(MagickWand *image_wand, int deg);
-		void 											colorImage(MagickWand *image_wand, int colorIndex);
+//		void 											flipImage(MagickWand *image_wand, int deg);
+//		void 											colorImage(MagickWand *image_wand, int colorIndex);
 
 	    TImageForm*										gImageForm;
         string 											mCurrentImageFile;

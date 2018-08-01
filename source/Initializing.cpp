@@ -24,7 +24,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 	gLogger.setLogLevel(mLogLevel);
 
     TLogMemoFrame1->init();
-	mLogFileReader.start(true);
+
     mCurrentRB.setX1(XCoordE->getValue());
     mCurrentRB.setY1(YCoordE->getValue());
     mCurrentRB.setWidth(Width->getValue());

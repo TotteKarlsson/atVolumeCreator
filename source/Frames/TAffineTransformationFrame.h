@@ -12,6 +12,9 @@
 #include <Vcl.ExtCtrls.hpp>
 #include "dslTFloatLabeledEdit.h"
 #include "dslTPropertyCheckBox.h"
+#include <System.Actions.hpp>
+#include <Vcl.ActnList.hpp>
+#include <Vcl.Menus.hpp>
 //---------------------------------------------------------------------------
 
 class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
@@ -21,7 +24,13 @@ class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
 	TFloatLabeledEdit *RotationE;
 	TIntegerLabeledEdit *TranslateXE;
 	TIntegerLabeledEdit *TranslateYE;
+	TPopupMenu *StacksPopup;
+	TActionList *StacksActions;
+	TAction *DeleteStackA;
+	TMenuItem *DeleteStack1;
         void __fastcall ExecuteBtnClick(TObject *Sender);
+	void __fastcall DeleteStackAExecute(TObject *Sender);
+	void __fastcall StacksPopupPopup(TObject *Sender);
 
     private:
 

@@ -65,6 +65,7 @@ class RenderClient
         StringList						            getStacksForProject(const string& owner, const string& p);
         RenderProject                               getCurrentProject();
 		TMemoryStream*								getImageMemory();
+        bool                                        renameStack(const string& currentStackName, const string& newName);
 
 		void				                        clearImageMemory();
 		string				                        getURL();
