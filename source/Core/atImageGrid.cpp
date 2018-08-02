@@ -31,10 +31,11 @@ void ImageGrid::paint()
     double w = getCurrentImageWidth(mImage);
 	double h = getCurrentImageHeight(mImage);
 
-    mCanvas->Pen->Color = clGreen;
+    mCanvas->Pen->Mode = pmCopy;
+    mCanvas->Pen->Color = clYellow;
     mCanvas->Pen->Width = 1;
 
-    int nrOfXLines(10);
+    int nrOfXLines(20);
     int yOffset(h/nrOfXLines);
 
     for(int i = 0; i < nrOfXLines; i++)
@@ -43,7 +44,7 @@ void ImageGrid::paint()
 		mCanvas->LineTo(w, yOffset*(i+1));
     }
 
-    int nrOfYLines(10);
+    int nrOfYLines(20);
     int xOffset(w/nrOfYLines);
 
     for(int i = 0; i < nrOfYLines; i++)

@@ -14,6 +14,7 @@ object MainForm: TMainForm
   KeyPreview = True
   Menu = MainMenu1
   OldCreateOrder = False
+  ShowHint = True
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -111,16 +112,15 @@ object MainForm: TMainForm
         OnEditing = ProjectTViewEditing
       end
     end
-    object mShowBottomPanelBtn: TButton
+    object ShowBottomPanelBtn: TButton
       Left = 1
       Top = 850
       Width = 1440
       Height = 19
+      Action = ToggleBottomPanelA
       Align = alBottom
-      Caption = '^'
       TabOrder = 2
       Visible = False
-      OnClick = mShowBottomPanelBtnClick
     end
     object CenterPanel: TPanel
       Left = 105
@@ -134,7 +134,7 @@ object MainForm: TMainForm
         Top = 1
         Width = 941
         Height = 847
-        ActivePage = NdVizTS
+        ActivePage = TabSheet2
         Align = alClient
         TabOrder = 0
         OnChange = VisualsPCChange
@@ -146,8 +146,10 @@ object MainForm: TMainForm
             Width = 933
             Height = 819
             Align = alClient
+            Color = clSkyBlue
             DoubleBuffered = True
             FullRepaint = False
+            ParentBackground = False
             ParentDoubleBuffered = False
             TabOrder = 0
             object PaintBox1: TPaintBox
@@ -158,6 +160,10 @@ object MainForm: TMainForm
               Align = alClient
               Color = clRed
               ParentColor = False
+              PopupMenu = ImagePopup
+              OnMouseDown = FormMouseDown
+              OnMouseMove = FormMouseMove
+              OnMouseUp = FormMouseUp
               OnPaint = PaintBox1Paint
               ExplicitLeft = 278
               ExplicitTop = -1
@@ -170,7 +176,6 @@ object MainForm: TMainForm
               Width = 931
               Height = 800
               Align = alClient
-              AutoSize = True
               Picture.Data = {
                 0954574943496D61676549492A0002CD07006465686867676B69646966636767
                 6564616364636163626467656667686B69696A6869696A6C6B6C706F71717377
@@ -16284,7 +16289,7 @@ object MainForm: TMainForm
                 Left = 0
                 Top = 185
                 Width = 283
-                Height = 296
+                Height = 305
                 Align = alTop
                 Caption = 'Image Parameters'
                 TabOrder = 0
@@ -16415,7 +16420,7 @@ object MainForm: TMainForm
                 end
                 object GroupBox9: TGroupBox
                   Left = 2
-                  Top = 205
+                  Top = 214
                   Width = 279
                   Height = 89
                   Align = alBottom
@@ -16535,6 +16540,9 @@ object MainForm: TMainForm
                   Top = 146
                   Width = 224
                   Height = 21
+                  Hint = 'Test'
+                  ParentShowHint = False
+                  ShowHint = True
                   TabOrder = 2
                   Text = 'StackCB'
                   OnChange = StackCBChange
@@ -16542,12 +16550,23 @@ object MainForm: TMainForm
               end
               object ShowImageGridCB: TCheckBox
                 Left = 16
-                Top = 512
-                Width = 97
+                Top = 496
+                Width = 122
                 Height = 17
-                Caption = 'Image Grid'
+                Action = ToggleImageGridA
                 TabOrder = 2
-                OnClick = ShowImageGridCBClick
+              end
+              object CustomImageRotationE: TFloatLabeledEdit
+                Left = 17
+                Top = 536
+                Width = 96
+                Height = 21
+                EditLabel.Width = 80
+                EditLabel.Height = 13
+                EditLabel.Caption = 'Custom Rotation'
+                TabOrder = 3
+                Text = '0.0'
+                OnKeyDown = CustomImageRotationEKeyDown
               end
             end
             object ZsPanel: TPanel
@@ -16648,13 +16667,6 @@ object MainForm: TMainForm
                 Height = 648
                 ExplicitWidth = 198
                 ExplicitHeight = 648
-                inherited AppendToCurrentStackCB: TPropertyCheckBox
-                  Caption = 'Append Transform to Current Stacks'
-                end
-                inherited ExecuteBtn: TButton
-                  Left = 11
-                  ExplicitLeft = 11
-                end
               end
             end
           end
@@ -17270,6 +17282,7 @@ object MainForm: TMainForm
         Top = 1
         Width = 366
         Height = 22
+        Hint = 'Test'
         AutoSize = True
         ButtonWidth = 36
         Caption = 'ToolBar1'
@@ -17324,15 +17337,15 @@ object MainForm: TMainForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 1072
-    Top = 328
+    Left = 24
+    Top = 728
   end
   object ShutDownTimer: TTimer
     Enabled = False
     Interval = 100
     OnTimer = ShutDownTimerTimer
-    Left = 664
-    Top = 576
+    Left = 32
+    Top = 368
   end
   object mIniFileC: TIniFileC
     IniFileName = 'volumecreator.ini'
@@ -17341,8 +17354,8 @@ object MainForm: TMainForm
     Top = 272
   end
   object ZsPopUpMenu: TPopupMenu
-    Left = 752
-    Top = 408
+    Left = 48
+    Top = 512
     object Checkrange1: TMenuItem
       Caption = 'Select/Unselect Z'#39's'
       OnClick = Checkrange1Click
@@ -17362,8 +17375,8 @@ object MainForm: TMainForm
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 488
-    Top = 8
+    Left = 40
+    Top = 216
     object File1: TMenuItem
       Caption = 'File'
       object New1: TMenuItem
@@ -17416,12 +17429,12 @@ object MainForm: TMainForm
   object CreateCacheTimer: TTimer
     Interval = 150
     OnTimer = CreateCacheTimerTimer
-    Left = 736
-    Top = 304
+    Left = 48
+    Top = 440
   end
   object ImagePopup: TPopupMenu
-    Left = 912
-    Top = 280
+    Left = 32
+    Top = 576
     object OpenaClone1: TMenuItem
       Caption = 'Open a Clone'
       OnClick = OpenaClone1Click
@@ -17429,6 +17442,12 @@ object MainForm: TMainForm
     object openInChrome: TMenuItem
       Caption = 'Open in Chrome'
       OnClick = OpenInChromeBtnClick
+    end
+    object ToggleImageGridMI: TMenuItem
+      Action = ToggleImageGridA
+    end
+    object HideLogWindow1: TMenuItem
+      Action = ToggleBottomPanelA
     end
   end
   object MenuActions: TActionList
@@ -17480,22 +17499,28 @@ object MainForm: TMainForm
       Caption = 'EditViewNode'
       OnExecute = EditViewNodeExecute
     end
-    object Action1: TAction
-      Caption = 'Hide LogWindow'
-      OnExecute = Action1Execute
+    object ToggleBottomPanelA: TAction
+      Caption = 'Hide Log Window'
+      OnExecute = ToggleBottomPanelAExecute
+      OnUpdate = ToggleBottomPanelAUpdate
+    end
+    object ToggleImageGridA: TAction
+      Caption = 'Toggle Image Grid'
+      OnExecute = ToggleImageGridAExecute
+      OnUpdate = ToggleImageGridAUpdate
     end
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'vc'
     Filter = 'Volume Creator Project|*.vc'
-    Left = 960
-    Top = 336
+    Left = 32
+    Top = 656
   end
   object ImageList1: TImageList
-    Left = 408
-    Top = 8
+    Left = 32
+    Top = 40
     Bitmap = {
-      494C0101080018005C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800700110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17912,7 +17937,7 @@ object MainForm: TMainForm
     Left = 369
     Top = 912
     object Action11: TMenuItem
-      Action = Action1
+      Action = ToggleBottomPanelA
     end
   end
 end

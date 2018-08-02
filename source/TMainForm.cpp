@@ -75,11 +75,13 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     mRC.assignOnImageCallback(onImage);
     Panel1->ControlStyle <<  csOpaque;
     PaintBox1->BringToFront();
-    DcefBrowser1->CloseAllBrowser(false);
+    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+    Application->ShowHint = true;
 }
 
 __fastcall TMainForm::~TMainForm()
 {
+   	Gdiplus::GdiplusShutdown(gdiplusToken);
 	delete gImageForm;
 }
 
@@ -107,89 +109,31 @@ void __fastcall TMainForm::onImage()
         Log(lInfo) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
         return;
     }
-
-
-    string pic = mRC.getImageLocalPathAndFileName().c_str();
-
-//    if(	IMContrastControl->Checked  ||
-//    	FlipImageRightCB->Checked   ||
-//        FlipImageLeftCB->Checked    ||
-//        ColorRG->ItemIndex > 0		||
-//		CustomRotationE->getValue() != 0
-//        )
-//    {
-//        //Read imageMagick image from file
-//        MagickWand* image_wand;
-//        MagickWandGenesis();
-//        image_wand = NewMagickWand();
-//        MagickBooleanType status = MagickReadImage(image_wand, pic.c_str());
-//
-//        if (status == MagickFalse)
-//        {
-//            ThrowWandException(image_wand);
-//        }
-//
-//        if(IMContrastControl->Checked)
-//        {
-//            applyContrastControl(image_wand);
-//        }
-//
-//        if(FlipImageRightCB->Checked)
-//        {
-//            flipImage(image_wand, 90);
-//        }
-//
-//        if(FlipImageLeftCB->Checked)
-//        {
-//            flipImage(image_wand, -90);
-//        }
-//
-//        if(CustomRotationE->getValue() != 0)
-//        {
-//		    flipImage(image_wand, CustomRotationE->getValue());
-//        }
-//
-//        if(ColorRG->ItemIndex > 0)
-//        {
-//            colorImage(image_wand, ColorRG->ItemIndex);
-//        }
-//
-//        string newFName(createProcessedImageFileName(pic));
-//
-//
-//        /*    Write the image then destroy it.    */
-//        string procImageFName(createProcessedImageFileName(pic));
-//        status = MagickWriteImages(image_wand, procImageFName.c_str(), MagickTrue);
-//        if (status == MagickFalse)
-//        {
-//            ThrowWandException(image_wand);
-//        }
-//
-//        // Release Wand handle
-//        DestroyMagickWand(image_wand);
-//        Image1->Picture->Graphic->LoadFromFile(newFName.c_str());
-//        mCurrentImageFile = newFName;
-//    }
-//    else
+    mCurrentImageFile = mRC.getImageLocalPathAndFileName().c_str();
+	double val = CustomImageRotationE->getValue();
+    if(val != 0)
+    {
+		paintRotatedImage(val);
+    }
+    else
     {
         try
         {
             //Create a temporary stream
             unique_ptr<TMemoryStream> stream = unique_ptr<TMemoryStream>(new TMemoryStream());
 
-            stream->LoadFromFile(pic.c_str());
+            stream->LoadFromFile(mCurrentImageFile.c_str());
             if(stream->Size)
             {
             	stream->Position = 0;
-    	        Image1->Picture->Graphic->LoadFromStream(stream.get());
+                Image1->Picture->LoadFromStream(stream.get());
             }
         }
         catch(...)
         {
-            Log(lError) << "Failed to load image: "<<pic;
+            Log(lError) << "Failed to load image: "<<mCurrentImageFile;
             return;
         }
-        mCurrentImageFile = pic;
     }
 
     if(gImageForm && gImageForm->Visible)
@@ -197,7 +141,8 @@ void __fastcall TMainForm::onImage()
     	gImageForm->load(mCurrentImageFile);
     }
 
-    Image1->Refresh();//();
+    Image1->Refresh();
+
     Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
     this->Image1->Cursor = crDefault;
 }
@@ -394,9 +339,6 @@ void __fastcall TMainForm::FormMouseUp(TObject *Sender, TMouseButton Button,
     mCurrentRB = RenderBox(XCoordE->getValue(), YCoordE->getValue(), Width->getValue(), Height->getValue(), mScaleE->getValue());
     mROIHistory.insert(mCurrentRB);
 
-    //Undo any flipping
-//    FlipImageRightCB->Checked = false;
-//    FlipImageLeftCB->Checked = false;
 	ClickZ(NULL);
 }
 
@@ -411,7 +353,7 @@ void __fastcall TMainForm::FormMouseMove(TObject *Sender, TShiftState Shift,
 		DrawShape(Origin, MovePt, pmNotXor);
   	}
 
-  Image1MouseMove(Sender, Shift, X, Y);
+	Image1MouseMove(Sender, Shift, X, Y);
 }
 
 //---------------------------------------------------------------------------
@@ -434,15 +376,22 @@ int	TMainForm::getCurrentZ()
 
 void __fastcall TMainForm::resetButtonClick(TObject *Sender)
 {
-    //Get saved renderbox for current slice
 	try
     {
 	    mROIHistory.clear();
-	    mScaleE->setValue(0.05 * ScaleConstantE->getValue());
+	    //mScaleE->setValue(0.05 * ScaleConstantE->getValue());
         mCurrentRB = mRC.getBoxForZ(getCurrentZ());
+
+        XCoordE->setValue(mCurrentRB.getX1());
+        YCoordE->setValue(mCurrentRB.getY1());
+        Width->setValue(mCurrentRB.getWidth());
+        Height->setValue(mCurrentRB.getHeight());
+	    updateScale();
         mCurrentRB.setScale(mScaleE->getValue());
         render(&mCurrentRB);
         mROIHistory.add(mCurrentRB);
+        Log(lInfo) << "X0 = " << XCoordE->getValue() + Width->getValue()/2.;
+        Log(lInfo) << "Y0 = " << YCoordE->getValue() + Height->getValue()/2.;
     }
     catch(...)
     {}
@@ -716,6 +665,8 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
     		StacksForProjectCB->Checked[i] = false;
         }
     }
+
+	StackCB->Hint = vclstr(stack);
 
     //Disable uninitialized sections of the UI
 	enableDisableGroupBox(imageParasGB, true);
@@ -1112,13 +1063,31 @@ void __fastcall TMainForm::PageControl1Change(TObject *Sender)
     {
         //Populate..
         TAffineTransformationFrame1->populate(mRC, TSSHFrame1->ScSSHShell1);
+        TAffineTransformationFrame1->RotationE->setValue(CustomImageRotationE->getValue());
+		TAffineTransformationFrame1->TranslateXE->setValue((-1) * (XCoordE->getValue() + Width->getValue()/2.));
+		TAffineTransformationFrame1->TranslateYE->setValue((-1) * (YCoordE->getValue() + Height->getValue()/2.));
     }
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::Action1Execute(TObject *Sender)
+void __fastcall TMainForm::ToggleBottomPanelAExecute(TObject *Sender)
 {
-	mCloseBottomPanelBtnClick(NULL);
+    if(BottomPanel->Visible)
+    {
+        BottomPanel->Visible = false;
+        ShowBottomPanelBtn->Top = StatusBar1->Top - 1;
+        Splitter2->Visible = false;
+        ShowBottomPanelBtn->Visible = true;
+
+    }
+    else
+    {
+        BottomPanel->Visible = true;
+        Splitter2->Visible = true;
+        ShowBottomPanelBtn->Visible = false;
+        Splitter2->Top = BottomPanel->Top - 1;
+        StatusBar1->Top = BottomPanel->Top + BottomPanel->Height + 1;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -1180,26 +1149,102 @@ void __fastcall TMainForm::VisualsPCChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::PaintBox1Paint(TObject *Sender)
 {
+    if(ShutDownTimer->Enabled)
+    {
+        return;
+    }
+
     if(ShowImageGridCB->Checked)
     {
         mImageGrid.paint();
     }
-    else
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::TAffineTransformationFrame1RotationEKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+    if(Key == VK_RETURN)
     {
-//	 	PaintBox1->Invalidate();
+	    double val = TAffineTransformationFrame1->RotationE->getValue();
+	    paintRotatedImage(val);
     }
+}
 
+void TMainForm::paintRotatedImage(double angle)
+{
+    Image1->Align = alNone;
+    Image1->Picture = NULL;
+    TCanvas* c = Image1->Canvas;
+
+    wstring fName(mCurrentImageFile.begin(), mCurrentImageFile.end());
+    Gdiplus::Image image(fName.c_str());
+
+    //Get native image dimensions
+    Image1->Height = image.GetHeight();
+	Image1->Width = image.GetWidth();
+
+    Gdiplus::Graphics graphics(c->Handle);
+
+    Gdiplus::PointF center(Image1->Width/2, Image1->Height/2);
+    Gdiplus::Matrix matrix;
+
+    matrix.RotateAt(angle, center);
+    graphics.SetTransform(&matrix);
+
+    c->Brush->Color = clBlack;
+	c->Rectangle(0,0, PaintBox1->Width, PaintBox1->Height);
+
+    //draw rotated image
+    graphics.DrawImage(&image,0, 0, Image1->Width, Image1->Height);
+
+    Image1->Align = alClient;
+    Image1->Invalidate();
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::ShowImageGridCBClick(TObject *Sender)
+void __fastcall TMainForm::ToggleImageGridAExecute(TObject *Sender)
 {
-	PaintBox1Paint(NULL);
+//	ShowImageGridCB->Checked = !ShowImageGridCB->Checked;
+    Log(lInfo) << "Action Component: " << stdstr(ToggleImageGridA->ActionComponent->Name);
+
+    TMenuItem* ac = dynamic_cast<TMenuItem*>(ToggleImageGridA->ActionComponent);
+    if(ac)
+    {
+        ShowImageGridCB->Checked = !ShowImageGridCB->Checked;
+    }
+   	PaintBox1Paint(NULL);
 }
 
-void __fastcall TMainForm::Timer1Timer(TObject *Sender)
-{
-    Close();
-}
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::CustomImageRotationEKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+    if(Key == VK_RETURN)
+    {
+	    double val = CustomImageRotationE->getValue();
+	    paintRotatedImage(val);
+    }
+}
+
+
+void __fastcall TMainForm::ToggleBottomPanelAUpdate(TObject *Sender)
+{
+	ToggleBottomPanelA->Caption = (BottomPanel->Visible) ? "Hide Bottom Panel" : "Show Bottom Panel";
+
+	if(!BottomPanel->Visible)
+    {
+        ShowBottomPanelBtn->Caption = "^";
+    }
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ToggleImageGridAUpdate(TObject *Sender)
+{
+    if(!Drawing)
+    {
+		PaintBox1->Invalidate();
+    }
+}
+
 

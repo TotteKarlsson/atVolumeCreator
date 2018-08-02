@@ -57,6 +57,9 @@
 #include "TAffineTransformationFrame.h"
 #include "MagickWand/MagickWand.h"
 #include "atImageGrid.h"
+#include <gdiplus.h>
+#include "cspin.h"
+
 class TImageForm;
 
 //---------------------------------------------------------------------------
@@ -197,10 +200,10 @@ __published:	// IDE-managed Components
 	TButton *CMDButton;
 	TEdit *mCMD;
 	TLogMemoFrame *TLogMemoFrame1;
-	TButton *mShowBottomPanelBtn;
+	TButton *ShowBottomPanelBtn;
 	TSplitter *Splitter2;
 	TPopupMenu *PopupMenu1;
-	TAction *Action1;
+	TAction *ToggleBottomPanelA;
 	TMenuItem *Action11;
 	TAffineTransformationFrame *TAffineTransformationFrame1;
 	TSTDStringEdit *URLE;
@@ -220,6 +223,10 @@ __published:	// IDE-managed Components
 	TPanel *CenterPanel;
 	TPanel *ZsPanel;
 	TCheckBox *ShowImageGridCB;
+	TAction *ToggleImageGridA;
+	TFloatLabeledEdit *CustomImageRotationE;
+	TMenuItem *ToggleImageGridMI;
+	TMenuItem *HideLogWindow1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ShutDownTimerTimer(TObject *Sender);
@@ -236,15 +243,12 @@ __published:	// IDE-managed Components
 	void __fastcall FetchSelectedZsBtnClick(TObject *Sender);
 	void __fastcall mGetValidZsBtnClick(TObject *Sender);
 	void __fastcall mBrowseForCacheFolderClick(TObject *Sender);
-	void __fastcall mCLearMemoClick(TObject *Sender);
 	void __fastcall mUpdateZsBtnClick(TObject *Sender);
 	void __fastcall CopyValidZs1Click(TObject *Sender);
 	void __fastcall GetOptimalBoundsBtnClick(TObject *Sender);
 	void __fastcall mZoomBtnClick(TObject *Sender);
 	void __fastcall OwnerCBChange(TObject *Sender);
 	void __fastcall ProjectCBChange(TObject *Sender);
-	void __fastcall mCloseBottomPanelBtnClick(TObject *Sender);
-	void __fastcall mShowBottomPanelBtnClick(TObject *Sender);
 	void __fastcall StackCBChange(TObject *Sender);
 	void __fastcall TSSHFrame1ScSSHShell1AsyncReceive(TObject *Sender);
 	void __fastcall CMDButtonClick(TObject *Sender);
@@ -297,15 +301,22 @@ __published:	// IDE-managed Components
 	void __fastcall RenderTSEnter(TObject *Sender);
 	void __fastcall ScriptsPCChange(TObject *Sender);
 	void __fastcall PageControl1Change(TObject *Sender);
-	void __fastcall Action1Execute(TObject *Sender);
+	void __fastcall ToggleBottomPanelAExecute(TObject *Sender);
 	void __fastcall FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
           TPoint &MousePos, bool &Handled);
 	void __fastcall OpenInChromeBtnClick(TObject *Sender);
 	void __fastcall TSSHFrame1ConnectBtnClick(TObject *Sender);
 	void __fastcall VisualsPCChange(TObject *Sender);
 	void __fastcall PaintBox1Paint(TObject *Sender);
-	void __fastcall ShowImageGridCBClick(TObject *Sender);
-	void __fastcall Timer1Timer(TObject *Sender);
+
+	void __fastcall TAffineTransformationFrame1RotationEKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift);
+	void __fastcall ToggleImageGridAExecute(TObject *Sender);
+	void __fastcall CustomImageRotationEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall ToggleBottomPanelAUpdate(TObject *Sender);
+	void __fastcall ToggleImageGridAUpdate(TObject *Sender);
+
+
 
 	private:
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
@@ -372,6 +383,11 @@ __published:	// IDE-managed Components
 		int __fastcall 									closeProject();
 		VolumeCreatorProject* __fastcall 				createNewProject();
 		bool									        parseURLUpdate(const string& url);
+
+		Gdiplus::GdiplusStartupInput	                gdiplusStartupInput;
+		ULONG_PTR  			         	                gdiplusToken;
+	    void                         	                paintRotatedImage(double angle);
+
 
 public:
 	__fastcall 											TMainForm(TComponent* Owner);

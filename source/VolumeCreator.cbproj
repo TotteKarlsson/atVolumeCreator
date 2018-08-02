@@ -41,7 +41,7 @@
         <ILINK_LibraryPath>P:\libs\dsl\VCL\Frames\;Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IncludePath>P:\libs\dsl\VCL\Frames\;Frames\;Core\;forms\;P:\libs\atapi\source\vcl\frames\;Frames;Core;Forms;$(IncludePath)</IncludePath>
         <ProjectType>CppVCLApplication</ProjectType>
-        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;vclactnband.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;vclimg.lib;sbridge250.lib;dslVCLComponents.lib;dslVCLVisualComponents.lib;DcefBrowser.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;bcbie.lib;vclie.lib;vclx.lib;vclactnband.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;vclimg.lib;sbridge250.lib;dslVCLComponents.lib;dslVCLVisualComponents.lib;DcefBrowser.lib;bcbsmp.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <_TCHARMapping>wchar_t</_TCHARMapping>
@@ -110,7 +110,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <BT_BuildType>Debug</BT_BuildType>
         <LinkPackageStatics>sbridge250.lib;dslVCLComponents.lib;dslVCLVisualComponents.lib;DcefBrowser.lib</LinkPackageStatics>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;vclactnband.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;bcbie.bpi;vclie.bpi;vclx.bpi;vclactnband.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclimg.bpi;bcbsmp.bpi</LinkPackageImports>
         <VerInfo_Release>3</VerInfo_Release>
         <UWP_CppLogo44>..\resources\logo.png</UWP_CppLogo44>
         <UWP_CppLogo150>..\resources\logo.png</UWP_CppLogo150>
@@ -256,13 +256,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <BuildOrder>29</BuildOrder>
         </CppCompile>
         <FormResources Include="Frames\TRenderPythonRemoteScriptFrame.dfm"/>
+        <FormResources Include="Forms\TImageForm.dfm"/>
         <FormResources Include="Forms\TOverlayedImage.dfm"/>
         <FormResources Include="Forms\TSelectZsForm.dfm"/>
         <FormResources Include="Frames\TAffineTransformationFrame.dfm"/>
         <FormResources Include="P:\libs\atapi\source\vcl\frames\TSSHFrame.dfm"/>
         <FormResources Include="P:\libs\dsl\VCL\Frames\dslTLogMemoFrame.dfm"/>
         <FormResources Include="TMainForm.dfm"/>
-        <FormResources Include="Forms\TImageForm.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -324,10 +324,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     <ProjectProperties Name="VerifyPackages">False</ProjectProperties>
                     <ProjectProperties Name="IndexFiles">False</ProjectProperties>
                 </ProjectProperties>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="p:\build\BPL\CEF4CPPBuilder.bpl">File p:\build\BPL\CEF4CPPBuilder.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="p:\build\debug\BPL\atVCLAPTVisualComponents.bpl">File p:\build\debug\BPL\atVCLAPTVisualComponents.bpl not found</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </CPlusPlusBuilder.Personality>
             <Deployment Version="3">
                 <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin\cc32c250mt.dll" Class="DependencyModule">

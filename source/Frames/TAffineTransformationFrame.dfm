@@ -5,7 +5,7 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
   ExplicitHeight = 533
   inherited GroupBox1: TGroupBox
     Width = 392
-    ExplicitWidth = 396
+    ExplicitWidth = 392
     inherited RenderClientScriptsFolderE: TSTDStringLabeledEdit
       EditLabel.ExplicitWidth = 124
     end
@@ -13,11 +13,11 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
   inherited Panel2: TPanel
     Width = 392
     Height = 364
-    ExplicitWidth = 396
-    ExplicitHeight = 311
+    ExplicitWidth = 392
+    ExplicitHeight = 364
     inherited StacksGB: TGroupBox
       Height = 362
-      ExplicitHeight = 309
+      ExplicitHeight = 362
       inherited StacksForProjectCB: TCheckListBox
         Height = 339
         Flat = False
@@ -29,16 +29,14 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
     inherited GroupBox2: TGroupBox
       Width = 205
       Height = 362
-      ExplicitLeft = 187
-      ExplicitTop = 6
-      ExplicitWidth = 209
+      ExplicitWidth = 205
       ExplicitHeight = 362
       DesignSize = (
         205
         362)
       object TranslateYE: TIntegerLabeledEdit [0]
         Left = 10
-        Top = 188
+        Top = 86
         Width = 97
         Height = 21
         EditLabel.Width = 92
@@ -49,7 +47,7 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
       end
       object TranslateXE: TIntegerLabeledEdit [1]
         Left = 10
-        Top = 140
+        Top = 38
         Width = 97
         Height = 21
         EditLabel.Width = 92
@@ -60,7 +58,7 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
       end
       object RotationE: TFloatLabeledEdit [2]
         Left = 10
-        Top = 92
+        Top = 134
         Width = 97
         Height = 21
         EditLabel.Width = 70
@@ -71,7 +69,7 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
       end
       object AppendToCurrentStackCB: TPropertyCheckBox [3]
         Left = 10
-        Top = 24
+        Top = 175
         Width = 95
         Height = 41
         Caption = 'Append Transform to Current Stack'
@@ -79,13 +77,13 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
         WordWrap = True
       end
       inherited ExecuteBtn: TButton
-        Left = 9
-        Top = 227
+        Left = 6
+        Top = 251
         Width = 95
         TabOrder = 4
         OnClick = ExecuteBtnClick
-        ExplicitLeft = 10
-        ExplicitTop = 227
+        ExplicitLeft = 6
+        ExplicitTop = 251
         ExplicitWidth = 95
       end
     end

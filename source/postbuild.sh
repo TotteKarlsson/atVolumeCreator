@@ -82,6 +82,9 @@ $CG_REDIST/IndySystem$suffix
 $CG_REDIST/IndyProtocols$suffix 
 $CG_REDIST/IndyCore$suffix     
 $miscRedist/dbexppgsql40.dll                                     
+$miscRedist/msvcp110.dll                                     
+$miscRedist/msvcr110.dll                                     
+$miscRedist/vccorlib110.dll                                     
 )
 
 for file in "${files[@]}"
@@ -91,6 +94,7 @@ do
 done
 
 echo "Copying dcef browser files" 
+
 cp -r -v /p/libs/DcefBrowser/bin/Win32/*                            $AppReleaseFolder
 cp -r -v /p/libs/DcefBrowser/bin/Win32/*                            $BUILD_FOLDER
 ##instead of using local bin folder

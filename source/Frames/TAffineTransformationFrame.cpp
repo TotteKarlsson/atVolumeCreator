@@ -68,21 +68,33 @@ void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
     }
     else
     {
-		mScripter.addArgument("--output_stack " 	   	+ stacks[0] + "_Rotated");
+		mScripter.addArgument("--output_stack " 	   	+ stacks[0] + "_AFF");
     }
 
     string dateTime(getFormattedDateTimeString("Affine_%Y_%b_%d_%R:%S"));
 	mScripter.addArgument("--transformId " 				+ dateTime);
 	mScripter.addArgument("--pool_size " 				+ dsl::toString(stacks.count()));
-	mScripter.addArgument("--B0 " 						+ dsl::toString(TranslateXE->getValue()));
-	mScripter.addArgument("--B1 " 						+ dsl::toString(TranslateYE->getValue()));
 
     //Setup rotation matrix
     double theta(toRadians(RotationE->getValue()));
-	mScripter.addArgument("--M00 " 						+ dsl::toString(cos(theta)));
-	mScripter.addArgument("--M10 " 						+ dsl::toString(sin(theta)));
-	mScripter.addArgument("--M01 " 						+ dsl::toString(sin(theta) * -1.0));
-	mScripter.addArgument("--M11 " 						+ dsl::toString(cos(theta)));
+    double r1 = cos(theta);
+	double r2 = sin(theta) * -1.0;
+	double r3 = sin(theta);
+	double r4 = cos(theta);
+
+	mScripter.addArgument("--M00 " 						+ dsl::toString(r1));
+	mScripter.addArgument("--M01 " 						+ dsl::toString(r2));
+	mScripter.addArgument("--M10 " 						+ dsl::toString(r3));
+	mScripter.addArgument("--M11 " 						+ dsl::toString(r4));
+
+    double t1 = TranslateXE->getValue();
+	double t2 = TranslateYE->getValue();
+
+    double b0 = r1*t1 + r2*t2;
+    double b1 = r3*t1 + r4*t2;
+
+	mScripter.addArgument("--B0 " 						+ dsl::toString(b0));
+	mScripter.addArgument("--B1 " 						+ dsl::toString(b1));
 
     cmd << mScripter.createFullRemoteCommand() << endl;
 

@@ -33,7 +33,6 @@ void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
 
 void __fastcall TMainForm::ThemesMenuClick(TObject *Sender)
 {
-
    TMenuItem* menuItem = dynamic_cast<TMenuItem*>(Sender);
     if(!menuItem)
     {
@@ -82,12 +81,6 @@ void __fastcall TMainForm::mBrowseForCacheFolderClick(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::mCLearMemoClick(TObject *Sender)
-{
-//	infoMemo->Clear();
-}
-
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
 {
 	//Figure out wich listbox called
@@ -108,25 +101,6 @@ void __fastcall TMainForm::CopyValidZs1Click(TObject *Sender)
         }
     }
 	sendToClipBoard(zs.str());
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mCloseBottomPanelBtnClick(TObject *Sender)
-{
-	BottomPanel->Visible = false;
-    mShowBottomPanelBtn->Top = StatusBar1->Top - 1;
-    Splitter2->Visible = false;
-    mShowBottomPanelBtn->Visible = true;
-}
-
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::mShowBottomPanelBtnClick(TObject *Sender)
-{
-	BottomPanel->Visible = true;
-    Splitter2->Visible = true;
-    mShowBottomPanelBtn->Visible = false;
-    Splitter2->Top = BottomPanel->Top - 1;
-    StatusBar1->Top = BottomPanel->Top + BottomPanel->Height + 1;
 }
 
 //---------------------------------------------------------------------------
@@ -322,24 +296,9 @@ string TMainForm::createNDVIZURL()
 
 void __fastcall TMainForm::OpenInNDVIZBtnClick(TObject *Sender)
 {
-	TButton* b = dynamic_cast<TButton*>(Sender);
-
-//    if(b == OpenInNDVIZBtn)
-//    {
-	    string   url(createNDVIZURL());
-//		//ShellExecuteA(0,0, "chrome.exe", url.c_str(),0,SW_SHOWMAXIMIZED);
-        DcefBrowser1->Load(url.c_str());
-//        DcefBrowser1->OnKeyEvent
-
-
-		return;
-//    }
-//
-//    if(b == OpenFromNDVIZBtn)
-//    {
-//		ParseNDVIZURL1Click(NULL);
-//		return;
-//    }
+    string   url(createNDVIZURL());
+    DcefBrowser1->Load(url.c_str());
+	return;
 }
 
 
