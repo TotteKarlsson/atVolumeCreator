@@ -32,7 +32,6 @@
 #include "TImageControlsFrame.h"
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
-
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.StdActns.hpp>
@@ -59,7 +58,8 @@
 #include "atImageGrid.h"
 #include <gdiplus.h>
 #include "cspin.h"
-
+#include "RzSpnEdt.hpp"
+#include "atVolumeCreatorMessages.h"
 class TImageForm;
 
 //---------------------------------------------------------------------------
@@ -73,6 +73,7 @@ void brightnessContrast(TImage *imageSelected);
 string createProcessedImageFileName(const string& fname);
 
 class VolumeCreatorProject;
+typedef void __fastcall (__closure *sshCallback)(const string&);
 
 class TMainForm : public TRegistryForm
 {
@@ -227,6 +228,7 @@ __published:	// IDE-managed Components
 	TFloatLabeledEdit *CustomImageRotationE;
 	TMenuItem *ToggleImageGridMI;
 	TMenuItem *HideLogWindow1;
+	TRzSpinButtons *RzSpinButtons1;
 	void __fastcall ClickZ(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ShutDownTimerTimer(TObject *Sender);
@@ -315,11 +317,14 @@ __published:	// IDE-managed Components
 	void __fastcall CustomImageRotationEKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall ToggleBottomPanelAUpdate(TObject *Sender);
 	void __fastcall ToggleImageGridAUpdate(TObject *Sender);
-
+	void __fastcall RzSpinButtons1DownLeftClick(TObject *Sender);
+	void __fastcall RzSpinButtons1UpRightClick(TObject *Sender);
+	void __fastcall TAffineTransformationFrame1ExecuteBtnClick(TObject *Sender);
 
 
 	private:
        	void __fastcall 								DrawShape(TPoint TopLeft, TPoint BottomRight, TPenMode AMode);
+		sshCallback										onSSHData;
         RenderClient									mRC;
         int												getCurrentZ();
 		bool        									mRenderEnabled;
@@ -367,9 +372,6 @@ __published:	// IDE-managed Components
 		bool                							populateRemoteScript(const string& script);
         void 											runJob(const string& job);
         void											applyContrastControl(MagickWand *image_wand);
-//		void 											flipImage(MagickWand *image_wand, int deg);
-//		void 											colorImage(MagickWand *image_wand, int colorIndex);
-
 	    TImageForm*										gImageForm;
         string 											mCurrentImageFile;
 
@@ -388,10 +390,16 @@ __published:	// IDE-managed Components
 		ULONG_PTR  			         	                gdiplusToken;
 	    void                         	                paintRotatedImage(double angle);
 
-
+		LRESULT											onFinishedRenderRotate(TextMessage& msg);
+        void                                            updateStacksForCurrentProject();
 public:
 	__fastcall 											TMainForm(TComponent* Owner);
 	__fastcall 											~TMainForm();
+
+
+	BEGIN_MESSAGE_MAP
+		MESSAGE_HANDLER(FINISHED_RENDER_ROTATE,	    	TextMessage,		onFinishedRenderRotate);
+	END_MESSAGE_MAP(TForm)
 };
 
 extern PACKAGE TMainForm *MainForm;

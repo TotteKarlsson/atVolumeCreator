@@ -15,6 +15,8 @@
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
 #include <Vcl.Menus.hpp>
+#include <Vcl.ComCtrls.hpp>
+#include "dslTIntLabel.h"
 //---------------------------------------------------------------------------
 
 class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
@@ -28,6 +30,8 @@ class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
 	TActionList *StacksActions;
 	TAction *DeleteStackA;
 	TMenuItem *DeleteStack1;
+	TProgressBar *ProgressBar1;
+	TIntLabel *ZLbl;
         void __fastcall ExecuteBtnClick(TObject *Sender);
 	void __fastcall DeleteStackAExecute(TObject *Sender);
 	void __fastcall StacksPopupPopup(TObject *Sender);
@@ -35,7 +39,8 @@ class TAffineTransformationFrame : public TRenderPythonRemoteScriptFrame
     private:
 
     public:
-        __fastcall TAffineTransformationFrame(TComponent* Owner);
+        			__fastcall  TAffineTransformationFrame(TComponent* Owner);
+		void 		__fastcall	onSSHData(const string& data);
 };
 
 extern PACKAGE TAffineTransformationFrame *AffineTransformationFrame;

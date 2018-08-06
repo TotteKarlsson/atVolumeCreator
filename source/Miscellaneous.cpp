@@ -279,7 +279,6 @@ void __fastcall TMainForm::CreateNDVIZURL1Click(TObject *Sender)
 string TMainForm::createNDVIZURL()
 {
 	string URL("http://ibs-forrestc-ux1.corp.alleninstitute.org:8001/#!{'layers':{'STACK':{'type':'image'_'source':'render://http://ibs-forrestc-ux1.corp.alleninstitute.org/OWNER/PROJECT/STACK'_'max':MAX_INTENSITY}}_'navigation':{'pose':{'position':{'voxelSize':[1_1_1]_'voxelCoordinates':[X_CENTER_Y_CENTER_Z_VALUE]}}_'zoomFactor':ZOOM_FACTOR}}");
-    Log(lInfo) << URL;
 
     double xCenter = XCoordE->getValue() + Width->getValue()/2.;
 	double yCenter = YCoordE->getValue() + Height->getValue()/2.;
@@ -291,6 +290,7 @@ string TMainForm::createNDVIZURL()
     URL = replaceSubstring("Y_CENTER", 			dsl::toString(yCenter), 					                URL);
     URL = replaceSubstring("Z_VALUE", 			dsl::toString(getCurrentZ()), 	 			                URL);
     URL = replaceSubstring("ZOOM_FACTOR", 		dsl::toString(0.5*(1.0/mScaleE->getValue())), 	 			URL);
+    Log(lDebug5) <<"NDVIZ url: "<< URL;
 	return URL;
 }
 

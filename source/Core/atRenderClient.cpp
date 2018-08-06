@@ -52,6 +52,11 @@ RenderClient::~RenderClient()
 	delete mImageMemory;
 }
 
+void RenderClient::assignOnImageCallback(RCCallBack cb)
+{
+	mFetchImageThread.onImage = cb;
+}
+
 Idhttp::TIdHTTP* RenderClient::getConnection()
 {
     return mC;
@@ -92,7 +97,7 @@ StringList RenderClient::getOwners()
     stringstream sUrl;
     sUrl << mBaseURL;
     sUrl << "/owners";
-    Log(lDebug5) << "Fetching owners using URL: "<<sUrl.str();
+    Log(lDebug5) << "Fetching owners: "<<sUrl.str();
 
     StringList owners;
     TStringStream* zstrings = new TStringStream;;
@@ -117,9 +122,9 @@ StringList RenderClient::getProjectsForOwner(const string& o)
 {
     stringstream sUrl;
     sUrl << mBaseURL;
-    sUrl << "/owner/"<<o;
+    sUrl << "/owner/" << o;
     sUrl << "/stackIds";
-    Log(lDebug5) << "Fetching stackId data using URL: "<<sUrl.str();
+    Log(lDebug5) << "Fetching projects for owner: "<<sUrl.str();
 
     StringList projects;
     TStringStream* zstrings = new TStringStream;;
@@ -129,7 +134,7 @@ StringList RenderClient::getProjectsForOwner(const string& o)
     {
         string s = stdstr(zstrings->DataString);
         s = stripCharacters("\"[]{}", s);
-        Log(lInfo) << s;
+        Log(lDebug5) << "Render Response: "<<s;
         //Parse result
         StringList t1(s,',');
 
@@ -157,11 +162,6 @@ StringList RenderClient::getProjectsForOwner(const string& o)
 
     projects.sort();
     return projects;
-}
-
-void RenderClient::assignOnImageCallback(RCCallBack cb)
-{
-	mFetchImageThread.onImage = cb;
 }
 
 bool RenderClient::getImageInThread(int z, StringList& paras)
@@ -192,7 +192,7 @@ TMemoryStream* RenderClient::reloadImage(int z)
 		mImageMemory = new TMemoryStream();
     }
 	//First check if we already is having this data
-    Log(lInfo) << "Fetching from server";
+    Log(lDebug3) << "Reloading Image";
 
     try
     {
@@ -339,7 +339,7 @@ string RenderClient::getURLForZ(int z)
     sUrl << "/jpeg-image";
 	sUrl << "?minIntensity="<<mMinIntensity;
 	sUrl << "&maxIntensity="<<mMaxIntensity;
-//    sUrl << "?maxTileSpecsToRender=100000000";
+
 	return sUrl.str();
 }
 
@@ -357,7 +357,6 @@ string RenderClient::getURL()
     sUrl << "/jpeg-image";
 	sUrl << "?minIntensity="<<mMinIntensity;
 	sUrl << "&maxIntensity="<<mMaxIntensity;
-//    sUrl << "?maxTileSpecsToRender=100000000";
 	return sUrl.str();
 }
 
@@ -393,7 +392,7 @@ vector<int> RenderClient::getValidZs()
     sUrl << "/stack/"	<<	mProject.getCurrentStackName();
     sUrl <<"/zValues";
 
-    Log(lInfo) << "Fetching from server using URL: "<<sUrl.str();
+    Log(lDebug3) << "Get Valid Z: "<<sUrl.str();
 
     try
     {
@@ -404,7 +403,6 @@ vector<int> RenderClient::getValidZs()
         if( mC->ResponseCode == HTTP_RESPONSE_OK)
         {
             string s = stdstr(zstrings->DataString);
-    //        Log(lInfo) << "Response: "<<s;
             s = stripCharacters("[]", s);
             zs.appendList(StringList(s,','));
         }
@@ -442,7 +440,7 @@ bool RenderClient::renameStack(const string& currentStackName, const string& new
 
 RenderBox RenderClient::parseBoundsResponse(const string& _s)
 {
-	RenderBox bounds; //XminXMaxYMinYMax
+	RenderBox bounds;
     string s = stripCharacters("{}", _s);
     StringList l(s, ',');
     if(l.size() == 6)
@@ -480,7 +478,8 @@ StringList RenderClient::getStacksForProject(const string& owner, const string& 
     {
         string s = stdstr(zstrings->DataString);
         s = stripCharacters("\"[]}", s);
-        Log(lInfo) << s;
+        Log(lDebug3) << "Got Render Data String: " << s;
+
         //Parse result
         StringList t1(s,'{');
 

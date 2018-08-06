@@ -3,7 +3,6 @@
 #include "TRenderPythonRemoteScriptFrame.h"
 #include "dslLogger.h"
 #include "dslVCLUtils.h"
-
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "dslTIntegerLabeledEdit"
@@ -34,6 +33,7 @@ void TRenderPythonRemoteScriptFrame::populate(RenderClient& rc, TScSSHShell* she
         RenderProject p = rc.getCurrentProject();
         RenderOwnerE->setValue(p.mOwner);
         RenderProjectE->setValue(p.mProject);
+        mRC.setRenderProject(rc.getRenderProject());
 
         //Populate stacks
         StringList s = mRC.getStacksForProject(p.mOwner, p.mProject);

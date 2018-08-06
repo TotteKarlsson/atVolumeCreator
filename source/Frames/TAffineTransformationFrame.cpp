@@ -6,6 +6,7 @@
 #include "dslLogger.h"
 #include "dslMathUtils.h"
 #include "dslVCLUtils.h"
+#include "atVolumeCreatorMessages.h"
 //-----------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "dslTIntegerLabeledEdit"
@@ -13,6 +14,7 @@
 #pragma link "TRenderPythonRemoteScriptFrame"
 #pragma link "dslTFloatLabeledEdit"
 #pragma link "dslTPropertyCheckBox"
+#pragma link "dslTIntLabel"
 #pragma resource "*.dfm"
 TAffineTransformationFrame *AffineTransformationFrame;
 
@@ -22,6 +24,34 @@ __fastcall TAffineTransformationFrame::TAffineTransformationFrame(TComponent* Ow
 	: TRenderPythonRemoteScriptFrame("renderapps.stack.apply_global_affine_to_stack", Owner)
 {}
 
+void __fastcall TAffineTransformationFrame::onSSHData(const string& data)
+{
+    StringList lines(data, '\n');
+    for(int i = 0; i < lines.count(); i++)
+    {
+    	Log(lDebug5) << "SSH data: " << lines[i];
+    }
+
+    for(int i = 0; i < lines.count(); i++)
+    {
+        string dataStr = lines[i];
+        if(contains("generateStackDataForZ: exit", dataStr))
+        {
+            int sectionNr = toInt(dataStr, false);
+            ProgressBar1->Position = sectionNr;
+            Log(lInfo) << "Finished section: " << sectionNr;
+            ZLbl->setValue(ProgressBar1->Position);
+        }
+        else if (contains("processing completed", dataStr))
+        {
+            Log(lInfo) << "Processing completed";
+            //Send message to application that Affine processing completed, and do what needs to be done
+
+
+            SendTextMessage(Application->MainForm->Handle,  FINISHED_RENDER_ROTATE, 0, "Finished");
+        }
+    }
+}
 
 //---------------------------------------------------------------------------
 void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
@@ -97,8 +127,13 @@ void __fastcall TAffineTransformationFrame::ExecuteBtnClick(TObject *Sender)
 	mScripter.addArgument("--B1 " 						+ dsl::toString(b1));
 
     cmd << mScripter.createFullRemoteCommand() << endl;
-
     Log(lInfo) << "Remote command: " << cmd.str();
+
+	ZLbl->setValue(0);
+    ProgressBar1->Min = 0;
+
+    ProgressBar1->Max = mRC.getValidZs().size() - 1;
+    ProgressBar1->Position = 0;
     mScripter.run();
 }
 
@@ -113,13 +148,11 @@ void __fastcall TAffineTransformationFrame::DeleteStackAExecute(TObject *Sender)
         Log(lInfo) << "Deleting stack: " << currentStackName;
 	    string newStackName("HIDDEN_" + currentStackName);
 	    mRC.renameStack(currentStackName, newStackName);
-
     }
     else
     {
         Log(lWarning) << "No stack is selected";
     }
-
 }
 
 //---------------------------------------------------------------------------

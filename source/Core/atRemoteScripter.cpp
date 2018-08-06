@@ -58,7 +58,8 @@ string RemoteScripter::createFullRemoteCommand()
 void RemoteScripter::run()
 {
     string cmd = createFullRemoteCommand();
-    Log(lInfo) << "Running remote command: " << cmd;
+    Log(lDebug) << "Running remote command: " << cmd;
+    mServerResponse.clear();
 	mSSHShell->WriteString(vclstr(cmd));
 }
 }

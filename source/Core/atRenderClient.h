@@ -88,9 +88,9 @@ class RenderClient
         void										copyImageData(MemoryStruct chunk);
 		Idhttp::TIdHTTP*                            getConnection();
         void                                        assignConnection(Idhttp::TIdHTTP* c);
-
         string                                      getBaseURL(){return mBaseURL;}
-
+        RenderProject                               getRenderProject(){return mProject;}
+        void                                        setRenderProject(const RenderProject& rp){mProject = rp;}
 
     private:
     												//!This is a HTTP connection

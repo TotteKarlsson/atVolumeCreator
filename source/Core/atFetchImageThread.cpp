@@ -66,7 +66,7 @@ void FetchImageThread::worker()
     mIsTimeToDie = false;
     while(!mIsTimeToDie)
     {
-		Log(lInfo) << "Started Image fetching thread..";
+		Log(lDebug4) << "Started Image fetching thread..";
 
         curl_global_init(CURL_GLOBAL_ALL);
 
@@ -82,13 +82,13 @@ void FetchImageThread::worker()
         Poco::File f(outFilePathANDFileName);
         if(fileExists(outFilePathANDFileName) && f.getSize() > 200)
         {
-            Log(lInfo) << "File "<<outFilePathANDFileName<<" is in cache";
+            Log(lDebug3) << "The image "<<outFilePathANDFileName<<" is in local cache";
             mRenderClient.getImageMemory()->LoadFromFile(outFilePathANDFileName.c_str());
             TThread::Synchronize(NULL, onImage);
         }
         else
         {
-            Log(lInfo) << "Thread is fetching: "<<getImageZFromURL(url);
+            Log(lDebug4) << "Thread is fetching: "<<getImageZFromURL(url);
 
             CURL *curl_handle;
             CURLcode res;
@@ -143,7 +143,7 @@ void FetchImageThread::worker()
                     ofstream of( outFilePathANDFileName.c_str(), std::ofstream::binary);
                     of.write(&chunk.memory[0], chunk.size);
 
-                    Log(lInfo) <<  (long)chunk.size << " bytes retrieved\n";
+                    Log(lDebug3) <<  (long)chunk.size << " bytes retrieved\n";
                     of.close();
 
                     mRenderClient.getImageMemory()->LoadFromFile(outFilePathANDFileName.c_str());
@@ -168,7 +168,7 @@ void FetchImageThread::worker()
         mIsTimeToDie = true;
 	}
 
-  	Log(lInfo) << "Finished Image fetching thread..";
+  	Log(lDebug4) << "Finished Image fetching thread..";
     mIsRunning = false;
     mIsFinished = true;
 }

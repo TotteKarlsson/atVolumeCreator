@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "atVolumeCreator"
-#define MyAppVersion "0.6.3"
+#define MyAppVersion "0.6.4"
 #define MyAppPublisher "Smith Lab"
 #define MyAppURL "http://www.example.com/"
 #define MyAppExeName "VolumeCreator.exe"
@@ -47,8 +47,6 @@ Source: "P:\AppReleases\VolumeCreator\*";                 DestDir: "{app}"; Flag
 
 ;Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "MAGICK_HOME"; \
     ;ValueData: "{app}"; Flags: preservestringtype
-
-
 
 [Icons]
 Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

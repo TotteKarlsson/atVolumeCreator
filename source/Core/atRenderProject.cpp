@@ -2,7 +2,6 @@
 #include "atRenderProject.h"
 #include "dslXMLUtils.h"
 //---------------------------------------------------------------------------
-
 using namespace dsl;
 
 
@@ -27,13 +26,26 @@ RenderProject::RenderProject(const RenderProject& rp)
     mStacks		= rp.mStacks;
 }
 
+//Shallow copy..
+RenderProject& RenderProject::operator=(const RenderProject& rhs)
+{
+	if(this != &rhs)
+    {
+        mInfo	 	= rhs.mInfo;
+        mOwner		= rhs.mOwner;
+        mProject	= rhs.mProject;
+        mStack		= rhs.mStack;
+        mStacks		= rhs.mStacks;
+    }
+    return *this;
+}
+
 void RenderProject::setupForStack(const string& owner, const string& project, const string& stack)
 {
 	mOwner 		= owner;
     mProject 	= project;
     mStack 		= stack;
 }
-
 
 XMLElement* RenderProject::addToXMLDocumentAsChild(tinyxml2::XMLDocument& doc, XMLNode* docRoot)
 {

@@ -33,6 +33,7 @@
 #pragma link "TRenderPythonRemoteScriptFrame"
 #pragma link "dslTLogMemoFrame"
 #pragma link "TAffineTransformationFrame"
+#pragma link "RzSpnEdt"
 #pragma resource "*.dfm"
 TMainForm *MainForm;
 
@@ -91,7 +92,7 @@ void ThrowWandException(MagickWand* wand)
 	ExceptionType severity;
 
   	description = MagickGetException(wand, &severity);
-    Log(lInfo) << "ImageMagic encountered a problem: " <<description <<" in module "<<GetMagickModule();
+    Log(lError) << "ImageMagic encountered a problem: " <<description <<" in module "<<GetMagickModule();
   	description = (char *) MagickRelinquishMemory(description);
 }
 
@@ -106,9 +107,10 @@ void __fastcall TMainForm::onImage()
 
     if(!fileExists(mRC.getImageLocalPathAndFileName()))
     {
-        Log(lInfo) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
+        Log(lError) << "File does not exist: " <<mRC.getImageLocalPathAndFileName();
         return;
     }
+
     mCurrentImageFile = mRC.getImageLocalPathAndFileName().c_str();
 	double val = CustomImageRotationE->getValue();
     if(val != 0)
@@ -121,7 +123,6 @@ void __fastcall TMainForm::onImage()
         {
             //Create a temporary stream
             unique_ptr<TMemoryStream> stream = unique_ptr<TMemoryStream>(new TMemoryStream());
-
             stream->LoadFromFile(mCurrentImageFile.c_str());
             if(stream->Size)
             {
@@ -143,20 +144,19 @@ void __fastcall TMainForm::onImage()
 
     Image1->Refresh();
 
-    Log(lInfo) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
+    Log(lDebug3) << "WxH = " <<Image1->Picture->Width << "x" << Image1->Picture->Height;
     this->Image1->Cursor = crDefault;
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ClickZ(TObject *Sender)
 {
-	int ii = mZs->ItemIndex;
-    if(ii == -1)
+    if(mZs->ItemIndex == -1)
     {
     	return;
     }
 
-    int z = toInt(stdstr(mZs->Items->Strings[ii]));
+    int z = toInt(stdstr(mZs->Items->Strings[mZs->ItemIndex]));
 
     //Fetch data using URL
 	mRC.setLocalCacheFolder(ImageCacheFolderE->getValue());
@@ -165,9 +165,9 @@ void __fastcall TMainForm::ClickZ(TObject *Sender)
     if(VisualsPC->Pages[VisualsPC->TabIndex] == TabSheet2)
     {
 		this->Image1->Cursor = crHourGlass;
-
         StringList paras;
         paras.append(string("&maxTileSpecsToRender=") + stdstr(maxTileSpecsToRenderE->Text));
+
     	//Image pops up in onImage callback
 	    mRC.getImageInThread(z, paras);
     }
@@ -390,8 +390,8 @@ void __fastcall TMainForm::resetButtonClick(TObject *Sender)
         mCurrentRB.setScale(mScaleE->getValue());
         render(&mCurrentRB);
         mROIHistory.add(mCurrentRB);
-        Log(lInfo) << "X0 = " << XCoordE->getValue() + Width->getValue()/2.;
-        Log(lInfo) << "Y0 = " << YCoordE->getValue() + Height->getValue()/2.;
+        Log(lDebug1) << "Origin: (X0,Y0) = (" << XCoordE->getValue() + Width->getValue()/2.<<"," <<YCoordE->getValue() + Height->getValue()/2.<<")";
+
     }
     catch(...)
     {}
@@ -483,7 +483,7 @@ void __fastcall TMainForm::FetchSelectedZsBtnClick(TObject *Sender)
 
         p.append(joinPath("owner", mCurrentOwner.getValue(), "project", mCurrentProject.getValue()));
         p.append(joinPath("stack", mCurrentStack.getValue()));
-        Log(lInfo) << "Deleting cache for stack: " << p.toString();
+        Log(lInfo) << "Deleting local cache for stack: " << p.toString();
 
         boost::filesystem::remove_all(p.toString());
 
@@ -535,7 +535,7 @@ void __fastcall TMainForm::GetOptimalBoundsBtnClick(TObject *Sender)
    	vector<RenderBox> bounds = rs.getBounds();
     for(int i = 0; i < bounds.size(); i++)
     {
-	    Log(lInfo) <<bounds[i].getZ()<<","<<bounds[i].getX1()<<","<<bounds[i].getX2()<<","<<bounds[i].getY1()<<","<<bounds[i].getY2();
+	    Log(lDebug3) <<"Bounds:" << bounds[i].getZ()<<","<<bounds[i].getX1()<<","<<bounds[i].getX2()<<","<<bounds[i].getY1()<<","<<bounds[i].getY2();
     }
 }
 
@@ -570,7 +570,7 @@ void TMainForm::updateScale()
 
     //Scale the scaling
     double scale  = (double) Image1->Height / (double) mCurrentRB.getHeight();
-    Log(lInfo) << "Scaling is: " << scale;
+    Log(lDebug5) << "Image Scale: " << scale;
 	if(scale < 0.005)
     {
     	scale = 0.009;
@@ -630,12 +630,21 @@ void __fastcall TMainForm::ProjectCBChange(TObject *Sender)
     mCurrentProject.setValue(project);
 
     //Populate stacks
-    StringList s = mRC.getStacksForProject(owner, mCurrentProject);
-    if(s.size())
+	updateStacksForCurrentProject();
+}
+
+void TMainForm::updateStacksForCurrentProject()
+{
+    mCurrentOwner = stdstr(OwnerCB->Items->Strings[OwnerCB->ItemIndex]);
+
+    //Populate stacks
+    StringList stacks = mRC.getStacksForProject(mCurrentOwner, mCurrentProject);
+    if(stacks.size())
     {
-		populateDropDown(s, StackCB);
-		populateCheckListBox(s, StacksForProjectCB);
+		StackCB->ItemIndex = populateDropDown(stacks, 		StackCB);
+		populateCheckListBox(stacks, 	StacksForProjectCB);
     }
+	StackCBChange(NULL);
 }
 
 void __fastcall TMainForm::StackCBChange(TObject *Sender)
@@ -649,7 +658,6 @@ void __fastcall TMainForm::StackCBChange(TObject *Sender)
 	mCurrentStack.setValue(stack);
 	mRC.getProject().setupForStack(mCurrentOwner.getValue(), mCurrentProject.getValue(), mCurrentStack.getValue());
    	mGetValidZsBtnClick(NULL);
-
 	ClickZ(NULL);
 
     //Update stack generation page
@@ -697,13 +705,12 @@ void __fastcall TMainForm::IntensityKeyDown(TObject *Sender, WORD &Key, TShiftSt
     }
     int minInt = MinIntensity->getValue();
     int maxInt = MaxIntensity->getValue();
-    int ii = mZs->ItemIndex;
-    if(ii == -1)
+    if(mZs->ItemIndex == -1)
     {
         return;
     }
 
-    int z = toInt(stdstr(mZs->Items->Strings[ii]));
+    int z = toInt(stdstr(mZs->Items->Strings[mZs->ItemIndex]));
 
     //Fetch data using URL
     mRC.setLocalCacheFolder(ImageCacheFolderE->getValue());
@@ -1171,6 +1178,7 @@ void __fastcall TMainForm::TAffineTransformationFrame1RotationEKeyDown(TObject *
     }
 }
 
+//---------------------------------------------------------------------------
 void TMainForm::paintRotatedImage(double angle)
 {
     Image1->Align = alNone;
@@ -1205,15 +1213,17 @@ void TMainForm::paintRotatedImage(double angle)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ToggleImageGridAExecute(TObject *Sender)
 {
-//	ShowImageGridCB->Checked = !ShowImageGridCB->Checked;
-    Log(lInfo) << "Action Component: " << stdstr(ToggleImageGridA->ActionComponent->Name);
+    Log(lDebug5) << "Action Component: " << stdstr(ToggleImageGridA->ActionComponent->Name);
 
     TMenuItem* ac = dynamic_cast<TMenuItem*>(ToggleImageGridA->ActionComponent);
     if(ac)
     {
         ShowImageGridCB->Checked = !ShowImageGridCB->Checked;
     }
-   	PaintBox1Paint(NULL);
+    else
+    {
+   		PaintBox1Paint(NULL);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -1227,7 +1237,7 @@ void __fastcall TMainForm::CustomImageRotationEKeyDown(TObject *Sender, WORD &Ke
     }
 }
 
-
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::ToggleBottomPanelAUpdate(TObject *Sender)
 {
 	ToggleBottomPanelA->Caption = (BottomPanel->Visible) ? "Hide Bottom Panel" : "Show Bottom Panel";
@@ -1247,4 +1257,41 @@ void __fastcall TMainForm::ToggleImageGridAUpdate(TObject *Sender)
     }
 }
 
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::RzSpinButtons1DownLeftClick(TObject *Sender)
+{
+	CustomImageRotationE->setValue(CustomImageRotationE->getValue() - 0.5);
+	double val = CustomImageRotationE->getValue();
+	paintRotatedImage(val);
+}
+
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::RzSpinButtons1UpRightClick(TObject *Sender)
+{
+	CustomImageRotationE->setValue(CustomImageRotationE->getValue() +0.5);
+	double val = CustomImageRotationE->getValue();
+	paintRotatedImage(val);
+}
+
+void __fastcall TMainForm::TAffineTransformationFrame1ExecuteBtnClick(TObject *Sender)
+{
+	onSSHData = TAffineTransformationFrame1->onSSHData;
+  	TAffineTransformationFrame1->ExecuteBtnClick(Sender);
+}
+
+//---------------------------------------------------------------------------
+LRESULT	TMainForm::onFinishedRenderRotate(TextMessage& msg)
+{
+    string test = msg.lparam;
+    CustomImageRotationE->setValue(0);
+    string currentStack = mRC.getCurrentProject().getCurrentStackName();
+
+	updateStacksForCurrentProject();
+//    StackCB->H
+	ClearCacheBtn->Click();
+
+    //Click first z
+	mZs->ItemIndex = 0;
+    ClickZ(NULL);
+}
 

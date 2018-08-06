@@ -34,27 +34,27 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
       DesignSize = (
         205
         362)
-      object TranslateYE: TIntegerLabeledEdit [0]
-        Left = 10
-        Top = 86
-        Width = 97
-        Height = 21
-        EditLabel.Width = 92
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Translate Y (pixels)'
-        TabOrder = 3
-        Text = '0'
+      object ZLbl: TIntLabel [0]
+        Left = 72
+        Top = 325
+        Width = 19
+        Height = 13
+        Caption = 'ZLbl'
+        Value = -1
+        TheFont.Charset = DEFAULT_CHARSET
+        TheFont.Color = clWindowText
+        TheFont.Height = -11
+        TheFont.Name = 'Tahoma'
+        TheFont.Style = []
       end
-      object TranslateXE: TIntegerLabeledEdit [1]
+      object AppendToCurrentStackCB: TPropertyCheckBox [1]
         Left = 10
-        Top = 38
-        Width = 97
-        Height = 21
-        EditLabel.Width = 92
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Translate X (pixels)'
-        TabOrder = 2
-        Text = '0'
+        Top = 175
+        Width = 95
+        Height = 41
+        Caption = 'Append Transform to Current Stack'
+        TabOrder = 0
+        WordWrap = True
       end
       object RotationE: TFloatLabeledEdit [2]
         Left = 10
@@ -67,24 +67,48 @@ inherited AffineTransformationFrame: TAffineTransformationFrame
         TabOrder = 1
         Text = '0'
       end
-      object AppendToCurrentStackCB: TPropertyCheckBox [3]
+      object TranslateXE: TIntegerLabeledEdit [3]
         Left = 10
-        Top = 175
-        Width = 95
-        Height = 41
-        Caption = 'Append Transform to Current Stack'
-        TabOrder = 0
-        WordWrap = True
+        Top = 38
+        Width = 97
+        Height = 21
+        EditLabel.Width = 92
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Translate X (pixels)'
+        TabOrder = 2
+        Text = '0'
+      end
+      object TranslateYE: TIntegerLabeledEdit [4]
+        Left = 10
+        Top = 86
+        Width = 97
+        Height = 21
+        EditLabel.Width = 92
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Translate Y (pixels)'
+        TabOrder = 3
+        Text = '0'
       end
       inherited ExecuteBtn: TButton
         Left = 6
-        Top = 251
+        Top = 230
         Width = 95
         TabOrder = 4
         OnClick = ExecuteBtnClick
         ExplicitLeft = 6
-        ExplicitTop = 251
+        ExplicitTop = 230
         ExplicitWidth = 95
+      end
+      object ProgressBar1: TProgressBar
+        Left = 2
+        Top = 344
+        Width = 201
+        Height = 16
+        Align = alBottom
+        TabOrder = 5
+        ExplicitLeft = 1
+        ExplicitTop = 347
+        ExplicitWidth = 390
       end
     end
   end

@@ -33,15 +33,10 @@ class PACKAGE TRenderPythonRemoteScriptFrame : public TFrame
         RemoteScripter          mScripter;
         RenderClient            mRC;
 
-
     public:
         			__fastcall  TRenderPythonRemoteScriptFrame(const string& scriptName, TComponent* Owner);
         virtual void            populate(RenderClient& client, TScSSHShell* shell);
-
-
 };
-
-
 
 extern PACKAGE TRenderPythonRemoteScriptFrame *RenderPythonRemoteScriptFrame;
 #endif

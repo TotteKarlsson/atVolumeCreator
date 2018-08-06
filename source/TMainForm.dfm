@@ -16568,6 +16568,18 @@ object MainForm: TMainForm
                 Text = '0.0'
                 OnKeyDown = CustomImageRotationEKeyDown
               end
+              object RzSpinButtons1: TRzSpinButtons
+                Left = 17
+                Top = 563
+                Width = 94
+                Height = 25
+                Delay = 15
+                FocusControl = CustomImageRotationE
+                Orientation = orHorizontal
+                OnDownLeftClick = RzSpinButtons1DownLeftClick
+                OnUpRightClick = RzSpinButtons1UpRightClick
+                TabOrder = 4
+              end
             end
             object ZsPanel: TPanel
               Left = 288
@@ -16667,6 +16679,30 @@ object MainForm: TMainForm
                 Height = 648
                 ExplicitWidth = 198
                 ExplicitHeight = 648
+                DesignSize = (
+                  198
+                  648)
+                inherited ZLbl: TIntLabel
+                  Width = 10
+                  Caption = '-1'
+                  ExplicitWidth = 10
+                end
+                inherited TranslateXE: TIntegerLabeledEdit
+                  Visible = False
+                end
+                inherited TranslateYE: TIntegerLabeledEdit
+                  Visible = False
+                end
+                inherited ExecuteBtn: TButton
+                  OnClick = TAffineTransformationFrame1ExecuteBtnClick
+                end
+                inherited ProgressBar1: TProgressBar
+                  Top = 630
+                  Width = 194
+                  ExplicitLeft = 2
+                  ExplicitTop = 630
+                  ExplicitWidth = 194
+                end
               end
             end
           end
@@ -17255,8 +17291,7 @@ object MainForm: TMainForm
             inherited ScSSHClient: TScSSHClient
               AfterConnect = TSSHFrame1ScSSHClientAfterConnect
               AfterDisconnect = TSSHFrame1ScSSHClientAfterDisconnect
-              Left = 32
-              Top = 88
+              Left = 152
             end
           end
         end
@@ -17520,7 +17555,7 @@ object MainForm: TMainForm
     Left = 32
     Top = 40
     Bitmap = {
-      494C010108001800700110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108001800740110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

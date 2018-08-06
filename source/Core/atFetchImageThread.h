@@ -22,7 +22,8 @@ class FetchImageThread : public dsl::Thread
         string                              listParameters();
 		bool				                setCacheRoot(const string& cr);
 		void				                worker();
-        											//!The on Image callback is called when image data is retrieved from the server
+
+          							        //!The on Image callback is called when image data is retrieved from the server
         RCCallBack							onImage;
 
 	private:

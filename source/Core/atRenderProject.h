@@ -16,6 +16,7 @@ class RenderProject : public VolumeCreatorProject
 
                                         //!Gotta think about this..
                                         RenderProject(const RenderProject& rp);
+        RenderProject&                  operator=(const RenderProject& rhs);
 
 		void							setupForStack(const string& owner, const string& project, const string& stack);
 
